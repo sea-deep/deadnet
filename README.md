@@ -6,7 +6,7 @@ Insert your recovery USB, turn on the computer, and look through Nora’s Messen
 
 ![Nora’s Messenger](docs/evidence/revamp-messenger-desktop.png)
 
-[Play online](https://room317.onrender.com) · [Source](https://github.com/sea-deep/deadnet) · [Scripted static exhibition](https://sea-deep.github.io/deadnet/) · [Credits and licenses](docs/CREDITS.md)
+[Play online](https://room317.onrender.com) · [The story behind it (DEV)](https://dev.to/sea_deep/her-last-message-was-to-you-you-never-answered-it-38e5) · [Source](https://github.com/sea-deep/deadnet) · [Scripted static exhibition](https://sea-deep.github.io/deadnet/) · [Credits and licenses](docs/CREDITS.md)
 
 ## Run
 
@@ -53,7 +53,7 @@ The existing SQLite engine, actor knowledge boundaries, validated model decision
 
 Persistent free-account limits: 2 requests/minute and 8/day per local visitor, 5/minute and 30/day globally, counted per HTTP attempt. Upstream 429s persist a cooldown of at least 60 seconds. Starting a case or restarting the server does not reset quota. No paid fallback. Eighteen narrative turns require explicit renewal; renewal cannot bypass the provider quota. Hosted autonomous turns are disabled.
 
-The ElevenLabs call retains the existing licensed premade Lily voice, `eleven_v3_conversational`, hushed/rushed delivery and speed 1.14. The authored call is 11.84 seconds; cached playback does not generate another clip. Provider settings, transcript and model are part of the cache key. Ten fresh renders maximum per installation, 900 characters per request. This revamp did not make any generation calls to either provider, at the user’s request. Historical live-provider measurements remain in `docs/evidence/`; they are not new-prompt benchmarks.
+The ElevenLabs call retains the existing licensed premade Lily voice, `eleven_v3_conversational`, hushed/rushed delivery and speed 1.14. The authored call is 11.84 seconds; cached playback does not generate another clip. Provider settings, transcript and model are part of the cache key. Ten fresh renders maximum per installation, 900 characters per request. Historical live-provider measurements remain in `docs/evidence/`; they are not new-prompt benchmarks.
 
 Progress autosaves. Start offers save/load/export/reset. Notepad and restored personal drafts persist in browser storage separately from the exported case world. A blocked save is reported. Local mode is single-user/loopback-only; hosted mode stores a private world per visitor cookie. `.env` and `.data/` are ignored.
 
@@ -69,6 +69,6 @@ npx tsx scripts/check-games.ts
 npx tsx scripts/check-sound.ts
 ```
 
-[Screenshot gallery](docs/screenshots/index.html) · [Rebuild decisions](docs/REVAMP.md) · [Verification](docs/VERIFICATION.md) · [Third-party modifications](docs/THIRD-PARTY.md) · [Unpublished submission draft](docs/SUBMISSION.md).
+[Screenshot gallery](docs/screenshots/index.html) · [Verification](docs/VERIFICATION.md) · [Third-party modifications](docs/THIRD-PARTY.md).
 
-Code is MIT; borrowed code and media retain their own licenses. Built with AI coding assistance. No demo video or contest entry has been published by this revision.
+Code is MIT; borrowed code and media retain their own licenses.

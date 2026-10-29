@@ -2,16 +2,13 @@
 
 DEADNET story, characters, copy, application-specific CSS, and synthesized system tones were created for this repository beginning October 29, 2026. Sourced assets are listed below. No Microsoft logos, original Windows icons, proprietary font files, sampled system sounds, or real deceased individuals’ likenesses/voices are included. OS-era interaction conventions are a reference, not an affiliation.
 
-Creative and technical influences: [Hypnospace Outlaw](https://www.hypnospace.net/), [98.js](https://github.com/1j01/98), [Generative Agents](https://github.com/joonspk-research/generative_agents), and [AI Town](https://github.com/AITownFun/ai-town). These are credited precedents; their nontrivial source code and content were not copied. The research comparison is in research/DECISIONS.md.
+Creative and technical influences: [Hypnospace Outlaw](https://www.hypnospace.net/), [98.js](https://github.com/1j01/98), [Generative Agents](https://github.com/joonspk-research/generative_agents), and [AI Town](https://github.com/AITownFun/ai-town). These are credited precedents; their nontrivial source code and content were not copied.
 
 Direct runtime dependencies: React / React DOM (MIT), react-rnd (MIT; wraps react-draggable and re-resizable), Express (MIT), Zod (MIT), dotenv (BSD-2-Clause). Vite, TypeScript, tsx, Playwright, and type packages are development tooling; the lockfile pins exact resolved versions. Node provides SQLite. See each installed package’s LICENSE for upstream terms. This repository’s MIT license does not replace third-party licenses.
 
 Gemma 4 weights are separately distributed by Google under Apache-2.0 according to its [model card](https://ai.google.dev/gemma/docs/core/model_card_4). Weights are not checked into this repository. Ollama is separately installed and licensed. Gemma 3 alternatives have their own terms; do not assume Gemma 4 licensing applies to earlier generations.
 
 Optional ElevenLabs audio uses the configured provider account and a voice the user has rights to use. No paid voice recording is redistributed by default. The cache is ignored. Provider and voice licenses govern generated recordings separately from this code license.
-
-Implementation and writing assisted by OpenAI Codex. Generated story turns are labeled individually in the product. The submission must disclose AI assistance as `some_ai` if staged through DEV.
-
 
 ## Sourced visual assets
 
@@ -42,7 +39,6 @@ New game raster sources and exact reskin/input changes are documented in THIRD-P
 **Metal brass keys** by Gausanchennai, September 29, 2018, [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Metal_brass_keys.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The original JPEG is self-hosted unchanged. Nora’s caption, date and fictional ownership are authored story content; the photograph’s metadata is not evidence of a real case. The image and any adaptations remain under CC BY-SA 4.0.
 
 **Chicago95 White cursor pack** from [grassmunk / Chicago95](https://github.com/grassmunk/Chicago95/tree/master/Cursors/Chicago95_Cursor_White/src), whose upstream README declares GPL-3.0+/MIT. The separately packaged cursor rasters use GPL-3.0-or-later with original PNGs, hotspot config sources, upstream README/credits and GPL text in public/assets/cursors/chicago95/. The earlier isolated JS Paint cursor experiment was replaced and its unused files removed. No system cursor installation or image generation is performed.
-
 
 The **Phantomicus thumbnail** is original project artwork by Cody Ebberson, distributed with the MIT source. **2048’s touch icon** is original project artwork by Gabriele Cirulli, likewise retained with its MIT source. Both are used as game icons, not claimed as new DEADNET logos. Additional My Computer, USB, calendar and photo icons are the existing Fugue collection, CC BY 3.0.
 

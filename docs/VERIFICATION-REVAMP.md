@@ -1,6 +1,6 @@
 # Room 317 personal-computer rebuild — verification
 
-This records the `westhaven-personal-v5` revision, October 29, 2026. Earlier provider evidence and prototype benchmarks remain historical. No model or voice generation requests were made for this revision, per the user’s instruction. The main local case was explicitly changed from baseline to live; the quota snapshot remained 0/8 visitor, 0/30 global immediately after that change. Provider availability checks are not inference measurements.
+This records the `westhaven-personal-v5` revision, October 29, 2026. Earlier provider evidence and prototype benchmarks remain historical. The automated checks below make no model or voice generation requests. The main local case was explicitly changed from baseline to live; the quota snapshot remained 0/8 visitor, 0/30 global immediately after that change. Provider availability checks are not inference measurements.
 
 ## Scope
 
@@ -18,6 +18,6 @@ Replaced: technical evidence-file hunting and self-repairing game-save gate, web
 
 ## Practical limits
 
-The fixed case is short and authored; there is no randomized culprit. AI responses can be slow, unavailable, repetitive or mistaken, while the objective evidence and win condition remain fixed. The scripted mode/static exhibition disclose that they have no live inference. The revised prompt has not been measured against the real provider, at the user’s request. Previous measured provider results do not validate the new dialogue. Optional games are deliberately anachronistic. Restored drafts and Notepad are local browser state, rather than part of the case export.
+The fixed case is short and authored; there is no randomized culprit. AI responses can be slow, unavailable, repetitive or mistaken, while the objective evidence and win condition remain fixed. The scripted mode/static exhibition disclose that they have no live inference. One live hosted reply was checked on October 30, 2026 (`nvidia/nemotron-3.5-super-vl:free`, 22.8 s, $0); the revised prompt has not been benchmarked beyond that. Previous measured provider results do not validate the new dialogue. Optional games are deliberately anachronistic. Restored drafts and Notepad are local browser state, rather than part of the case export.
 
 Five-game interaction pass: all five loaded with no page errors; Flappy entered playing state, Tetris entered playing state, 2048 responded to moves and Phantomicus rendered its two canvases. Sound checks confirmed gesture-started ambience, game ducking, global mute reaching game audio and stopping ambience. Presentation captures and their manifest are in screenshots/.
