@@ -12,7 +12,7 @@ Self-assessment, not independent judging or a prediction of winning.
 | Narrative potential | 8 | Mara emails a dead friend, Len defends an ordinary alibi, Nora recalls one fragment. No invented audience reaction or emotional study. |
 | Visual quality | 8 | Actual period UI references, sourced raster art, readable pixel fonts, direct game shortcuts and consistent dark controls. Borrowed games retain some underlying visual differences. |
 | Demo clarity | 8 | Usable public exhibit, reproducible local API, actual case/voice evidence and screenshots. No video, at user request. |
-| Reliability | 7 | 31 unit/provider tests, 13 desktop/mobile scenarios, real game/audio checks. Free inference can be slow or unavailable; verified current reply took 13.820 s. |
+| Reliability | 7 | 34 unit/provider tests, 15 desktop/mobile scenarios, real game/audio checks. Free inference can be slow or unavailable; verified current reply took 13.820 s. |
 | Writing | 8 | Article uses actual debugging findings and distinguishes current checks from prototype benchmarks. Entrant review remains necessary. |
 | Partners | 8 | Meaningful Gemma dialogue and a verified ElevenLabs alibi artifact. Other categories unclaimed. |
 | Rules | 8 | New Oct 29 public MIT repo, demo, template/tags and evidence. Entry remains unpublished; entrant eligibility is not asserted on their behalf. |

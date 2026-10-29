@@ -62,6 +62,65 @@ test("damaged accounts, events, and counters are rejected", () => {
   assert.equal(isSavedWorld(badGame), false);
 });
 
+test("duplicate or unknown record IDs and malformed traces are rejected", () => {
+  const duplicate = damaged((world) => {
+    world.collected = ["carrier", "carrier"];
+  });
+  assert.equal(isSavedWorld(duplicate), false);
+
+  const unknown = damaged((world) => {
+    world.published = ["secret"];
+  });
+  assert.equal(isSavedWorld(unknown), false);
+
+  const duplicateGame = damaged((world) => {
+    world.played = ["snake", "snake"];
+  });
+  assert.equal(isSavedWorld(duplicateGame), false);
+
+  const noStatus = damaged((world) => {
+    world.traces.push({
+      id: "trace-1",
+      tick: 1,
+      actor: "mara",
+      provider: "baseline",
+      model: "fixture",
+      latencyMs: 1,
+      inputTokens: 1,
+      outputTokens: 1,
+      tokensPerSecond: 1,
+      attempts: 1,
+    } as never);
+  });
+  assert.equal(isSavedWorld(noStatus), false);
+
+  const badTrace = damaged((world) => {
+    world.traces.push({
+      id: "trace-2",
+      tick: 1,
+      actor: "mara",
+      provider: "baseline",
+      model: "fixture",
+      status: "maybe",
+      latencyMs: 1,
+      inputTokens: 1,
+      outputTokens: 1,
+      tokensPerSecond: 1,
+      attempts: 1,
+    } as never);
+  });
+  assert.equal(isSavedWorld(badTrace), false);
+});
+
+test("an exposed ending must name a suspect", () => {
+  const exposed = structuredClone(seedWorld());
+  exposed.ending = "exposed";
+  exposed.accused = "sysop";
+  assert.equal(isSavedWorld(exposed), true);
+  exposed.accused = undefined;
+  assert.equal(isSavedWorld(exposed), false);
+});
+
 test("optional fields stay backward compatible", () => {
   const oldSave = damaged((world) => {
     delete world.played;

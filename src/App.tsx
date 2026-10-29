@@ -195,10 +195,18 @@ export default function App() {
   const root = useRef<HTMLDivElement>(null);
   const startButton = useRef<HTMLButtonElement>(null);
   const startMenu = useRef<HTMLElement>(null);
+  const autosaveWarned = useRef(false);
   // Autosave: the browser keeps a copy of the case after every change.
   useEffect(() => {
     // Only real progress is saved, so an emptied server never overwrites it.
-    if (data && hasProgress(data.world)) writeSave(data.world);
+    if (!data || !hasProgress(data.world)) return;
+    if (writeSave(data.world)) autosaveWarned.current = false;
+    else if (!autosaveWarned.current) {
+      autosaveWarned.current = true;
+      setInfo(
+        "Autosave is blocked in this browser. Use Start → Save to floppy to keep a copy.",
+      );
+    }
   }, [data?.world.revision]);
   useEffect(() => {
     if (!info) return;

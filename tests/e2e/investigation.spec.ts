@@ -394,6 +394,43 @@ test("the service reports malformed and oversized request bodies as client error
   expect(oversized.error).toContain("too large");
 });
 
+test("the private signal explains an exhausted allowance and links to the monitor", async ({
+  page,
+  request,
+}) => {
+  const state = await (await request.get("/api/state")).json();
+  const restored = await request.post("/api/restore", {
+    data: { world: { ...state.world, remainingTurns: 0 } },
+  });
+  expect(restored.ok()).toBe(true);
+  await boot(page);
+  await openApp(page, "Unknown Signal");
+  const signal = page.getByRole("region", { name: "Unknown Signal" });
+  await expect(signal.getByText("No turns remain.")).toBeVisible();
+  await signal.getByRole("button", { name: "Renew the allowance" }).click();
+  await expect(
+    page.getByRole("region", { name: "System Monitor" }),
+  ).toBeVisible();
+});
+
+test("a blocked browser save is surfaced instead of failing silently", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const original = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+      if (key === "deadnet-save-v1")
+        throw new DOMException("Storage is full", "QuotaExceededError");
+      return original.call(this, key, value);
+    };
+  });
+  await boot(page);
+  await openApp(page, "File Explorer");
+  await expect(
+    page.getByText("Autosave is blocked in this browser", { exact: false }),
+  ).toBeVisible();
+});
+
 test("Start is keyboard-navigable and returns focus when dismissed", async ({
   page,
 }) => {

@@ -1343,6 +1343,9 @@ export function Games({
     [run, setRun] = useState(0),
     [paused, setPaused] = useState(false),
     [soundOff, setSoundOff] = useState(false),
+    [frameState, setFrameState] = useState<"loading" | "ready" | "error">(
+      "loading",
+    ),
     frame = useRef<HTMLIFrameElement>(null);
   useEffect(() => {
     if (gameRequest) setGame(gameRequest.id);
@@ -1391,6 +1394,15 @@ export function Games({
     );
   };
   useEffect(syncSound, [muted, activeApp, game, run, paused, soundOff]);
+  // A missing or broken game page should say so instead of showing a blank card.
+  useEffect(() => {
+    if (game) setFrameState("loading");
+  }, [game, run]);
+  useEffect(() => {
+    if (!game || frameState !== "loading") return;
+    const t = setTimeout(() => setFrameState("error"), 12000);
+    return () => clearTimeout(t);
+  }, [game, run, frameState]);
   function key(k: string, down: boolean) {
     const wasd: Record<string, string> = {
       w: "ArrowUp",
@@ -1498,20 +1510,43 @@ export function Games({
         )}
       </div>
       {current ? (
-        <iframe
-          ref={frame}
-          onLoad={() => {
-            syncSound();
-            // Give the game keyboard focus as soon as it opens.
-            frame.current?.focus();
-            frame.current?.contentWindow?.focus();
-          }}
-          key={game + "-" + run}
-          title={current.name}
-          src={`${import.meta.env.BASE_URL}games/${game}/index.html`}
-          sandbox="allow-scripts allow-same-origin allow-forms"
-          allow="autoplay; gamepad"
-        />
+        <div className="game-frame">
+          <iframe
+            ref={frame}
+            onLoad={() => {
+              setFrameState("ready");
+              syncSound();
+              // Give the game keyboard focus as soon as it opens.
+              frame.current?.focus();
+              frame.current?.contentWindow?.focus();
+            }}
+            onError={() => setFrameState("error")}
+            key={game + "-" + run}
+            title={current.name}
+            src={`${import.meta.env.BASE_URL}games/${game}/index.html`}
+            sandbox="allow-scripts allow-same-origin allow-forms"
+            allow="autoplay; gamepad"
+          />
+          {frameState === "loading" && (
+            <div className="game-overlay" role="status">
+              Loading {current.name}…
+            </div>
+          )}
+          {frameState === "error" && (
+            <div className="game-overlay game-overlay-error" role="alert">
+              <p>{current.name} didn’t load.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setFrameState("loading");
+                  setRun(run + 1);
+                }}
+              >
+                Try again
+              </button>
+            </div>
+          )}
+        </div>
       ) : (
         <div className="game-folder-wrap">
           <p className="game-recovery-note">
@@ -1599,6 +1634,12 @@ export function Monitor({ data, perform, busy }: AppProps) {
   const [reset, setReset] = useState(false);
   const [tab, setTab] = useState<"activity" | "traces">("activity");
   const traces = data.world.traces;
+  const inputTokens = traces.reduce((n, t) => n + t.inputTokens, 0);
+  const outputTokens = traces.reduce((n, t) => n + t.outputTokens, 0);
+  const averageLatency = traces.length
+    ? traces.reduce((n, t) => n + t.latencyMs, 0) / traces.length
+    : 0;
+  const reportedCost = traces.reduce((n, t) => n + (t.costUsd || 0), 0);
   return (
     <div className="monitor-app">
       <div className="monitor-tabs">
@@ -1667,6 +1708,16 @@ export function Monitor({ data, perform, busy }: AppProps) {
           </div>
         ) : (
           <div className="trace-list">
+            {traces.length > 0 && (
+              <p className="trace-summary">
+                {traces.length} turn{traces.length === 1 ? "" : "s"} ·{" "}
+                {inputTokens} in / {outputTokens} out · avg{" "}
+                {(averageLatency / 1000).toFixed(1)}s
+                {reportedCost > 0
+                  ? ` · $${reportedCost.toFixed(4)} reported`
+                  : " · no reported cost"}
+              </p>
+            )}
             {traces.length ? (
               traces
                 .slice()
@@ -1869,6 +1920,24 @@ export function Spirit({ data, perform, busy, open }: AppProps) {
           )}
       </div>
       <OfflineNotice data={data} perform={perform} busy={busy} open={open} />
+      {released ? (
+        <p className="fine-print spirit-limit" role="status">
+          The signal closed after your report. The case file and recovered
+          records remain on this computer.
+        </p>
+      ) : !data.world.remainingTurns ? (
+        <p className="fine-print spirit-limit" role="status">
+          No turns remain.{" "}
+          <button
+            type="button"
+            className="link"
+            onClick={() => open("monitor")}
+          >
+            Renew the allowance
+          </button>{" "}
+          in System Monitor, or keep reading the recovered files.
+        </p>
+      ) : null}
       <form
         className="spirit-compose"
         onSubmit={async (e) => {

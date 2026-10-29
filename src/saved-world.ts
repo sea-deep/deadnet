@@ -1,4 +1,4 @@
-import type { Agent, Event, World } from "./types";
+import type { Agent, Event, Trace, World } from "./types";
 
 const AGENT_IDS = ["mara", "len", "sysop", "nora"] as const;
 const EVENT_ACTORS = [
@@ -13,6 +13,7 @@ const CHANNELS = ["feed", "mail", "system"] as const;
 const ORIGINS = ["seed", "model", "visitor", "baseline", "system"] as const;
 const STANCES = ["accept", "deny", "question", "deflect"] as const;
 const ENDINGS = ["open", "exposed", "sealed"] as const;
+const FACTS = ["carrier", "birthday", "manifest"] as const;
 const GAMES = [
   "snake",
   "flappy",
@@ -38,6 +39,48 @@ function strings(value: unknown, max: number): string[] | undefined {
   return value.every((v): v is string => typeof v === "string")
     ? value
     : undefined;
+}
+/** A bounded list of known IDs that may not repeat. */
+function ids(value: unknown, max: number, allowed: readonly string[]) {
+  if (!Array.isArray(value) || value.length > max) return undefined;
+  const out: string[] = [];
+  for (const item of value) {
+    if (!has(allowed, item) || out.includes(item)) return undefined;
+    out.push(item);
+  }
+  return out;
+}
+function isTrace(value: unknown): value is Trace {
+  if (!record(value)) return false;
+  if (typeof value.id !== "string" || !value.id) return false;
+  if (!Number.isInteger(value.tick) || (value.tick as number) < 0) return false;
+  for (const key of ["actor", "provider", "model"])
+    if (typeof value[key] !== "string") return false;
+  if (value.status !== "ok" && value.status !== "error") return false;
+  if (typeof value.latencyMs !== "number" || value.latencyMs < 0) return false;
+  for (const key of [
+    "inputTokens",
+    "outputTokens",
+    "tokensPerSecond",
+    "attempts",
+  ])
+    if (
+      typeof value[key] !== "number" ||
+      !Number.isFinite(value[key] as number) ||
+      (value[key] as number) < 0
+    )
+      return false;
+  if (!Number.isInteger(value.attempts)) return false;
+  if (
+    value.costUsd !== undefined &&
+    (typeof value.costUsd !== "number" ||
+      !Number.isFinite(value.costUsd) ||
+      value.costUsd < 0)
+  )
+    return false;
+  for (const key of ["sourceId", "error", "action", "promptHash"])
+    if (value[key] !== undefined && typeof value[key] !== "string") return false;
+  return true;
 }
 function isAgent(value: unknown): value is Agent {
   if (!record(value)) return false;
@@ -91,7 +134,7 @@ function isEvent(value: unknown): value is Event {
   if (!Number.isInteger(value.tick) || (value.tick as number) < 0) return false;
   if (!has(EVENT_ACTORS, value.actor)) return false;
   if (!has(CHANNELS, value.channel)) return false;
-  if (typeof value.text !== "string") return false;
+  if (typeof value.text !== "string" || value.text.length > 4000) return false;
   if (!strings(value.factIds, 3)) return false;
   if (!has(ORIGINS, value.origin)) return false;
   if (value.stance !== undefined && !has(STANCES, value.stance)) return false;
@@ -134,18 +177,18 @@ export function isSavedWorld(value: unknown): value is World {
   if (agentIds.size !== AGENT_IDS.length) return false;
   if (!Array.isArray(value.events) || value.events.length > 2000) return false;
   if (!value.events.every(isEvent)) return false;
-  if (!strings(value.collected, 3)) return false;
-  if (!strings(value.published, 3)) return false;
-  if (value.played !== undefined) {
-    const played = strings(value.played, GAMES.length);
-    if (!played || !played.every((game) => has(GAMES, game))) return false;
-  }
+  if (!ids(value.collected, 3, FACTS)) return false;
+  if (!ids(value.published, 3, FACTS)) return false;
+  if (value.played !== undefined && !ids(value.played, GAMES.length, GAMES))
+    return false;
   if (!has(ENDINGS, value.ending)) return false;
   if (
     value.accused !== undefined &&
     !has(["mara", "len", "sysop"] as const, value.accused)
   )
     return false;
+  // An exposed report always names someone; other endings must not imply one.
+  if (value.ending === "exposed" && value.accused === undefined) return false;
   if (
     !Number.isInteger(value.remainingTurns) ||
     (value.remainingTurns as number) < 0 ||
@@ -154,6 +197,6 @@ export function isSavedWorld(value: unknown): value is World {
     return false;
   if (typeof value.auto !== "boolean") return false;
   if (!Array.isArray(value.traces) || value.traces.length > 500) return false;
-  if (!value.traces.every(record)) return false;
+  if (!value.traces.every(isTrace)) return false;
   return typeof value.createdAt === "string";
 }
