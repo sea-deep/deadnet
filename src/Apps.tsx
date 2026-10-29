@@ -1121,10 +1121,11 @@ export function ReadMe(props: AppProps) {
         </ol>
         <h2>Controls</h2>
         <p>
-          Double-click an icon to open it (one tap on a phone). Drag, resize,
-          minimise and maximise windows. The speaker in the tray mutes sound.
-          Nora’s six games are part of the case: their saves help repair her
-          files.
+          Your case saves itself as you play. Start has Save game, Save to
+          floppy, Load game and Start over. Double-click an icon to open it (one
+          tap on a phone). Drag, resize, minimise and maximise windows. The
+          speaker in the tray mutes sound. Nora’s six games are part of the
+          case: their saves help repair her files.
         </p>
         <h2>Replies</h2>
         <p>{engine}</p>
@@ -1276,6 +1277,27 @@ export function Games({
               "ArrowRight",
               ...(game === "tetris" || game === "snake" ? [" "] : []),
             ];
+  // Keys pressed while the desktop (not the game frame) has focus still reach
+  // the game, e.g. right after opening it from a desktop icon.
+  useEffect(() => {
+    if (!game || paused || activeApp !== "games") return;
+    const forward = (down: boolean) => (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t?.closest("input, textarea, select, [contenteditable]")) return;
+      if (!keys.includes(e.key)) return;
+      e.preventDefault();
+      if (down && e.repeat) return;
+      key(e.key, down);
+    };
+    const down = forward(true),
+      up = forward(false);
+    window.addEventListener("keydown", down);
+    window.addEventListener("keyup", up);
+    return () => {
+      window.removeEventListener("keydown", down);
+      window.removeEventListener("keyup", up);
+    };
+  }, [game, paused, activeApp, run]);
   return (
     <div className="games-app">
       <div className="game-shell-toolbar">
@@ -1314,7 +1336,12 @@ export function Games({
       {current ? (
         <iframe
           ref={frame}
-          onLoad={syncSound}
+          onLoad={() => {
+            syncSound();
+            // Give the game keyboard focus as soon as it opens.
+            frame.current?.focus();
+            frame.current?.contentWindow?.focus();
+          }}
           key={game + "-" + run}
           title={current.name}
           src={`${import.meta.env.BASE_URL}games/${game}/index.html`}

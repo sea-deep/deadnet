@@ -4079,3 +4079,56 @@ body .desktop .game-sprite-icon {
 .game-recovery {
   color: #cbb6d4;
 }
+/* Win95-style confirmation dialog and info toast. */
+.dialog-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+.retro-dialog {
+  width: min(400px, 100%);
+}
+.retro-dialog .title-bar-controls button {
+  min-width: 16px;
+  min-height: 14px;
+  padding: 0;
+}
+.retro-dialog .window-body {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  margin: 14px 14px 6px;
+}
+.retro-dialog .window-body p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.retro-dialog-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px 14px;
+}
+.retro-dialog-buttons button {
+  min-width: 80px;
+}
+.info-toast {
+  background: #fffbe6;
+}
+/* Hourglass while a reply is being written, like the real thing. */
+.desktop.busy,
+.desktop.busy * {
+  cursor: progress !important;
+}
+/* The Start menu scrolls instead of running off short screens. */
+.start-menu {
+  max-height: calc(100% - 48px);
+}
+.start-items {
+  overflow-y: auto;
+  min-height: 0;
+}

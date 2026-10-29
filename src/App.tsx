@@ -1,6 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
-import { act, exhibition, OFFLINE_MESSAGE, readState } from "./api";
+import {
+  act,
+  clearSave,
+  exhibition,
+  hasProgress,
+  OFFLINE_MESSAGE,
+  readSave,
+  readState,
+  restore,
+  writeSave,
+} from "./api";
 import type { Action, AgentId, Snapshot } from "./types";
 import {
   APP_INFO,
@@ -54,6 +64,10 @@ const defaults: Record<AppId, { width: number; height: number }> = {
 export default function App() {
   const [data, setData] = useState<Snapshot>();
   const [error, setError] = useState("");
+  const [info, setInfo] = useState("");
+  const [confirmReset, setConfirmReset] = useState(false);
+  const saveFile = useRef<HTMLInputElement>(null);
+  const checkedSave = useRef(false);
   const [busy, setBusy] = useState(false);
   const [connected, setConnected] = useState(false);
   const [muted, setMuted] = useState(() => {
@@ -109,6 +123,16 @@ export default function App() {
   const z = useRef(10);
   const generation = useRef(false);
   const root = useRef<HTMLDivElement>(null);
+  // Autosave: the browser keeps a copy of the case after every change.
+  useEffect(() => {
+    // Only real progress is saved, so an emptied server never overwrites it.
+    if (data && hasProgress(data.world)) writeSave(data.world);
+  }, [data?.world.revision]);
+  useEffect(() => {
+    if (!info) return;
+    const t = setTimeout(() => setInfo(""), 4000);
+    return () => clearTimeout(t);
+  }, [info]);
   useEffect(() => {
     const resize = () => setSize({ width: innerWidth, height: innerHeight });
     window.addEventListener("resize", resize);
@@ -118,7 +142,27 @@ export default function App() {
     let alive = true;
     async function refresh() {
       try {
-        const snapshot = await readState();
+        let snapshot = await readState();
+        // The server can lose a hosted case (e.g. a restart); bring back the
+        // browser's copy whenever the server's is empty and ours is not.
+        if (!checkedSave.current) {
+          checkedSave.current = true;
+          const saved = readSave();
+          if (
+            saved &&
+            saved.storyId === snapshot.world.storyId &&
+            hasProgress(saved) &&
+            !hasProgress(snapshot.world)
+          ) {
+            try {
+              snapshot = await restore(saved);
+              setInfo("Your saved game was restored.");
+            } catch {
+              /* Keep the server's world. */
+            }
+          }
+          checkedSave.current = false;
+        }
         if (alive) {
           setData(snapshot);
           // Connection is back: drop a stale "can't reach the server" notice.
@@ -190,6 +234,8 @@ export default function App() {
     setBusy(true);
     setError("");
     try {
+      // Starting over on purpose (Start menu or System Monitor) drops the save.
+      if (action.type === "reset") clearSave();
       const next = await act(action);
       setData(next);
       if (action.type === "message" || action.type === "tick")
@@ -284,7 +330,7 @@ export default function App() {
     <div
       ref={root}
       tabIndex={-1}
-      className={`desktop wallpaper-${wallpaper} ${reduce ? "reduced-motion" : ""} ${exhibition ? "exhibition" : ""}`}
+      className={`desktop wallpaper-${wallpaper} ${reduce ? "reduced-motion" : ""} ${exhibition ? "exhibition" : ""} ${busy ? "busy" : ""}`}
       data-ui
       style={
         wallpaper === "forest"
@@ -540,6 +586,55 @@ export default function App() {
               </button>
             ))}
             <hr />
+            <button
+              onClick={() => {
+                setStart(false);
+                if (data && writeSave(data.world))
+                  setInfo("Game saved on this computer.");
+                else setError("This browser won’t let DEADNET save.");
+              }}
+            >
+              <PixelIcon name="disk" size={25} />
+              Save game
+            </button>
+            <button
+              onClick={() => {
+                setStart(false);
+                if (!data) return;
+                const url = URL.createObjectURL(
+                    new Blob([JSON.stringify(data.world)], {
+                      type: "application/json",
+                    }),
+                  ),
+                  a = document.createElement("a");
+                a.href = url;
+                a.download = "ROOM317.SAV";
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+              }}
+            >
+              <PixelIcon name="disk" size={25} />
+              Save to floppy…
+            </button>
+            <button
+              onClick={() => {
+                setStart(false);
+                saveFile.current?.click();
+              }}
+            >
+              <PixelIcon name="archive" size={25} />
+              Load game…
+            </button>
+            <button
+              onClick={() => {
+                setStart(false);
+                setConfirmReset(true);
+              }}
+            >
+              <PixelIcon name="monitor" size={25} />
+              Start over…
+            </button>
+            <hr />
             <button onClick={() => setMuted(!muted)}>
               <PixelIcon name="speaker" size={25} />
               {muted ? "Enable system sound" : "Mute system sound"}
@@ -569,6 +664,87 @@ export default function App() {
             </a>
           </div>
         </nav>
+      )}
+      <input
+        ref={saveFile}
+        type="file"
+        accept=".sav,.json,application/json"
+        hidden
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          if (!file) return;
+          try {
+            const next = await restore(JSON.parse(await file.text()));
+            setData(next);
+            writeSave(next.world);
+            setInfo("Game loaded.");
+          } catch (err) {
+            setError(
+              err instanceof SyntaxError
+                ? "That isn’t a save file for this case."
+                : (err as Error).message,
+            );
+          }
+        }}
+      />
+      {confirmReset && (
+        <div className="dialog-backdrop">
+          <div
+            className="window retro-dialog"
+            role="alertdialog"
+            aria-labelledby="reset-title"
+            aria-describedby="reset-text"
+          >
+            <div className="title-bar">
+              <div className="title-bar-text" id="reset-title">
+                Start over
+              </div>
+              <div className="title-bar-controls">
+                <button
+                  aria-label="Close"
+                  onClick={() => setConfirmReset(false)}
+                />
+              </div>
+            </div>
+            <div className="window-body">
+              <PixelIcon name="monitor" size={32} />
+              <p id="reset-text">
+                This erases the whole investigation: messages, opened files,
+                game saves and your report. Your Notepad stays.
+                <br />
+                <br />
+                Are you sure you want to start over?
+              </p>
+            </div>
+            <div className="retro-dialog-buttons">
+              <button
+                autoFocus
+                onClick={async () => {
+                  setConfirmReset(false);
+                  if (await perform({ type: "reset" })) {
+                    clearSave();
+                    setWindows([]);
+                    open("readme");
+                    setInfo("A new investigation has started.");
+                  }
+                }}
+              >
+                Yes
+              </button>
+              <button onClick={() => setConfirmReset(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
+      {info && (
+        <div role="status" className="error-toast info-toast">
+          <PixelIcon name="disk" size={26} />
+          <p>{info}</p>
+          <button aria-label="Dismiss" onClick={() => setInfo("")}>
+            ×
+          </button>
+        </div>
       )}
       <footer inert={!connected} className="taskbar">
         <button

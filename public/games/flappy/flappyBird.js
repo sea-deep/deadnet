@@ -18,12 +18,13 @@ pipeSouth.src = "images/pipeSouth.png";
 
 // some variables
 
-var gap = 85;
+var gap = 118;
 
 var bX = 10;
 var bY = 150;
 
 var gravity = 1.5;
+var vy = 0, GRAVITY_PX = 820, FLAP_VY = -255, MAX_FALL = 380;
 var speed = 60;
 var lastTime = null;
 
@@ -150,7 +151,7 @@ function handleInput(){
 }
 
 function flap(){
-    bY -= flapPower;
+    vy = FLAP_VY;
     birdAngle = -0.4;
     if(sfxOn){
         fly.currentTime = 0;
@@ -169,10 +170,10 @@ function moveUp(e){
 
 var pipe = [];
 
-var pipeGapMin = 140;
+var pipeGapMin = 165;
 var pipeGapMax = 250;
 var nextGap = 163;
-var holeDeltaMax = 120;
+var holeDeltaMax = 85;
 
 pipe[0] = {
     x : cvs.width,
@@ -195,6 +196,7 @@ function restart(){
     pipe[0] = { x : cvs.width, y : 0 };
     nextGap = 163;
     bY = 150;
+    vy = 0;
     birdAngle = 0;
     score = 0;
     gameOver = false;
@@ -438,6 +440,7 @@ function draw(time){
         if(countdownT <= 0){
             state = "playing";
             bY = 150;
+            vy = 0;
             birdAngle = 0;
         }
     }
@@ -447,9 +450,10 @@ function draw(time){
         bY = 150 + Math.round(Math.sin(welcomeT * 3) * 6);
         birdAngle += (0 - birdAngle) * Math.min(1, dt * 6);
     }else{
-        bY += gravity * 60 * dt;
-        birdAngle += (1.3 - birdAngle) * Math.min(1, dt * 8);
-        if(bY < 0) bY = 0;
+        vy = Math.min(MAX_FALL, vy + GRAVITY_PX * dt);
+        bY += vy * dt;
+        birdAngle = Math.max(-0.45, Math.min(1.2, vy / 320));
+        if(bY < 0){ bY = 0; vy = 0; }
         if(bY + bird.height >= cvs.height - fg.height){
             endGame();
         }

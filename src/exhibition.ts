@@ -53,3 +53,7 @@ setInterval(() => {
   if (w.auto && w.remainingTurns && !engine.busy)
     void engine.dispatch({ type: "tick" });
 }, 35000);
+export function restore(world: World) {
+  store.save(world);
+  return read();
+}

@@ -47,6 +47,32 @@ export function themeGames(out) {
     .replaceAll("rgba(248, 201, 72, 0.85)", "rgba(112,82,127,.9)");
   flappy +=
     '\nfunction drawGate(x,y,w,h){ctx.fillStyle="#514256";ctx.fillRect(x,y,w,h);ctx.fillStyle="#8b758b";ctx.fillRect(x+3,y,3,h);ctx.fillStyle="#261e30";ctx.fillRect(x+w-7,y,5,h);ctx.fillStyle="#322737";for(var n=0;n<h;n+=24){ctx.fillRect(x,y+n,w,2);}ctx.fillStyle="#a28b9e";ctx.fillRect(x-3,y+h-8,w+6,8);}\n';
+  // Real momentum: gravity accelerates the bat and a flap sets an upward
+  // velocity (the original fell at a constant speed and teleported 32px up).
+  // Wider gaps and gentler height changes make it fair to play.
+  const physics = [
+    ["var gap = 85;", "var gap = 118;"],
+    [
+      "var gravity = 1.5;",
+      "var gravity = 1.5;\nvar vy = 0, GRAVITY_PX = 820, FLAP_VY = -255, MAX_FALL = 380;",
+    ],
+    ["var pipeGapMin = 140;", "var pipeGapMin = 165;"],
+    ["var holeDeltaMax = 120;", "var holeDeltaMax = 85;"],
+    ["    bY -= flapPower;", "    vy = FLAP_VY;"],
+    [
+      "        bY += gravity * 60 * dt;\n        birdAngle += (1.3 - birdAngle) * Math.min(1, dt * 8);\n        if(bY < 0) bY = 0;",
+      "        vy = Math.min(MAX_FALL, vy + GRAVITY_PX * dt);\n        bY += vy * dt;\n        birdAngle = Math.max(-0.45, Math.min(1.2, vy / 320));\n        if(bY < 0){ bY = 0; vy = 0; }",
+    ],
+    [
+      "            bY = 150;\n            birdAngle = 0;",
+      "            bY = 150;\n            vy = 0;\n            birdAngle = 0;",
+    ],
+    ["    bY = 150;\n    birdAngle = 0;\n    score = 0;", "    bY = 150;\n    vy = 0;\n    birdAngle = 0;\n    score = 0;"],
+  ];
+  for (const [from, to] of physics) {
+    if (!flappy.includes(from)) throw new Error("Flappy physics patch missing: " + from);
+    flappy = flappy.replace(from, to);
+  }
   flappy += fs.readFileSync("scripts/flappy-presentation.js", "utf8");
   fs.writeFileSync(out + "/flappy/flappyBird.js", flappy);
   let tetris = fs.readFileSync(out + "/tetris/index.html", "utf8");

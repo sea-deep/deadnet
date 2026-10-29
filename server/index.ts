@@ -115,7 +115,11 @@ app.use((req, res, next) => {
   res.setHeader("Referrer-Policy", "no-referrer");
   next();
 });
-app.use(express.json({ limit: "8kb" }));
+const smallJson = express.json({ limit: "8kb" });
+// Save files are larger than actions; only the restore route accepts them.
+app.use((req, res, next) =>
+  req.path === "/api/restore" ? next() : smallJson(req, res, next),
+);
 let lastClient = 0;
 let statusCache: { at: number; available: boolean } | undefined;
 async function status(engine: Engine, visitor: string) {
@@ -196,6 +200,70 @@ app.post("/api/action", async (req, res, next) => {
     next(e);
   }
 });
+const gameId = z.enum([
+  "snake",
+  "flappy",
+  "tetris",
+  "2048",
+  "phantomicus",
+  "hocus",
+]);
+/** A save must belong to this story and stay within the game's own limits. */
+const saveSchema = z.object({
+  world: z
+    .object({
+      version: z.literal(1),
+      storyId: z.literal(STORY_ID),
+      tick: z.number().int().min(0),
+      revision: z.number().int().min(0),
+      boots: z.number().int().min(0),
+      mode: z.enum(["live", "baseline"]),
+      agents: z.array(z.object({ id: agent }).passthrough()).length(4),
+      events: z
+        .array(
+          z
+            .object({ id: z.string(), text: z.string().max(4000) })
+            .passthrough(),
+        )
+        .max(2000),
+      collected: z.array(z.enum(["carrier", "birthday", "manifest"])).max(3),
+      played: z.array(gameId).max(6).optional(),
+      published: z.array(z.enum(["carrier", "birthday", "manifest"])).max(3),
+      ending: z.enum(["open", "exposed", "sealed"]),
+      accused: z.enum(["mara", "len", "sysop"]).optional(),
+      remainingTurns: z.number().int().min(0).max(18),
+      auto: z.boolean(),
+      traces: z.array(z.object({}).passthrough()).max(500),
+      createdAt: z.string(),
+    })
+    .passthrough(),
+});
+app.post(
+  "/api/restore",
+  express.json({ limit: "2mb" }),
+  async (req, res, next) => {
+    try {
+      const { engine, visitor } = context(req, res);
+      if (engine.busy)
+        throw new RuleError("Wait for the current reply first.", 409);
+      const parsed = saveSchema.safeParse(req.body);
+      if (!parsed.success)
+        throw new RuleError("That isn’t a save file for this case.");
+      const { world } = parsed.data;
+      const current = engine.world();
+      // Never resume unattended turns from a file; keep the newest revision number.
+      const restored = {
+        ...world,
+        auto: false,
+        revision: Math.max(world.revision, current.revision) + 1,
+      } as unknown as typeof current;
+      engine.store.save(restored, "restore");
+      res.json(await snapshot(engine, visitor));
+    } catch (e) {
+      next(e);
+    }
+  },
+);
 app.post("/api/audio/:id", async (req, res, next) => {
   try {
     const { engine } = context(req, res);
