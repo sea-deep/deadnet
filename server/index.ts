@@ -133,11 +133,14 @@ async function status(engine: Engine, visitor: string) {
     voice: audio.configured(),
     quota: model.name === "openrouter" ? quota.state(visitor) : undefined,
     busy: engine.busy,
+    autonomy: !hosted,
     message: statusCache.available
       ? model.name === "openrouter"
         ? "Free AI route configured. Availability depends on the shared free pool."
         : "Local model connected."
-      : "Local model unavailable. Start Ollama and install the configured model, or explicitly select the deterministic baseline.",
+      : model.name === "openrouter"
+        ? "Free hosted model unavailable. Check the OpenRouter key or use scripted replies."
+        : "Local model unavailable. Start Ollama and install the configured model, or explicitly select the deterministic baseline.",
   };
 }
 async function snapshot(engine: Engine, visitor: string) {

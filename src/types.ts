@@ -102,6 +102,8 @@ export interface Status {
   };
   voice: boolean;
   busy: boolean;
+  /** Whether the server may run autonomous turns. The public copy disables them. */
+  autonomy: boolean;
 }
 export interface Snapshot {
   world: World;

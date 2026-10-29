@@ -34,6 +34,7 @@ export function read() {
       model: "deterministic-baseline-v1",
       voice: false,
       busy: false,
+      autonomy: true,
       message:
         "Interactive deterministic exhibition. No live AI runs in this hosted edition. Run locally for Gemma inference.",
     },

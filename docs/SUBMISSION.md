@@ -20,7 +20,7 @@ You've been handed her computer. You power it on. Somewhere in the machine, some
 
 ## What I Built
 
-**DEADNET: Room 317 is a murder mystery you solve by going through a dead woman's computer.** It looks and sounds like a late-90s desktop: BIOS beeps, a clock frozen at 03:17, a forest wallpaper, Inbox, Chat Logs, My Documents, an unfinished Notepad file.
+**DEADNET: Room 317 is a murder mystery you solve by going through a dead woman's computer.** It looks and sounds like a late-90s desktop: BIOS beeps, a clock frozen at 03:17, a forest wallpaper, Inbox, Chat Logs, My Documents, a Trash Bin, an unfinished Notepad file.
 
 Three people are still connected to the building's network:
 
@@ -30,7 +30,7 @@ Three people are still connected to the building's network:
 
 And there's a window called **Unknown Signal**. It's Nora.
 
-You read their messages, open the files in My Documents (a door log, a saved chat, a damaged case backup), play Nora's old games to recover what her disk lost, and write to them. Each of them is played by an open-weight model, with their own memories, goals and opinions of you. Then you file a report naming who opened room 317 at 03:17. Name the right person and Nora's last message changes. Name the wrong one and she knows.
+You read their messages, open the files in My Documents (a door log, a saved chat), dig a deleted case file out of the Trash Bin, play Nora's old games to repair what her disk lost, and write to them. Each of them is played by an open-weight model, with their own memories, goals and opinions of you. Then you file a report naming who opened room 317 at 03:17. Name the right person and Nora's last message changes. Name the wrong one and she knows.
 
 The rule that makes it work:
 
@@ -49,11 +49,11 @@ A first visit opens a **Read Me** that tells you the goal and the four steps: re
 Things to try:
 
 1. Open **My Documents**. Read `DOOR_0317.LOG` and `OCT31_CHAT.TXT`.
-2. `CASE_14.BAK` is still damaged: its sectors are shared with Nora's game saves. Play any two of her games for 20 seconds each to recover them.
+2. Open the **Trash Bin**. Someone logged in as SYSOP deleted Adam's case file, `CASE_14.BAK`, at 03:17 two nights later. It's damaged, and its sectors are shared with Nora's game saves. Play any two of her games for 20 seconds each to repair it.
 3. Open **Unknown Signal**, attach the door log and ask Nora what she remembers.
 4. In **Inbox**, send the door log to Len. Then ask Mara about it later and see whether he passed it on.
 5. Play Nora's last voicemail, `NORA_0314.WAV`.
-6. File your report in `CASE_14.BAK`.
+6. File your report in `CASE_14.BAK`, in the Trash Bin.
 
 ![The Unknown Signal window: talking to Nora](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/evidence/spirit.png)
 
@@ -114,7 +114,7 @@ On Render, each browser now gets a cookie and **its own private world** in SQLit
 - **Local:** Gemma 4 E2B (Q4_K_M) through Ollama on an Apple M5 with 16 GB. Two Nora turns took **6.1 s and 1.8 s**. In an earlier prototype, nine warm generations had a median of 1.6 s and the model process used about 5.1 GB. [Evidence](https://github.com/sea-deep/deadnet/blob/main/docs/evidence/case-local-gemma-current.json).
 - **Limits:** one generation at a time per world, 18 story turns, per-visitor and shared daily caps, and a cooldown when the provider says it's busy.
 
-30 Node tests and 9 desktop and mobile browser scenarios run on every push. Separate scripts check that all six games and the sound controls work. What's measured and how is in [VERIFICATION](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION.md).
+31 Node tests and 10 desktop and mobile browser scenarios run on every push. Separate scripts check that all six games and the sound controls work. What's measured and how is in [VERIFICATION](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION.md).
 
 ### A phone call, not a narrator
 

@@ -174,6 +174,32 @@ test("provider failure saves a trace, keeps the incoming message unread, and doe
   assert(w.events.some((e) => e.actor === "visitor"));
   store.close();
 });
+test("a failed generation refunds the turn and leaves the story retryable", async () => {
+  class Flaky extends BaselineModel {
+    calls = 0;
+    override async generate(input: ModelInput) {
+      if (this.calls++ === 0) throw new Error("Provider unavailable");
+      return super.generate(input);
+    }
+  }
+  const { engine, store } = setup(new Flaky());
+  const start = engine.world();
+  await engine.dispatch({
+    type: "message",
+    target: "len",
+    text: "private observation",
+  });
+  const failed = engine.world();
+  assert.equal(failed.traces.at(-1)?.status, "error");
+  assert.equal(failed.remainingTurns, start.remainingTurns);
+  assert.equal(failed.tick, start.tick);
+  await engine.dispatch({ type: "tick" });
+  const retried = engine.world();
+  assert.equal(retried.traces.at(-1)?.status, "ok");
+  assert.equal(retried.remainingTurns, start.remainingTurns - 1);
+  assert.equal(retried.tick, start.tick + 1);
+  store.close();
+});
 test("concurrent writes are rejected without losing the first operation", async () => {
   let release: () => void = () => {};
   const gate = new Promise<void>((r) => {

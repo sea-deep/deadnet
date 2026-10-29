@@ -121,6 +121,7 @@ export class Engine {
     const draft = structuredClone(w);
     const reader = draft.agents.find((a) => a.id === agent.id)!;
     this.remember(reader, incoming);
+    const before = { tick: w.tick, remainingTurns: w.remainingTurns };
     w.tick++;
     w.remainingTurns--;
     try {
@@ -208,6 +209,10 @@ export class Engine {
         this.store.save(saved, "quota-pause");
         throw error;
       }
+      // A failed generation did not advance the story. Refund the turn so a
+      // flaky provider does not silently eat the visitor's allowance.
+      w.tick = before.tick;
+      w.remainingTurns = before.remainingTurns;
       w.traces.push({
         ...((error as { trace?: object }).trace || {
           provider: this.model.name,

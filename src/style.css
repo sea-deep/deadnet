@@ -4133,7 +4133,9 @@ body .desktop .game-sprite-icon {
   background: #c0c0c0;
   color: #1d231f;
   padding: 18px;
-  box-shadow: var(--bevel), 3px 5px 16px #052c3480;
+  box-shadow:
+    var(--bevel),
+    3px 5px 16px #052c3480;
   font-family: W95FA, sans-serif;
 }
 .fatal-panel h1 {
@@ -4153,7 +4155,9 @@ body .desktop .game-sprite-icon {
   padding: 8px;
   background: #fffef6;
   box-shadow: var(--inset);
-  font: 14px/1.4 VT323, monospace;
+  font:
+    14px/1.4 VT323,
+    monospace;
   white-space: pre-wrap;
 }
 .fatal-actions {
@@ -4181,7 +4185,9 @@ body .desktop .game-sprite-icon {
   position: absolute;
   z-index: 10000;
   background: var(--shell);
-  box-shadow: var(--bevel), 2px 3px 10px rgba(0,0,0,0.4);
+  box-shadow:
+    var(--bevel),
+    2px 3px 10px rgba(0, 0, 0, 0.4);
   padding: 3px 2px;
   min-width: 175px;
   display: flex;
@@ -4226,7 +4232,7 @@ body .desktop .game-sprite-icon {
   width: 230px;
   background: #fbf29a;
   color: #2c2514;
-  box-shadow: 2px 4px 12px rgba(0,0,0,0.45);
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.45);
   border: 1px solid #e2d271;
   padding: 10px 12px 12px;
   font-family: W95FA, monospace;
@@ -4245,7 +4251,7 @@ body .desktop .game-sprite-icon {
   width: 48px;
   height: 16px;
   background: rgba(255, 255, 255, 0.45);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
   transform: rotate(-2deg);
 }
 .sticky-header {
@@ -4273,7 +4279,7 @@ body .desktop .game-sprite-icon {
 }
 .sticky-header button:hover {
   color: #2c2514;
-  background: rgba(0,0,0,0.05);
+  background: rgba(0, 0, 0, 0.05);
 }
 .sticky-body p {
   margin: 4px 0;
@@ -4338,14 +4344,15 @@ body .desktop .game-sprite-icon {
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.12) 0px,
-    rgba(0, 0, 0, 0.12) 1px,
-    transparent 1px,
-    transparent 2px
-  ),
-  radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.35) 100%);
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.12) 0px,
+      rgba(0, 0, 0, 0.12) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.35) 100%);
 }
 
 /* --- Desktop Refresh Animation (CRT Degauss / Raster Sweep) --- */

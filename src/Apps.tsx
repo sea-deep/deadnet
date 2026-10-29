@@ -754,7 +754,7 @@ export function Mail({
 export function Archive(props: AppProps) {
   return <Explorer {...props} bin={false} />;
 }
-/** Owen's account deleted Adam's case file; it waits in the Recycle Bin. */
+/** Owen's account deleted Adam's case file; it waits in the Trash Bin. */
 export function RecycleBin(props: AppProps) {
   return <Explorer {...props} bin />;
 }
@@ -775,7 +775,8 @@ function Explorer({
     [emptyNotice, setEmptyNotice] = useState(false);
   const records = data.archive.filter(
     (e) =>
-      (bin ? e.id === "manifest" : true) &&
+      // Adam's case file was deleted; it only exists in the Trash Bin.
+      (bin ? e.id === "manifest" : e.id !== "manifest") &&
       `${e.filename} ${e.folder}`.toLowerCase().includes(search.toLowerCase()),
   );
   // Keep the selection coherent when a search hides the current file.
@@ -896,7 +897,7 @@ function Explorer({
             {emptyNotice && (
               <div className="empty-trash-notice" role="alert">
                 <span>
-                  Recycle Bin emptied. Deleted sector fragments remain
+                  Trash Bin emptied. Deleted sector fragments remain
                   inspectable.
                 </span>
                 <button onClick={() => setEmptyNotice(false)}>OK</button>
@@ -1074,7 +1075,7 @@ export function People({ data, target, setTarget, open, composeTo }: AppProps) {
             <dd>{a.role}</dd>
           </div>
         </dl>
-        <button onClick={() => open("mail")}>
+        <button onClick={() => composeTo(a.id)}>
           Write to {a.name.split(" ")[0]}
         </button>
       </main>
@@ -1181,8 +1182,13 @@ export function ReadMe(props: AppProps) {
             <button className="link" onClick={() => open("archive")}>
               My Documents
             </button>{" "}
-            and read the files. The damaged <b>CASE_14.BAK</b> shares its disk
-            with Nora’s game saves: also play any two of her{" "}
+            and read the files. Someone deleted the case file,{" "}
+            <b>CASE_14.BAK</b>. It’s in the{" "}
+            <button className="link" onClick={() => open("recycle")}>
+              Trash Bin
+            </button>
+            , damaged. It shares its disk with Nora’s game saves: play any two
+            of her{" "}
             <button className="link" onClick={() => open("games")}>
               Games
             </button>{" "}
@@ -1198,7 +1204,7 @@ export function ReadMe(props: AppProps) {
             message uses one of 18 turns.
           </li>
           <li>
-            <strong>Decide.</strong> In CASE_14.BAK, choose{" "}
+            <strong>Decide.</strong> In CASE_14.BAK (Trash Bin), choose{" "}
             <i>Publish case evidence</i>, name a suspect and press{" "}
             <i>File report</i>, or keep the case private. This can’t be undone.
           </li>
@@ -1660,7 +1666,9 @@ export function Monitor({ data, perform, busy }: AppProps) {
           <input
             type="checkbox"
             checked={data.world.auto}
-            disabled={busy || !data.world.remainingTurns}
+            disabled={
+              busy || !data.world.remainingTurns || !data.status.autonomy
+            }
             onChange={(e) =>
               void perform({ type: "auto", enabled: e.target.checked })
             }
@@ -1677,6 +1685,12 @@ export function Monitor({ data, perform, busy }: AppProps) {
           Renew 18 turns
         </button>
       </div>
+      {!data.status.autonomy && (
+        <p className="fine-print monitor-note" role="status">
+          Autonomous turns are disabled on the hosted copy so shared capacity
+          stays available. You can still advance the story one turn at a time.
+        </p>
+      )}
       <p className="fine-print monitor-note">
         Autonomy stops when this page disconnects, the service restarts, or the
         allowance runs out. Private messages use one turn. No catch-up

@@ -66,6 +66,12 @@ test("a file shared privately changes another account and persists across a relo
       return x.world.collected;
     })
     .toContain("birthday");
+  // The case file was deleted: it waits in the Trash Bin.
+  await expect(
+    files.getByRole("button", { name: "CASE_14.BAK", exact: false }),
+  ).toHaveCount(0);
+  await openApp(page, "Trash Bin");
+  files = page.getByRole("region", { name: "Trash Bin" });
   await files
     .getByRole("button", { name: "CASE_14.BAK", exact: false })
     .click();
@@ -316,4 +322,21 @@ test("switching to Sent never leaves an inbox letter in the reader", async ({
   await expect(
     inbox.getByRole("heading", { name: "They think you fell" }),
   ).toBeVisible();
+});
+
+test("Address Book opens a compose window addressed to the chosen account", async ({
+  page,
+}) => {
+  await boot(page);
+  await openApp(page, "Address Book");
+  const people = page.getByRole("region", { name: "Address Book" });
+  await people.getByRole("button", { name: /Len Mercer/ }).click();
+  await people.getByRole("button", { name: "Write to Len" }).click();
+  const inbox = page.getByRole("region", { name: "Inbox" });
+  await expect(
+    inbox.getByRole("heading", { name: "New message" }),
+  ).toBeVisible();
+  await expect(inbox.getByRole("combobox", { name: "Recipient" })).toHaveValue(
+    "len",
+  );
 });
