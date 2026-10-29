@@ -1,0 +1,9 @@
+{
+  "observedDate": "2026-10-29",
+  "model": "google/gemma-4-31b-it:free",
+  "httpStatus": 429,
+  "provider": "Google AI Studio",
+  "limitSource": "upstream_provider_shared_pool",
+  "successfulFreeGeneration": false,
+  "note": "Valid key. Minimal request returned an upstream capacity limit. Paid smoke evidence is separate. No paid fallback is enabled."
+}

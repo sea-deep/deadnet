@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!--
+
+  JavaScript Snake
+  https://patorjk.com/games/snake
+
+  Source code is available here: https://github.com/patorjk/JavaScript-Snake
+  Dos styling: https://github.com/vinibiavatti1/TuiCss
+
+  -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JavaScript Snake</title>
+  <link
+    rel="preload"
+    href="css/tuicss/fonts/perfect-dos-vga-437.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
+  <link rel="stylesheet" type="text/css" href="css/tuicss/tuicss.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/common-snake.css" />
+  <link rel="stylesheet" type="text/css" href="css/dos-snake.css" />
+  <link rel="stylesheet" id="style" type="text/css" href="css/main-snake.css" />
+  <link rel="shortcut icon" href="css/images/favicon.png" />
+  <style>
+    body {
+      touch-action: manipulation; /* no double-tap zoom during play */
+    }
+
+    .snake-gamepad {
+      display: none;
+      position: fixed;
+      right: 15px;
+      bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+      z-index: 10001;
+      grid-template-columns: repeat(3, 52px);
+      grid-template-rows: repeat(3, 52px);
+      gap: 6px;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .snake-gamepad button {
+      padding: 0;
+      font-size: 20px;
+      color: #333;
+      background: rgba(255, 255, 255, 0.55);
+      border: 1px solid #999;
+      border-radius: 10px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .snake-gamepad button:active {
+      background: rgba(180, 180, 180, 0.8);
+    }
+
+    @media (pointer: coarse) {
+      .snake-gamepad {
+        display: grid;
+      }
+
+      /* the fullscreen API isn't useful on phones */
+      #go_full_screen {
+        display: none;
+      }
+    }
+  </style>
+  <script>
+    // To add a theme, add its stylesheet to src/css and push an entry here.
+    // The dropdown is built from this array. "selected" marks the default theme.
+    const THEMES = [
+      { label: "Light Theme by yokesharun", url: "css/light-snake.css" },
+      { label: "Main Theme by patorjk", url: "css/main-snake.css", selected: true },
+      { label: "Dark Theme by KenyStev", url: "css/dark-snake.css" },
+      { label: "Green Theme by CoffeeCatDE", url: "css/green-snake.css" },
+      { label: "Matrix Theme by Geahad Haymor", url: "css/matrix-snake.css" },
+      { label: "Theme by Senura Ratnayake", url: "css/Senura-snake.css" },
+      { label: "Snake Head Theme by Rb64", url: "css/head-snake.css" },
+      { label: "Black and purple Theme by LucassSantoss", url: "css/black-snake.css" },
+      { label: "Neon Theme by Daisy21000", url: "css/neon-snake.css" },
+      { label: "Clean Theme by CrashoutKing123", url: "css/clean-snake.css" },
+      { label: "Original Theme by DylanLCrocker", url: "css/blue-snake.css" },
+      { label: "Golden Theme By JosephVoboril29", url: "css/golden-snake.css" },
+      { label: "Cotton Candy Theme by KiwiNguyen29", url: "css/cotton-candy-snake.css" },
+      { label: "OG Theme by NevanJohnson", url: "css/og-snake.css" },
+    ];
+
+    function getTheme() {
+      function changeTheme(themeUrl) {
+        const elm = document.getElementById("style");
+        elm && elm.remove();
+
+        const newCss = document.createElement("link");
+        newCss.id = "style";
+        newCss.rel = "stylesheet";
+        newCss.type = "text/css";
+        newCss.href = themeUrl;
+        document.head.appendChild(newCss);
+      }
+
+      const index = document.getElementById("select").selectedIndex;
+      const theme = THEMES[index] || THEMES.find((t) => t.selected) || THEMES[0];
+      changeTheme(theme.url + "?" + Math.random());
+
+      setTimeout(function () {
+        document.getElementById("game-area").focus();
+      }, 10);
+    }
+  </script>
+
+  <!-- Google tag (gtag.js) -->
+  <!--
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1EFCMZ1JX6"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-1EFCMZ1JX6');
+  </script>
+  -->
+</head>
+  <body>
+    <!-- SNAKE.Board puts this into whichever dialog is shown.
+         It is passed to the board via the dialogControls config option. -->
+    <div class="snake-dialog-controls" id="snake-dialog-controls">
+      <div class="snake-control-row">
+        <label for="select">Theme:</label>
+        <select autocomplete="off" id="select" class="tui-input"></select>
+      </div>
+      <div class="snake-control-row">
+        <label for="selectMode">Mode:</label>
+        <select id="selectMode" class="tui-input">
+          <option value="100">Easy</option>
+          <option value="75" selected>Medium</option>
+          <option value="50">Hard</option>
+          <option value="25">Impossible</option>
+          <option value="110">Rush</option>
+        </select>
+      </div>
+      <div class="snake-control-buttons">
+        <button id="go_full_screen" class="tui-button">Full Screen</button>
+      </div>
+    </div>
+
+  <div id="mode-wrapper" style="display: inline; width: auto"></div>
+
+  <div id="game-area" tabindex="0"></div>
+
+  <!-- On-screen controls, only shown on touch devices (wired up in js/init.js) -->
+  <div class="snake-gamepad" id="snake-gamepad">
+    <button data-key="38" style="grid-area: 1 / 2" aria-label="Up">&#9650;</button>
+    <button data-key="37" style="grid-area: 2 / 1" aria-label="Left">&#9664;</button>
+    <button data-key="32" style="grid-area: 2 / 2" aria-label="Pause">&#10074;&#10074;</button>
+    <button data-key="39" style="grid-area: 2 / 3" aria-label="Right">&#9654;</button>
+    <button data-key="40" style="grid-area: 3 / 2" aria-label="Down">&#9660;</button>
+  </div>
+
+  <script type="text/javascript" src="js/snake.js"></script>
+  <script type="text/javascript" src="js/init.js"></script>
+  <script type="text/javascript">
+    const themeSelect = document.getElementById('select');
+    THEMES.forEach(function (theme) {
+      const option = document.createElement('option');
+      option.text = theme.label;
+      option.selected = !!theme.selected;
+      themeSelect.add(option);
+    });
+    themeSelect.addEventListener('change', getTheme);
+
+    function go_full_screen() {
+      const elem = document.documentElement;
+      try {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+          elem.mozRequestFullScreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        }
+      } catch (err) {
+        console.error(err);
+        SNAKE.showAlert("Sorry, fullscreen won't work in this setup.");
+      }
+    }
+
+    document.getElementById('go_full_screen').addEventListener('click', go_full_screen);
+  </script>
+</body>
+
+</html>

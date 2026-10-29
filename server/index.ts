@@ -4,12 +4,24 @@ import { createServer as viteServer } from "vite";
 import { z } from "zod";
 import { Store } from "./store.ts";
 import { LocalModel } from "./model.ts";
+import { Quota } from "./quota.ts";
+import { OpenRouterModel } from "./openrouter.ts";
 import { Engine, RuleError } from "./engine.ts";
 import { AudioService } from "./audio.ts";
 import { ARCHIVE } from "./seed.ts";
 const port = Number(process.env.PORT) || 3000;
 const store = new Store(),
-  model = new LocalModel(),
+  quota = new Quota(store),
+  model =
+    process.env.MODEL_PROVIDER === "openrouter" ||
+    (process.env.OPENROUTER_API_KEY && process.env.MODEL_PROVIDER !== "ollama")
+      ? new OpenRouterModel(
+          undefined,
+          undefined,
+          () => quota.consume("local"),
+          (seconds) => quota.cooldown(seconds),
+        )
+      : new LocalModel(),
   engine = new Engine(store, model),
   audio = new AudioService(store);
 engine.boot();
@@ -51,9 +63,12 @@ async function status() {
     provider: model.name,
     model: model.model,
     voice: audio.configured(),
+    quota: model.name === "openrouter" ? quota.state("local") : undefined,
     busy: engine.busy,
     message: statusCache.available
-      ? "Local model connected."
+      ? model.name === "openrouter"
+        ? "Free OpenRouter route configured. Availability depends on the shared provider pool."
+        : "Local model connected."
       : "Local model unavailable. Start Ollama and install the configured model, or explicitly select the deterministic baseline.",
   };
 }
@@ -142,6 +157,11 @@ app.use(
     _next: express.NextFunction,
   ) => {
     const err = error as Error;
+    if (error instanceof RuleError && error.status === 429)
+      res.setHeader(
+        "Retry-After",
+        String((error as RuleError & { retryAfter?: number }).retryAfter || 60),
+      );
     res
       .status(
         error instanceof RuleError

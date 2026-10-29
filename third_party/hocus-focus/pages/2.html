@@ -1,0 +1,50 @@
+---
+title: "Level 2"
+layout: default
+permalink: /2/
+---
+<div class="rules">
+	<p><span class="oh-no">Oh no!</span> An evil <del>dev</del>… ahem, <ins><span class="char" style="color:#ecedf0;"><span aria-hidden="true">👻</span> ghost</span></ins> stole the <code>:focus</code> styles.</p>
+</div>
+<form action="/3/">
+	<div class="game has-startup-styles">
+		<div class="scoreboard">
+			<span class="level">Level 2</span>
+			<span class="timer">00:00.00</span>
+		</div>
+		<button type="button" class="icon is-start" autofocus="autofocus"><span role="img" aria-label="woman mage">🧙‍♀️</span> <span class="badge">Start</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="crystal ball">🔮</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="snake">🐍</span></button>
+		<button type="submit" class="icon is-finish"><span role="img" aria-label="pumpkin">🎃</span> <span class="badge">Finish</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="owl">🦉</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="wilted flower">🥀</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="candle">🕯️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="spider">🕷️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="bat">🦇</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="chestnut">🌰</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="spider web">🕸️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="fallen leaf">🍂</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="coffin">⚰️</span></button>
+		<button type="button" class="icon is-ghost"><span class="ghost" role="img" aria-label="ghost">👻</span></button>
+	</div>
+</form>
+<style>
+	.has-startup-styles .icon:not(.is-start) { animation: highlightBorder ease-in-out 1s 0.4s; }
+	.has-startup-styles .icon:not([class*="is-"]):nth-child(2n+1) { animation-delay: 0.3s; }
+	.has-startup-styles .icon:not([class*="is-"]):nth-child(3n+3) { animation-delay: 0.2s; }
+	.has-startup-styles .icon.is-ghost { animation-delay: 0.5s; }
+	.has-startup-styles .ghost { animation:shakeY ease-in-out 0.5s 1s; }
+	.oh-no { display:inline-block; font-weight:bold; animation:headShake ease-in-out 0.5s; }
+
+	@keyframes highlightBorder {
+		from { border-color:#3d3836; }
+		50% { border-color:#75bfff; }
+		to { border-color:#3d3836; }
+	}
+</style>
+<script>
+	document.querySelector('.ghost').addEventListener('animationend', function() {
+		document.querySelector('.has-startup-styles').classList.remove('has-startup-styles');
+	}, { once:true });
+</script>
+{% include instructions.html %}

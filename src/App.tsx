@@ -6,6 +6,7 @@ import {
   APP_INFO,
   Archive,
   Browser,
+  Games,
   Mail,
   Monitor,
   Notebook,
@@ -14,7 +15,7 @@ import {
   type AppProps,
 } from "./Apps";
 import { PixelIcon } from "./icons";
-import { tone } from "./sound";
+import { tone, setAmbient } from "./sound";
 type WindowState = {
   id: AppId;
   x: number;
@@ -32,6 +33,7 @@ const components = {
   people: People,
   monitor: Monitor,
   notebook: Notebook,
+  games: Games,
 };
 const defaults: Record<AppId, { width: number; height: number }> = {
   browser: { width: 970, height: 740 },
@@ -39,22 +41,60 @@ const defaults: Record<AppId, { width: number; height: number }> = {
   archive: { width: 800, height: 610 },
   people: { width: 660, height: 590 },
   monitor: { width: 790, height: 580 },
-  notebook: { width: 700, height: 620 },
+  notebook: { width: 650, height: 500 },
+  games: { width: 900, height: 680 },
 };
 export default function App() {
   const [data, setData] = useState<Snapshot>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [connected, setConnected] = useState(false);
-  const [muted, setMuted] = useState(true);
+  const [muted, setMuted] = useState(() => {
+    try {
+      return localStorage.getItem("deadnet-muted") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const [bootStage, setBootStage] = useState(-1);
+  const [mailDraft, setMailDraft] = useState<AppProps["mailDraft"]>();
   const [reduce, setReduce] = useState(
     () => matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
+  const [wallpaper, setWallpaper] = useState(() => {
+    try {
+      return localStorage.getItem("deadnet-wallpaper") || "forest";
+    } catch {
+      return "forest";
+    }
+  });
+
   const [start, setStart] = useState(false);
   const [target, setTarget] = useState<AgentId>("mara");
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [size, setSize] = useState({ width: innerWidth, height: innerHeight });
   const [notice, setNotice] = useState(true);
+  const [noticeId, setNoticeId] = useState("seed-mail");
+  const received = useRef<Set<string> | null>(null);
+  const incomingMail =
+    data?.world.events.filter(
+      (e) => e.channel === "mail" && e.to === "visitor",
+    ) || [];
+  const noticeMail = incomingMail.find((e) => e.id === noticeId);
+  useEffect(() => {
+    if (!data) return;
+    if (received.current) {
+      const latest = incomingMail
+        .filter((e) => !received.current!.has(e.id))
+        .at(-1);
+      if (latest) {
+        setNoticeId(latest.id);
+        setNotice(true);
+      }
+    }
+    received.current = new Set(incomingMail.map((e) => e.id));
+  }, [incomingMail.map((e) => e.id).join(",")]);
+  const [selectedIcon, setSelectedIcon] = useState<AppId>();
   const z = useRef(10);
   const generation = useRef(false);
   const root = useRef<HTMLDivElement>(null);
@@ -93,6 +133,7 @@ export default function App() {
   }, []);
   const open = useCallback((id: AppId) => {
     setStart(false);
+    if (id === "mail") setNotice(false);
     setWindows((old) => {
       const existing = old.find((w) => w.id === id);
       if (existing)
@@ -121,6 +162,11 @@ export default function App() {
       ];
     });
   }, []);
+  function composeTo(id: AgentId, attachment?: string) {
+    setTarget(id);
+    setMailDraft({ recipient: id, attachment, nonce: Date.now() });
+    open("mail");
+  }
   async function perform(action: Action) {
     if (generation.current) return false;
     generation.current = true;
@@ -131,6 +177,8 @@ export default function App() {
       setData(next);
       if (action.type === "message" || action.type === "tick")
         tone("mail", muted);
+      if (action.type === "collect") tone("disk", muted);
+      if (action.type === "resolve") tone("line", muted);
       return true;
     } catch (e) {
       setError((e as Error).message);
@@ -143,12 +191,32 @@ export default function App() {
   function boot() {
     setConnected(true);
     tone("connect", muted);
-    open("browser");
-    if (data?.status.available && data.world.mode === "live")
+    setBootStage(9);
+    if (
+      data?.status.available &&
+      data.status.provider === "ollama" &&
+      data.world.mode === "live"
+    )
       void perform({ type: "auto", enabled: true });
     setTimeout(() => {
       root.current?.focus();
     }, 50);
+  }
+  useEffect(() => {
+    if (bootStage < 0 || bootStage >= 9 || connected) return;
+    const t = setTimeout(
+      () => {
+        if (bootStage === 8) boot();
+        else setBootStage(bootStage + 1);
+      },
+      reduce ? 140 : 500,
+    );
+    return () => clearTimeout(t);
+  }, [bootStage, connected]);
+  function powerOn() {
+    tone("connect", muted);
+    setAmbient(!muted);
+    setBootStage(0);
   }
   const update = (id: AppId, patch: Partial<WindowState>) =>
     setWindows((old) => old.map((w) => (w.id === id ? { ...w, ...patch } : w)));
@@ -156,6 +224,23 @@ export default function App() {
     .filter((w) => !w.minimized)
     .sort((a, b) => b.z - a.z)[0]?.id;
   const mobile = size.width < 740;
+  useEffect(() => {
+    const updateAudio = () =>
+      setAmbient(
+        connected && !muted && !document.hidden && focused !== "games",
+      );
+    updateAudio();
+    document.addEventListener("visibilitychange", updateAudio);
+    return () => {
+      document.removeEventListener("visibilitychange", updateAudio);
+      setAmbient(false);
+    };
+  }, [connected, muted, focused]);
+  useEffect(() => {
+    try {
+      localStorage.setItem("deadnet-muted", String(muted));
+    } catch {}
+  }, [muted]);
   const props = data
     ? ({
         data,
@@ -164,14 +249,25 @@ export default function App() {
         busy: busy || data.status.busy,
         target,
         setTarget,
+        composeTo,
+        mailDraft,
+        muted,
+        activeApp: focused,
       } satisfies AppProps)
     : undefined;
   return (
     <div
       ref={root}
       tabIndex={-1}
-      className={`desktop ${reduce ? "reduced-motion" : ""} ${exhibition ? "exhibition" : ""}`}
+      className={`desktop wallpaper-${wallpaper} ${reduce ? "reduced-motion" : ""} ${exhibition ? "exhibition" : ""}`}
       data-ui
+      style={
+        wallpaper === "forest"
+          ? {
+              backgroundImage: `url(${import.meta.env.BASE_URL}assets/forest.jpg)`,
+            }
+          : undefined
+      }
     >
       {exhibition && (
         <div className="exhibition-banner">
@@ -188,21 +284,24 @@ export default function App() {
           </a>
         </div>
       )}
-      <div className="desktop-photograph" aria-hidden="true" />
-      <div className="desktop-meta" aria-hidden="true">
-        DEADNET PERSONAL NETWORK
-        <br />
-        Connection restored · 03:17 AM
-        <br />
-        <span>Last outside signal: unknown</span>
-      </div>
       <nav
         inert={!connected}
         className="desktop-icons"
         aria-label="Desktop applications"
       >
         {(Object.keys(APP_INFO) as AppId[]).map((id) => (
-          <button key={id} onClick={() => open(id)} className="desktop-icon">
+          <button
+            key={id}
+            onClick={() => {
+              setSelectedIcon(id);
+              if (mobile) open(id);
+            }}
+            onDoubleClick={() => open(id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") open(id);
+            }}
+            className={`desktop-icon ${selectedIcon === id ? "chosen" : ""}`}
+          >
             <PixelIcon name={APP_INFO[id].icon} size={36} />
             <span>
               {APP_INFO[id].title}
@@ -266,12 +365,12 @@ export default function App() {
                 className={`os-window ${focused === w.id ? "focused" : ""}`}
               >
                 <section
-                  className="window-frame"
+                  className="window-frame window"
                   aria-label={APP_INFO[w.id].title}
                 >
-                  <div className="titlebar">
+                  <div className="titlebar title-bar">
                     <div
-                      className="title-drag"
+                      className="title-drag title-bar-text"
                       tabIndex={0}
                       aria-label={`${APP_INFO[w.id].title} title bar. Arrow keys move window; Enter maximizes.`}
                       onDoubleClick={() =>
@@ -307,7 +406,7 @@ export default function App() {
                         {w.id === "browser" ? " — The neighborhood" : ""}
                       </span>
                     </div>
-                    <div className="window-buttons">
+                    <div className="window-buttons title-bar-controls">
                       <button
                         aria-label={`Minimize ${APP_INFO[w.id].title}`}
                         onClick={() => update(w.id, { minimized: true })}
@@ -344,7 +443,7 @@ export default function App() {
             );
           })}
       </div>
-      {connected && notice && data && (
+      {connected && notice && data && noticeMail && (
         <aside className="mail-notification">
           <div className="notification-heading">
             <PixelIcon name="mail" size={19} />
@@ -363,9 +462,11 @@ export default function App() {
               setNotice(false);
             }}
           >
-            <strong>mara_v</strong>
-            <span>“Before you open the archive”</span>
-            <small>Click to read the message.</small>
+            <strong>
+              {data.world.agents.find((a) => a.id === noticeMail.actor)
+                ?.handle || "Network service"}
+            </strong>
+            <span>“{noticeMail.subject || "New message"}”</span>
           </button>
         </aside>
       )}
@@ -397,6 +498,19 @@ export default function App() {
             </button>
             <button onClick={() => setReduce(!reduce)}>
               {reduce ? "Enable subtle motion" : "Reduce motion"}
+            </button>
+            <button
+              onClick={() => {
+                const next = wallpaper === "forest" ? "plain" : "forest";
+                setWallpaper(next);
+                try {
+                  localStorage.setItem("deadnet-wallpaper", next);
+                } catch {}
+              }}
+            >
+              {wallpaper === "forest"
+                ? "Use plain wallpaper"
+                : "Use forest wallpaper"}
             </button>
             <a
               href="https://github.com/sea-deep/deadnet"
@@ -467,38 +581,62 @@ export default function App() {
         <div
           className="boot-screen"
           role="dialog"
-          aria-label="Connect to DEADNET"
+          aria-label="Computer startup"
         >
-          <div className="boot-main">
-            <div className="boot-logo">
-              <PixelIcon name="browser" size={62} />
-              <span>
-                DEADNET<span className="boot-cursor">_</span>
-              </span>
+          {bootStage < 0 ? (
+            <div className="power-screen">
+              <PixelIcon name="monitor" size={48} />
+              <button
+                className="boot-connect"
+                disabled={!data}
+                onClick={powerOn}
+              >
+                {data ? "Power on" : "Please wait…"}
+              </button>
+              <label className="boot-sound">
+                <input
+                  type="checkbox"
+                  checked={!muted}
+                  onChange={(e) => setMuted(!e.target.checked)}
+                />{" "}
+                Sound
+              </label>
             </div>
-            <div className="boot-diagnostics">
-              <p>
-                Checking local archive <span>FOUND</span>
-              </p>
-              <p>
-                Restoring identities <span>3 ONLINE</span>
-              </p>
-              <p>
-                External carrier <span className="boot-unknown">NO SIGNAL</span>
-              </p>
+          ) : bootStage < 4 ? (
+            <div className="post-screen">
+              <p>DN-BIOS 4.51</p>
+              <p>Copyright 1999 Deadnet Computer Systems</p>
+              <br />
+              <p>Memory Test : {bootStage > 0 ? "32768K OK" : "8192K"}</p>
+              {bootStage > 1 && <p>Detecting Primary Master ... DN1200</p>}
+              {bootStage > 2 && <p>Starting DEADNET 95...</p>}
+              <span className="post-cursor">_</span>
             </div>
-            <button className="boot-connect" disabled={!data} onClick={boot}>
-              {data ? "Establish connection →" : "Reading local disk…"}
+          ) : (
+            <div className="boot-loading">
+              <h1>
+                DEADNET<span>95</span>
+              </h1>
+              <div
+                className="boot-progress"
+                role="progressbar"
+                aria-label="Starting computer"
+                aria-valuenow={(bootStage - 3) * 20}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                {Array.from({ length: 14 }, (_, i) => (
+                  <i key={i} className={i < (bootStage - 3) * 3 ? "lit" : ""} />
+                ))}
+              </div>
+              <p>Starting up...</p>
+            </div>
+          )}
+          {bootStage >= 0 && (
+            <button className="skip-boot" onClick={boot}>
+              Skip startup
             </button>
-            <label className="boot-sound">
-              <input
-                type="checkbox"
-                checked={!muted}
-                onChange={(e) => setMuted(!e.target.checked)}
-              />{" "}
-              Enable original system sounds
-            </label>
-          </div>
+          )}
         </div>
       )}
     </div>

@@ -76,5 +76,8 @@ if (
 )
   throw new Error("Private memory verification failed.");
 
-const recall=world.events.filter(e=>e.actor==='len'&&e.origin==='model').at(-1)?.text||'';
-if(!recall.toLowerCase().includes('silver apricot'))throw new Error('Len did not recall the private keepsake in this run.');
+const recall =
+  world.events.filter((e) => e.actor === "len" && e.origin === "model").at(-1)
+    ?.text || "";
+if (!recall.toLowerCase().includes("silver apricot"))
+  throw new Error("Len did not recall the private keepsake in this run.");

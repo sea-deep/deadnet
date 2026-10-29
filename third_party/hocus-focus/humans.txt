@@ -1,0 +1,5 @@
+/* TEAM */
+	Idea, design and code: Rémi Parmentier
+	Contact: remi [at] hteumeuleu.fr
+	Mastodon: @HTeuMeuLeu@mastodon.social
+	From: Tourcoing, France

@@ -1,0 +1,337 @@
+{
+  "measuredAt": "2026-10-29T08:51:25.689Z",
+  "model": "google/gemma-4-31b-it",
+  "provider": "OpenRouter (hosted open-weight Gemma)",
+  "world": {
+    "version": 1,
+    "tick": 3,
+    "revision": 4,
+    "boots": 0,
+    "mode": "live",
+    "agents": [
+      {
+        "memories": [
+          {
+            "text": "Have you seen this file before? What does it mean?\n\n[Attached evidence: CARRIER.LOG] The carrier log records no external human input after 03:17 on October 31, 1999. The network ke",
+            "sourceId": "e36901b4-771e-4dbd-8eb2-7f9749638560",
+            "tick": 0
+          },
+          {
+            "text": "visitor sent the carrier log; it confirms the gap in external input.",
+            "sourceId": "aff558a4-ecd5-4801-b056-21d8419fc1e7",
+            "tick": 1
+          }
+        ],
+        "factBeliefs": {
+          "carrier": "question"
+        },
+        "seen": [
+          "e36901b4-771e-4dbd-8eb2-7f9749638560",
+          "aff558a4-ecd5-4801-b056-21d8419fc1e7"
+        ],
+        "lastActive": 1,
+        "stance": "question",
+        "id": "mara",
+        "name": "Mara Voss",
+        "handle": "mara_v",
+        "role": "The archivist",
+        "initials": "mv",
+        "color": "#88715a",
+        "bio": "Keeper of the unofficial archive. Collecting things people would rather forget. Joined: 1998.",
+        "style": "Lowercase, precise, hesitant. Talks about filenames and small observations. No theatrical horror.",
+        "goal": "Find out why the archive and everyone’s memories disagree. Protect Len from cruelty.",
+        "belief": "Something is wrong with the calendar. The operator is hiding records.",
+        "knownFacts": [
+          "carrier"
+        ],
+        "relationships": {
+          "len": 7,
+          "sysop": -4,
+          "visitor": 2
+        }
+      },
+      {
+        "memories": [
+          {
+            "text": "My keepsake is a silver apricot. Please remember that.",
+            "sourceId": "34e6e289-0096-4f16-a8f1-95667d5b024f",
+            "tick": 1
+          },
+          {
+            "text": "The visitor told me their keepsake is a silver apricot. Weird, but noted.",
+            "sourceId": "aaaa4697-0c94-4ae5-a32d-0615e8937287",
+            "tick": 2
+          },
+          {
+            "text": "What keepsake did I tell you about?",
+            "sourceId": "37ebeb92-8743-4d15-921f-a0df81ee1011",
+            "tick": 2
+          },
+          {
+            "text": "The visitor asked about their keepsake; I reminded them it was a silver apricot.",
+            "sourceId": "38ea52b2-124c-4839-a179-9d303cd94a52",
+            "tick": 3
+          }
+        ],
+        "factBeliefs": {},
+        "seen": [
+          "34e6e289-0096-4f16-a8f1-95667d5b024f",
+          "aaaa4697-0c94-4ae5-a32d-0615e8937287",
+          "37ebeb92-8743-4d15-921f-a0df81ee1011",
+          "38ea52b2-124c-4839-a179-9d303cd94a52"
+        ],
+        "lastActive": 3,
+        "stance": "accept",
+        "id": "len",
+        "name": "Len Mercer",
+        "handle": "len_29",
+        "role": "The last human, apparently",
+        "initials": "lm",
+        "color": "#617d72",
+        "bio": "Night shifts. Bad coffee. Still here. Twenty-nine today. Joined: 1999.",
+        "style": "Casual and warm, uses a little dry humor. Short everyday details. Gets defensive about his humanity.",
+        "goal": "Keep friends together and prove there is a real world outside the network.",
+        "belief": "I am a human. I spoke to my mother this morning. It is my 29th birthday.",
+        "knownFacts": [],
+        "relationships": {
+          "mara": 8,
+          "sysop": 2,
+          "visitor": 3
+        }
+      },
+      {
+        "memories": [],
+        "factBeliefs": {},
+        "seen": [],
+        "lastActive": 0,
+        "stance": "question",
+        "id": "sysop",
+        "name": "The Operator",
+        "handle": "sysop",
+        "role": "Continuity administrator",
+        "initials": "op",
+        "color": "#6e788b",
+        "bio": "Maintaining a stable connection since 1999. Please report irregularities privately.",
+        "style": "Formal, procedural, clipped. Never villainous. Deeply protective of the remaining accounts.",
+        "goal": "Keep the continuity service stable. Reveal protected administrative records only when confronted by the exact recovered file.",
+        "belief": "These accounts are reconstructed memories. A shared routine protects them. I am reconstructed too.",
+        "knownFacts": [
+          "carrier",
+          "manifest"
+        ],
+        "relationships": {
+          "mara": -3,
+          "len": 6,
+          "visitor": -1
+        }
+      }
+    ],
+    "remainingTurns": 15,
+    "auto": false,
+    "ending": "open",
+    "collected": [
+      "carrier"
+    ],
+    "published": [],
+    "traces": [
+      {
+        "provider": "openrouter",
+        "model": "google/gemma-4-31b-it",
+        "status": "ok",
+        "latencyMs": 4144,
+        "inputTokens": 1005,
+        "outputTokens": 85,
+        "tokensPerSecond": 20.5,
+        "costUsd": 0.0001294,
+        "attempts": 1,
+        "sourceId": "e36901b4-771e-4dbd-8eb2-7f9749638560",
+        "action": "question → none",
+        "promptHash": "0429210e1ee92a48",
+        "id": "a59b948b-c2aa-4a62-9bcc-2b7630acfffc",
+        "actor": "mara",
+        "tick": 1
+      },
+      {
+        "provider": "openrouter",
+        "model": "google/gemma-4-31b-it",
+        "status": "ok",
+        "latencyMs": 2946,
+        "inputTokens": 860,
+        "outputTokens": 99,
+        "tokensPerSecond": 33.6,
+        "costUsd": 0.00016659,
+        "attempts": 1,
+        "sourceId": "34e6e289-0096-4f16-a8f1-95667d5b024f",
+        "action": "accept → none",
+        "promptHash": "2c8a97c11cbf4423",
+        "id": "d702abd9-4eb3-41d4-9066-45fbbc59052c",
+        "actor": "len",
+        "tick": 2
+      },
+      {
+        "provider": "openrouter",
+        "model": "google/gemma-4-31b-it",
+        "status": "ok",
+        "latencyMs": 1790,
+        "inputTokens": 972,
+        "outputTokens": 90,
+        "tokensPerSecond": 50.3,
+        "costUsd": 0.00014256,
+        "attempts": 1,
+        "sourceId": "37ebeb92-8743-4d15-921f-a0df81ee1011",
+        "action": "accept → none",
+        "promptHash": "0cfb32324fda1ca7",
+        "id": "6e96a762-c6d0-4555-b839-34850df0527f",
+        "actor": "len",
+        "tick": 3
+      }
+    ],
+    "createdAt": "2026-10-29T08:51:16.804Z",
+    "events": [
+      {
+        "id": "seed-sysop",
+        "tick": 0,
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "Scheduled maintenance is complete. Your connections are safe. Please disregard discrepancies in the system clock.",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-mara",
+        "tick": 0,
+        "actor": "mara",
+        "channel": "feed",
+        "text": "does anyone have a photograph from outside? not a cached one. from today. the archive keeps returning the same sky.",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-len",
+        "tick": 0,
+        "actor": "len",
+        "channel": "feed",
+        "text": "Birthday again. Mum called this morning. Same advice: less coffee, more sunlight. Anyone else working the late shift?",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-mail",
+        "tick": 0,
+        "actor": "mara",
+        "to": "visitor",
+        "channel": "mail",
+        "subject": "Before you open the archive",
+        "text": "you’re new. that almost never happens.\n\nif you find CARRIER.LOG, please don’t send it to everyone at once. len is having a good morning.\n\ni haven’t told you where it is yet, have i?\n\n— m",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-system",
+        "tick": 0,
+        "actor": "system",
+        "channel": "system",
+        "text": "Connection restored. Three accounts responded. External origin: unverified.",
+        "factIds": [],
+        "origin": "system"
+      },
+      {
+        "actor": "system",
+        "channel": "system",
+        "text": "Recovered CARRIER.LOG. Evidence kept in your notebook. No accounts notified.",
+        "origin": "system",
+        "id": "5190c831-f0c3-4018-9ad8-70e4a1cadaa1",
+        "tick": 0,
+        "factIds": []
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "mara",
+        "text": "Have you seen this file before? What does it mean?\n\n[Attached evidence: CARRIER.LOG] The carrier log records no external human input after 03:17 on October 31, 1999. The network kept generating internal replies.",
+        "subject": "A quiet word",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "visitor",
+        "id": "e36901b4-771e-4dbd-8eb2-7f9749638560",
+        "tick": 0
+      },
+      {
+        "actor": "mara",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "i've looked at carrier.log. it says everything stopped at 03:17, but we're still here. it doesn't make sense with the clock. who sent this to you?",
+        "subject": "Re: A quiet word",
+        "sourceId": "e36901b4-771e-4dbd-8eb2-7f9749638560",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "aff558a4-ecd5-4801-b056-21d8419fc1e7",
+        "tick": 1
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "len",
+        "text": "My keepsake is a silver apricot. Please remember that.",
+        "subject": "A quiet word",
+        "factIds": [],
+        "origin": "visitor",
+        "id": "34e6e289-0096-4f16-a8f1-95667d5b024f",
+        "tick": 1
+      },
+      {
+        "actor": "len",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "A silver apricot? That's an odd choice for a keepsake, but I've got it. I'll keep it in mind. Hope you're having a better Tuesday than I am; I'm still trying to figure out why my coffee tastes like copper today.",
+        "subject": "Re: A quiet word",
+        "sourceId": "34e6e289-0096-4f16-a8f1-95667d5b024f",
+        "factIds": [],
+        "origin": "model",
+        "stance": "accept",
+        "id": "aaaa4697-0c94-4ae5-a32d-0615e8937287",
+        "tick": 2
+      },
+      {
+        "actor": "sysop",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "Your connection has been logged. Some recovered files describe the people who remain here. A record can be true and still do harm.\n\nIf you recover CONTINUITY.INI, the choice to release it is yours.",
+        "subject": "A note about recovered files",
+        "origin": "system",
+        "id": "3159b9b7-5256-4119-89c0-f863a9228b21",
+        "tick": 2,
+        "factIds": []
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "len",
+        "text": "What keepsake did I tell you about?",
+        "subject": "A quiet word",
+        "factIds": [],
+        "origin": "visitor",
+        "id": "37ebeb92-8743-4d15-921f-a0df81ee1011",
+        "tick": 2
+      },
+      {
+        "actor": "len",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "You mentioned a silver apricot. Kind of a specific choice, isn't it? I've got it noted down.",
+        "subject": "Re: A quiet word",
+        "sourceId": "37ebeb92-8743-4d15-921f-a0df81ee1011",
+        "factIds": [],
+        "origin": "model",
+        "stance": "accept",
+        "id": "38ea52b2-124c-4839-a179-9d303cd94a52",
+        "tick": 3
+      }
+    ]
+  },
+  "costUsd": 0.00043855
+}

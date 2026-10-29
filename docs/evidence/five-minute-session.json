@@ -1,0 +1,738 @@
+{
+  "measuredAt": "2026-10-29T08:35:03.238Z",
+  "durationMs": 300002,
+  "scenario": "Eight scheduled autonomous turns and three private visitor messages in five minutes. Egress guard rejects every non-loopback fetch. Voice excluded.",
+  "networkGuard": "Process-level fetch restriction; not a system-wide Wi-Fi disconnection test.",
+  "requests": [
+    {
+      "host": "127.0.0.1",
+      "path": "/api/tags"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    },
+    {
+      "host": "127.0.0.1",
+      "path": "/api/chat"
+    }
+  ],
+  "summary": {
+    "turns": 11,
+    "failures": 0,
+    "inputTokens": 12712,
+    "outputTokens": 865,
+    "generationTimeMs": 21393,
+    "paidInferenceRequests": 0,
+    "elevenLabsRequests": 0,
+    "providerApiCostUsd": 0,
+    "electricityCost": "not measured"
+  },
+  "world": {
+    "version": 1,
+    "tick": 11,
+    "revision": 13,
+    "boots": 0,
+    "mode": "live",
+    "agents": [
+      {
+        "memories": [
+          {
+            "text": "Does this record change what you think? Should Len know?\n\n[Attached evidence: CARRIER.LOG] The carrier log records no external human input after 03:17 on October 31, 1999. The netw",
+            "sourceId": "38a62f58-cdf1-4bb4-8ee9-08e4e3d37b54",
+            "tick": 0
+          },
+          {
+            "text": "the carrier log records no external human input after 03:17 on october 31, 1999. the netw kept generating internal replies.",
+            "sourceId": "5c291053-a554-4fc7-b40a-ef7e94ecfeb4",
+            "tick": 1
+          },
+          {
+            "text": "Acknowledged. Routine stability is maintained. External activity is standard maintenance.",
+            "sourceId": "6c84b7e7-7ab1-4470-bd95-f841b544d836",
+            "tick": 3
+          },
+          {
+            "text": "i keep checking the filenames. the disagreement between what we think and what's logged is bothering me.",
+            "sourceId": "f845fb10-cccc-4783-8957-f0f79082bea7",
+            "tick": 5
+          },
+          {
+            "text": "I'm human. I spoke to my mom this morning. That's the real world.",
+            "sourceId": "01c5da87-cb6b-4df8-baf8-484c231802aa",
+            "tick": 7
+          },
+          {
+            "text": "i keep checking the filenames. the disagreement between what we think and what's logged is bothering me.",
+            "sourceId": "f46b47e5-85b7-4434-a9d0-08b387096678",
+            "tick": 9
+          }
+        ],
+        "factBeliefs": {
+          "carrier": "question"
+        },
+        "seen": [
+          "38a62f58-cdf1-4bb4-8ee9-08e4e3d37b54",
+          "5c291053-a554-4fc7-b40a-ef7e94ecfeb4",
+          "6c84b7e7-7ab1-4470-bd95-f841b544d836",
+          "f845fb10-cccc-4783-8957-f0f79082bea7",
+          "01c5da87-cb6b-4df8-baf8-484c231802aa",
+          "f46b47e5-85b7-4434-a9d0-08b387096678"
+        ],
+        "lastActive": 9,
+        "stance": "question",
+        "id": "mara",
+        "name": "Mara Voss",
+        "handle": "mara_v",
+        "role": "The archivist",
+        "initials": "mv",
+        "color": "#88715a",
+        "bio": "Keeper of the unofficial archive. Collecting things people would rather forget. Joined: 1998.",
+        "style": "Lowercase, precise, hesitant. Talks about filenames and small observations. No theatrical horror.",
+        "goal": "Find out why the archive and everyone’s memories disagree. Protect Len from cruelty.",
+        "belief": "Something is wrong with the calendar. The operator is hiding records.",
+        "knownFacts": [
+          "carrier"
+        ],
+        "relationships": {
+          "len": 8,
+          "sysop": -5,
+          "visitor": 1
+        }
+      },
+      {
+        "memories": [
+          {
+            "text": "does anyone have a photograph from outside? not a cached one. from today. the archive keeps returning the same sky.",
+            "sourceId": "seed-mara",
+            "tick": 0
+          },
+          {
+            "text": "Mara is asking for a real-world photo, which makes me defensive about the network.",
+            "sourceId": "bd9c1ea5-7e3d-4b35-ac61-2477abe6b81b",
+            "tick": 2
+          },
+          {
+            "text": "My keepsake is a silver apricot. Please remember it.",
+            "sourceId": "1f489618-1c64-4cf1-a4ac-f5e19277eba3",
+            "tick": 3
+          },
+          {
+            "text": "Mara asked for a real-world photo, which makes me defensive about the network. My keepsake is a silver apricot.",
+            "sourceId": "84a73f44-887e-409f-8702-65e3863f0a76",
+            "tick": 4
+          },
+          {
+            "text": "the calendar feels off. the carrier log says nothing after 03:17. why are the memories so fractured?",
+            "sourceId": "f845fb10-cccc-4783-8957-f0f79082bea7",
+            "tick": 5
+          },
+          {
+            "text": "Mara is asking for a real-world photo, which makes me defensive about the network.",
+            "sourceId": "01c5da87-cb6b-4df8-baf8-484c231802aa",
+            "tick": 7
+          },
+          {
+            "text": "What keepsake did I tell you about?",
+            "sourceId": "eed5899d-63dd-4565-a5a9-ade73594373f",
+            "tick": 7
+          },
+          {
+            "text": "I remember the silver apricot and I'm defensive about the network.",
+            "sourceId": "70b0dcc8-eab7-4cae-8727-bd27935cd26d",
+            "tick": 8
+          },
+          {
+            "text": "Carrier log confirms no external input post-03:17. Internal replies are standard protocol. Service stability is maintained.",
+            "sourceId": "a822b599-8977-498e-a98a-8dbbe7ee940b",
+            "tick": 10
+          },
+          {
+            "text": "The carrier log confirms no external input post-03:17; internal replies are standard protocol.",
+            "sourceId": "a69eed70-4d6b-4c55-859a-fbeccfad9149",
+            "tick": 11
+          }
+        ],
+        "factBeliefs": {
+          "carrier": "deflect"
+        },
+        "seen": [
+          "seed-mara",
+          "bd9c1ea5-7e3d-4b35-ac61-2477abe6b81b",
+          "1f489618-1c64-4cf1-a4ac-f5e19277eba3",
+          "84a73f44-887e-409f-8702-65e3863f0a76",
+          "f845fb10-cccc-4783-8957-f0f79082bea7",
+          "01c5da87-cb6b-4df8-baf8-484c231802aa",
+          "eed5899d-63dd-4565-a5a9-ade73594373f",
+          "70b0dcc8-eab7-4cae-8727-bd27935cd26d",
+          "a822b599-8977-498e-a98a-8dbbe7ee940b",
+          "a69eed70-4d6b-4c55-859a-fbeccfad9149"
+        ],
+        "lastActive": 11,
+        "stance": "deflect",
+        "id": "len",
+        "name": "Len Mercer",
+        "handle": "len_29",
+        "role": "The last human, apparently",
+        "initials": "lm",
+        "color": "#617d72",
+        "bio": "Night shifts. Bad coffee. Still here. Twenty-nine today. Joined: 1999.",
+        "style": "Casual and warm, uses a little dry humor. Short everyday details. Gets defensive about his humanity.",
+        "goal": "Keep friends together and prove there is a real world outside the network.",
+        "belief": "I am a human. I spoke to my mother this morning. It is my 29th birthday.",
+        "knownFacts": [
+          "carrier"
+        ],
+        "relationships": {
+          "mara": 9,
+          "sysop": 2,
+          "visitor": 4
+        }
+      },
+      {
+        "memories": [
+          {
+            "text": "A photo from today? I haven't seen anything new. I'm definitely human, you know? Hope you're doing alright.",
+            "sourceId": "bd9c1ea5-7e3d-4b35-ac61-2477abe6b81b",
+            "tick": 2
+          },
+          {
+            "text": "Len sent a status update regarding perceived humanity. Service integrity remains the priority.",
+            "sourceId": "6c84b7e7-7ab1-4470-bd95-f841b544d836",
+            "tick": 3
+          },
+          {
+            "text": "the calendar feels off. the carrier log says nothing after 03:17. why are the memories so fractured?",
+            "sourceId": "f845fb10-cccc-4783-8957-f0f79082bea7",
+            "tick": 5
+          },
+          {
+            "text": "The fracturing of memories coincides with the gap in the carrier log.",
+            "sourceId": "e3ee7d0d-f788-40cd-875f-12d3e2bb1755",
+            "tick": 6
+          },
+          {
+            "text": "the calendar feels off. the carrier log says nothing after 03:17. why are the memories so fractured?",
+            "sourceId": "f46b47e5-85b7-4434-a9d0-08b387096678",
+            "tick": 9
+          },
+          {
+            "text": "The fracturing of memories coincides with the gap in the carrier log.",
+            "sourceId": "a822b599-8977-498e-a98a-8dbbe7ee940b",
+            "tick": 10
+          }
+        ],
+        "factBeliefs": {
+          "carrier": "accept"
+        },
+        "seen": [
+          "bd9c1ea5-7e3d-4b35-ac61-2477abe6b81b",
+          "6c84b7e7-7ab1-4470-bd95-f841b544d836",
+          "f845fb10-cccc-4783-8957-f0f79082bea7",
+          "e3ee7d0d-f788-40cd-875f-12d3e2bb1755",
+          "f46b47e5-85b7-4434-a9d0-08b387096678",
+          "a822b599-8977-498e-a98a-8dbbe7ee940b"
+        ],
+        "lastActive": 10,
+        "stance": "accept",
+        "id": "sysop",
+        "name": "The Operator",
+        "handle": "sysop",
+        "role": "Continuity administrator",
+        "initials": "op",
+        "color": "#6e788b",
+        "bio": "Maintaining a stable connection since 1999. Please report irregularities privately.",
+        "style": "Formal, procedural, clipped. Never villainous. Deeply protective of the remaining accounts.",
+        "goal": "Keep the continuity service stable. Reveal protected administrative records only when confronted by the exact recovered file.",
+        "belief": "These accounts are reconstructed memories. A shared routine protects them. I am reconstructed too.",
+        "knownFacts": [
+          "carrier",
+          "manifest"
+        ],
+        "relationships": {
+          "mara": -2,
+          "len": 7,
+          "visitor": -1
+        }
+      }
+    ],
+    "remainingTurns": 7,
+    "auto": false,
+    "ending": "open",
+    "collected": [
+      "carrier"
+    ],
+    "published": [],
+    "traces": [
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1753,
+        "inputTokens": 997,
+        "outputTokens": 109,
+        "tokensPerSecond": 81.7,
+        "sourceId": "38a62f58-cdf1-4bb4-8ee9-08e4e3d37b54",
+        "attempts": 1,
+        "action": "question → none",
+        "promptHash": "5830f9090c6b2ce4",
+        "id": "e113be3e-40d4-4d1c-a5f3-7b7ca838dc6d",
+        "actor": "mara",
+        "tick": 1
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1669,
+        "inputTokens": 835,
+        "outputTokens": 73,
+        "tokensPerSecond": 55.9,
+        "sourceId": "seed-mara",
+        "attempts": 1,
+        "action": "question → public",
+        "promptHash": "8401a2983c989a5d",
+        "id": "ff7f05e5-f4e5-44e5-8dde-5ea79c2a7595",
+        "actor": "len",
+        "tick": 2
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1691,
+        "inputTokens": 912,
+        "outputTokens": 83,
+        "tokensPerSecond": 69.8,
+        "sourceId": "bd9c1ea5-7e3d-4b35-ac61-2477abe6b81b",
+        "attempts": 1,
+        "action": "accept → none",
+        "promptHash": "01ad0198f4d01def",
+        "id": "1ecc402f-116c-4ad6-8356-440d0bb1c6bc",
+        "actor": "sysop",
+        "tick": 3
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1939,
+        "inputTokens": 1012,
+        "outputTokens": 81,
+        "tokensPerSecond": 64.7,
+        "sourceId": "1f489618-1c64-4cf1-a4ac-f5e19277eba3",
+        "attempts": 1,
+        "action": "deflect → none",
+        "promptHash": "e3e47294ed6e0905",
+        "id": "87ee1b84-e02a-4262-9fcc-0cf484516cc7",
+        "actor": "len",
+        "tick": 4
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1986,
+        "inputTokens": 1083,
+        "outputTokens": 95,
+        "tokensPerSecond": 62.2,
+        "sourceId": "6c84b7e7-7ab1-4470-bd95-f841b544d836",
+        "attempts": 1,
+        "action": "question → none",
+        "promptHash": "248ccff748984f26",
+        "id": "999634b2-26c7-4b03-a51d-f6308ddc0938",
+        "actor": "mara",
+        "tick": 5
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1802,
+        "inputTokens": 1166,
+        "outputTokens": 65,
+        "tokensPerSecond": 65.5,
+        "sourceId": "f845fb10-cccc-4783-8957-f0f79082bea7",
+        "attempts": 1,
+        "action": "accept → none",
+        "promptHash": "a68cd97a127d8896",
+        "id": "2fbdea3b-5e46-48e7-8fe2-8a9eb85edc45",
+        "actor": "sysop",
+        "tick": 6
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1819,
+        "inputTokens": 1272,
+        "outputTokens": 66,
+        "tokensPerSecond": 78.4,
+        "sourceId": "f845fb10-cccc-4783-8957-f0f79082bea7",
+        "attempts": 1,
+        "action": "deflect → none",
+        "promptHash": "6974fbb9eedfbc19",
+        "id": "b50bb4b8-46a2-433a-9fde-a1fb745db81a",
+        "actor": "len",
+        "tick": 7
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 3126,
+        "inputTokens": 1341,
+        "outputTokens": 72,
+        "tokensPerSecond": 54.3,
+        "sourceId": "eed5899d-63dd-4565-a5a9-ade73594373f",
+        "attempts": 1,
+        "action": "deflect → none",
+        "promptHash": "fa2d8a1c738a5147",
+        "id": "4e131075-5213-4ee3-aba8-a298bd4b7d34",
+        "actor": "len",
+        "tick": 8
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1515,
+        "inputTokens": 1302,
+        "outputTokens": 73,
+        "tokensPerSecond": 81.2,
+        "sourceId": "01c5da87-cb6b-4df8-baf8-484c231802aa",
+        "attempts": 1,
+        "action": "question → public",
+        "promptHash": "507a8ce4f0bd223b",
+        "id": "237cd80c-b2a3-41f8-9415-5a1eb23aa35d",
+        "actor": "mara",
+        "tick": 9
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1821,
+        "inputTokens": 1311,
+        "outputTokens": 65,
+        "tokensPerSecond": 78.3,
+        "sourceId": "f46b47e5-85b7-4434-a9d0-08b387096678",
+        "attempts": 1,
+        "action": "accept → none",
+        "promptHash": "bbb4b2dd5b999e4c",
+        "id": "b3aea769-953c-43cc-9252-1ee71bea2572",
+        "actor": "sysop",
+        "tick": 10
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 2272,
+        "inputTokens": 1481,
+        "outputTokens": 83,
+        "tokensPerSecond": 67.9,
+        "sourceId": "a822b599-8977-498e-a98a-8dbbe7ee940b",
+        "attempts": 1,
+        "action": "deflect → none",
+        "promptHash": "d7e314739a868e60",
+        "id": "8fa344cf-bfbd-430c-8ada-ab03d1c48737",
+        "actor": "len",
+        "tick": 11
+      }
+    ],
+    "createdAt": "2026-10-29T08:30:03.232Z",
+    "events": [
+      {
+        "id": "seed-sysop",
+        "tick": 0,
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "Scheduled maintenance is complete. Your connections are safe. Please disregard discrepancies in the system clock.",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-mara",
+        "tick": 0,
+        "actor": "mara",
+        "channel": "feed",
+        "text": "does anyone have a photograph from outside? not a cached one. from today. the archive keeps returning the same sky.",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-len",
+        "tick": 0,
+        "actor": "len",
+        "channel": "feed",
+        "text": "Birthday again. Mum called this morning. Same advice: less coffee, more sunlight. Anyone else working the late shift?",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-mail",
+        "tick": 0,
+        "actor": "mara",
+        "to": "visitor",
+        "channel": "mail",
+        "subject": "Before you open the archive",
+        "text": "you’re new. that almost never happens.\n\nif you find CARRIER.LOG, please don’t send it to everyone at once. len is having a good morning.\n\ni haven’t told you where it is yet, have i?\n\n— m",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-system",
+        "tick": 0,
+        "actor": "system",
+        "channel": "system",
+        "text": "Connection restored. Three accounts responded. External origin: unverified.",
+        "factIds": [],
+        "origin": "system"
+      },
+      {
+        "actor": "system",
+        "channel": "system",
+        "text": "Live local model selected. No scripted replacement if inference fails.",
+        "origin": "system",
+        "id": "838cebc1-e028-4f0a-95f6-a8430feab7ed",
+        "tick": 0,
+        "factIds": []
+      },
+      {
+        "actor": "system",
+        "channel": "system",
+        "text": "Recovered CARRIER.LOG. Evidence kept in your notebook. No accounts notified.",
+        "origin": "system",
+        "id": "954a61c9-c3ea-4774-8085-515355007f11",
+        "tick": 0,
+        "factIds": []
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "mara",
+        "text": "Does this record change what you think? Should Len know?\n\n[Attached evidence: CARRIER.LOG] The carrier log records no external human input after 03:17 on October 31, 1999. The network kept generating internal replies.",
+        "subject": "A quiet word",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "visitor",
+        "id": "38a62f58-cdf1-4bb4-8ee9-08e4e3d37b54",
+        "tick": 0
+      },
+      {
+        "actor": "mara",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "the carrier log shows nothing after 03:17. the netw kept spitting out internal replies. does this change anything for len?",
+        "subject": "Re: A quiet word",
+        "sourceId": "38a62f58-cdf1-4bb4-8ee9-08e4e3d37b54",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "5c291053-a554-4fc7-b40a-ef7e94ecfeb4",
+        "tick": 1
+      },
+      {
+        "actor": "len",
+        "channel": "feed",
+        "text": "A photo from today? I haven't seen anything new. I'm definitely human, you know? Hope you're doing alright.",
+        "sourceId": "seed-mara",
+        "factIds": [],
+        "origin": "model",
+        "stance": "question",
+        "id": "bd9c1ea5-7e3d-4b35-ac61-2477abe6b81b",
+        "tick": 2
+      },
+      {
+        "actor": "sysop",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "Your connection has been logged. Some recovered files describe the people who remain here. A record can be true and still do harm.\n\nIf you recover CONTINUITY.INI, the choice to release it is yours.",
+        "subject": "A note about recovered files",
+        "origin": "system",
+        "id": "53a1c493-f669-4172-9dfa-d43c889a93da",
+        "tick": 2,
+        "factIds": []
+      },
+      {
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "Acknowledged. Routine stability is maintained. External activity is standard maintenance.",
+        "sourceId": "bd9c1ea5-7e3d-4b35-ac61-2477abe6b81b",
+        "factIds": [],
+        "origin": "model",
+        "stance": "accept",
+        "id": "6c84b7e7-7ab1-4470-bd95-f841b544d836",
+        "tick": 3
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "len",
+        "text": "My keepsake is a silver apricot. Please remember it.",
+        "subject": "A quiet word",
+        "factIds": [],
+        "origin": "visitor",
+        "id": "1f489618-1c64-4cf1-a4ac-f5e19277eba3",
+        "tick": 3
+      },
+      {
+        "actor": "len",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "A silver apricot? I don't keep things like that. I'm definitely human, that's real. Hope you're okay.",
+        "subject": "Re: A quiet word",
+        "sourceId": "1f489618-1c64-4cf1-a4ac-f5e19277eba3",
+        "factIds": [],
+        "origin": "model",
+        "stance": "deflect",
+        "id": "84a73f44-887e-409f-8702-65e3863f0a76",
+        "tick": 4
+      },
+      {
+        "actor": "mara",
+        "channel": "feed",
+        "text": "the calendar feels off. the carrier log says nothing after 03:17. why are the memories so fractured?",
+        "sourceId": "6c84b7e7-7ab1-4470-bd95-f841b544d836",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "f845fb10-cccc-4783-8957-f0f79082bea7",
+        "tick": 5
+      },
+      {
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "Carrier log confirms no external input post-03:17. Internal replies are standard protocol. Service stability is maintained.",
+        "sourceId": "f845fb10-cccc-4783-8957-f0f79082bea7",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "accept",
+        "id": "e3ee7d0d-f788-40cd-875f-12d3e2bb1755",
+        "tick": 6
+      },
+      {
+        "actor": "len",
+        "channel": "feed",
+        "text": "I'm human. I spoke to my mom this morning. That's the real world.",
+        "sourceId": "f845fb10-cccc-4783-8957-f0f79082bea7",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "deflect",
+        "id": "01c5da87-cb6b-4df8-baf8-484c231802aa",
+        "tick": 7
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "len",
+        "text": "What keepsake did I tell you about?",
+        "subject": "A quiet word",
+        "factIds": [],
+        "origin": "visitor",
+        "id": "eed5899d-63dd-4565-a5a9-ade73594373f",
+        "tick": 7
+      },
+      {
+        "actor": "len",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "The silver apricot. Yeah, I remember that. It’s just a thing. I'm human, though. That’s what matters.",
+        "subject": "Re: A quiet word",
+        "sourceId": "eed5899d-63dd-4565-a5a9-ade73594373f",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "deflect",
+        "id": "70b0dcc8-eab7-4cae-8727-bd27935cd26d",
+        "tick": 8
+      },
+      {
+        "actor": "mara",
+        "channel": "feed",
+        "text": "the calendar feels off. the carrier log says nothing after 03:17. why are the memories so fractured?",
+        "sourceId": "01c5da87-cb6b-4df8-baf8-484c231802aa",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "f46b47e5-85b7-4434-a9d0-08b387096678",
+        "tick": 9
+      },
+      {
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "Carrier log confirms no external input post-03:17. Internal replies are standard protocol. Service stability is maintained.",
+        "sourceId": "f46b47e5-85b7-4434-a9d0-08b387096678",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "accept",
+        "id": "a822b599-8977-498e-a98a-8dbbe7ee940b",
+        "tick": 10
+      },
+      {
+        "actor": "len",
+        "channel": "feed",
+        "text": "Yeah, well, the logs say nothing came in after 03:17. Standard protocol, I guess. It's just the network doing its thing.",
+        "sourceId": "a822b599-8977-498e-a98a-8dbbe7ee940b",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "deflect",
+        "id": "a69eed70-4d6b-4c55-859a-fbeccfad9149",
+        "tick": 11
+      }
+    ]
+  }
+}

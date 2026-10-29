@@ -1,0 +1,38 @@
+---
+title: "Level 7"
+layout: default
+permalink: /7/
+---
+<div class="rules">
+	<p>Let’s get back home. Look out for that <span class="char" style="color:#f1f1f1;"><span aria-hidden="true">🕳️</span> trap</span>. Try to take a step back.</p>
+</div>
+<form action="/8/">
+	<div class="game has-focus-styles">
+		<div class="scoreboard">
+			<span class="level">Level 7</span>
+			<span class="timer">00:00.00</span>
+		</div>
+		<button type="button" class="icon is-start" autofocus="autofocus"><span role="img" aria-label="woman mage">🧙‍♀️</span> <span class="badge">Start</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="snake">🐍</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="coffin">⚰️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="skull">💀</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="fallen leaf">🍂</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="owl">🦉</span></button>
+		<button type="button" class="icon is-trap"><span role="img" aria-label="hole">🕳️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="wilted flower">🥀</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="candle">🕯️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="bat">🦇</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="spider">🕷️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="spider web">🕸️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="chestnut">🌰</span></button>
+		<button type="submit" class="icon is-finish"><span role="img" aria-label="pumpkin">🎃</span> <span class="badge">Finish</span></button>
+	</div>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelector('.is-trap + .icon').addEventListener('focus', function(event) {
+		this.previousElementSibling.focus();
+	});
+});
+</script>
+{% include instructions.html %}

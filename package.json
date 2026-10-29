@@ -8,7 +8,7 @@
     "node": ">=22.13"
   },
   "scripts": {
-    "dev": "tsx server/index.ts",
+    "dev": "tsx watch --include .env server/index.ts",
     "build": "tsc --noEmit && vite build",
     "start": "NODE_ENV=production tsx server/index.ts",
     "test": "tsx --test tests/*.test.ts",
@@ -16,7 +16,8 @@
     "benchmark": "tsx scripts/benchmark.ts",
     "check": "tsc --noEmit",
     "demo:build": "vite build --mode exhibition --outDir dist-demo",
-    "verify:live": "tsx scripts/live-check.ts"
+    "verify:live": "tsx scripts/live-check.ts",
+    "games:build": "node scripts/build-games.mjs"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
@@ -34,6 +35,7 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
     "prettier": "^3.6.2",
+    "sass": "^1.93.2",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "vite": "^7.1.12"

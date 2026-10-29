@@ -6,15 +6,9 @@
   font-display: swap;
 }
 :root {
-  font-family: "W95FA", sans-serif;
   color: #222820;
   background: #175b56;
   font-synthesis: none;
-  font-size: 12px;
-  --shell: #c6c6ba;
-  --paper: #f7f6eb;
-  --navy: #243b56;
-  --teal: #175b56;
   --ink: #252c27;
   --muted: #5b6257;
   --bevel:
@@ -113,45 +107,6 @@ a {
   position: relative;
   overflow: hidden;
   outline: 0;
-  background: #175b56;
-}
-.wallpaper {
-  position: absolute;
-  right: 10%;
-  top: 29%;
-  color: #2a726a;
-  text-align: center;
-  pointer-events: none;
-  user-select: none;
-}
-.wallpaper-mark {
-  font-family: W95FA, sans-serif;
-  font-size: 175px;
-  letter-spacing: -20px;
-  line-height: 0.8;
-  position: relative;
-}
-.wallpaper-mark > span:first-child {
-  font-style: italic;
-}
-.wallpaper-mark .wallpaper-cross {
-  position: absolute;
-  right: 15px;
-  top: -30px;
-  font: 42px Tahoma;
-  letter-spacing: 0;
-}
-.wallpaper-name {
-  font-weight: 700;
-  letter-spacing: 11px;
-  font-size: 38px;
-  margin-top: 28px;
-}
-.wallpaper p {
-  font-family: W95FA, sans-serif;
-  font-style: italic;
-  font-size: 17px;
-  letter-spacing: 1px;
 }
 .desktop-meta {
   position: absolute;
@@ -173,7 +128,6 @@ a {
   left: 17px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
   width: 95px;
 }
 .desktop-icon {
@@ -198,7 +152,6 @@ a {
 }
 .desktop-icon span {
   max-width: 100%;
-  font-size: 11px;
   text-shadow: 1px 1px #193e36;
   text-align: center;
 }
@@ -206,8 +159,6 @@ a {
   background: #e6c073;
   color: #243b36;
   display: inline-block;
-  font-size: 9px;
-  min-width: 14px;
   padding: 0 3px;
   margin-left: 4px;
   text-shadow: none;
@@ -234,7 +185,6 @@ a {
 .titlebar {
   display: flex;
   justify-content: space-between;
-  min-height: 27px;
   background: #7c857d;
   color: #fffdef;
   padding: 3px 3px 3px 5px;
@@ -251,8 +201,6 @@ a {
   flex: 1;
   cursor: default;
   min-width: 0;
-  font-weight: bold;
-  font-size: 12px;
 }
 .title-drag span {
   overflow: hidden;
@@ -339,7 +287,6 @@ a {
 .menubar button {
   box-shadow: none;
   padding: 3px 9px;
-  font-size: 11px;
   min-height: 24px;
 }
 .menubar button:first-letter {
@@ -348,8 +295,6 @@ a {
 .browser-tools {
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 6px 8px 8px;
   border-top: 1px solid #e9ebdf;
 }
 .browser-tools > button {
@@ -393,7 +338,6 @@ a {
   font-style: italic;
 }
 .web-page {
-  background: var(--paper);
   flex: 1;
   min-height: 0;
   overflow: auto;
@@ -403,9 +347,6 @@ a {
 .web-date {
   display: flex;
   justify-content: space-between;
-  font-size: 9px;
-  color: #586153;
-  padding: 15px 0 11px;
   border-bottom: 1px solid #d2d7c7;
   gap: 10px;
 }
@@ -429,22 +370,10 @@ a {
 }
 .web-masthead {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 21px 0 20px;
 }
 .web-name {
-  font-family: W95FA, sans-serif;
-  font-size: 37px;
-  font-weight: bold;
-  letter-spacing: -1.6px;
   margin: 0;
-  line-height: 1.1;
-  color: #244336;
-}
-.web-name > span {
-  font-style: italic;
-  font-weight: normal;
 }
 .web-masthead p:last-child {
   font-size: 11px;
@@ -452,45 +381,21 @@ a {
   letter-spacing: 0.3px;
   margin: 10px 0 0;
 }
-.masthead-symbol {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 3px;
-}
-.masthead-symbol small {
-  font-size: 8px;
-  letter-spacing: 1px;
-}
 .web-nav {
   display: flex;
-  background: #2e4638;
-  border-top: 3px double #f7f6eb;
   gap: 0;
-  padding: 3px 0;
 }
 .web-nav button {
   box-shadow: none;
   background: none;
-  color: #e9eddf;
   border-right: 1px solid #6b7a66;
   min-height: 26px;
-  padding: 5px 16px;
-  font-size: 10px;
 }
 .web-nav button:first-child {
   padding-left: 12px;
 }
 .web-nav button:last-child {
   border: 0;
-  margin-left: auto;
-}
-.web-nav button.selected {
-  font-weight: bold;
-  color: #fff5c4;
-}
-.web-nav button:hover {
-  background: #435d49;
 }
 .web-nav button > span {
   background: #d4dbbc;
@@ -498,33 +403,8 @@ a {
   padding: 1px 4px;
   margin-left: 4px;
 }
-.web-announcement {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 2px;
-  font-family: W95FA, sans-serif;
-  font-style: italic;
-  font-size: 12px;
-  border-bottom: 1px solid #c8cebd;
-}
-.announcement-star {
-  color: #a2763f;
-  font-size: 23px;
-  font-style: normal;
-  line-height: 10px;
-}
-.web-announcement span:last-child {
-  margin-left: auto;
-  color: #66725e;
-  font-size: 10px;
-  font-family: "W95FA", sans-serif;
-  font-style: normal;
-}
 .web-columns {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 204px;
-  gap: 26px;
   padding: 23px 0 10px;
 }
 .section-title {
@@ -534,36 +414,21 @@ a {
   gap: 5px;
 }
 .section-title h1 {
-  font:
-    27px W95FA,
-    sans-serif;
   margin: 0;
-  color: #293e30;
-  letter-spacing: -0.7px;
 }
 .section-title label {
-  font-size: 9px;
   color: #5c6655;
   display: flex;
   align-items: center;
   gap: 5px;
 }
 .section-title select {
-  padding: 4px 5px;
-  font-size: 10px;
   background: #efefe3;
   max-width: 105px;
 }
-.feed-intro {
-  font-size: 10px;
-  color: #626b5a;
-  margin: 8px 0 20px;
-}
 .post {
   display: flex;
-  gap: 11px;
   border-top: 1px solid #ccd1c0;
-  padding: 17px 0 18px;
 }
 .avatar {
   display: inline-flex;
@@ -574,9 +439,6 @@ a {
   align-items: center;
   justify-content: center;
   color: #fff7dc;
-  font:
-    17px W95FA,
-    sans-serif;
   font-style: italic;
   flex-shrink: 0;
 }
@@ -605,35 +467,22 @@ a {
   background: none;
   color: #1a614b;
 }
-.post-header .web-link {
-  font-size: 11px;
-  font-weight: bold;
-  text-decoration: none;
-}
 .post-header time {
-  font-size: 9px;
   color: #626b5b;
   white-space: nowrap;
 }
 .post p {
-  margin: 9px 0 11px;
-  font-size: 12px;
-  line-height: 1.8;
   overflow-wrap: anywhere;
 }
 .post-meta {
   display: flex;
   align-items: center;
-  gap: 10px;
   flex-wrap: wrap;
-  font-size: 9px;
 }
 .provenance {
-  font-size: 9px;
   color: #616854;
   display: inline-block;
   background: #e9eadc;
-  padding: 2px 4px;
 }
 .provenance.model {
   background: #e0e9d9;
@@ -647,11 +496,7 @@ a {
   text-align: center;
   border-top: 1px solid #ccd1c0;
   color: #707766;
-  font:
-    italic 13px W95FA,
-    sans-serif;
   line-height: 1.8;
-  padding: 24px 0 15px;
 }
 .feed-end span {
   font-family: "W95FA", sans-serif;
@@ -661,13 +506,6 @@ a {
 .web-sidebar {
   min-width: 0;
   border-left: 1px solid #c8cebd;
-  padding-left: 21px;
-}
-.online-box h2 {
-  font:
-    bold 15px W95FA,
-    sans-serif;
-  margin: 1px 0 5px;
 }
 .online-box > p {
   font-size: 10px;
@@ -679,8 +517,6 @@ a {
   box-shadow: none;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 9px 0;
   width: 100%;
   text-align: left;
   border-bottom: 1px dotted #c6cdbc;
@@ -689,8 +525,6 @@ a {
   background: #e9eddd;
 }
 .online-person .avatar {
-  width: 27px;
-  height: 29px;
   font-size: 14px;
 }
 .online-person > span:nth-child(2) {
@@ -700,61 +534,26 @@ a {
   flex: 1;
 }
 .online-person strong {
-  font-size: 10px;
   font-weight: normal;
-  color: #345b45;
   text-decoration: underline;
 }
 .online-person small {
-  font-size: 8px;
   color: #606c57;
-  line-height: 1.5;
 }
 .online-person .led {
   width: 5px;
   height: 5px;
-}
-.archive-promo {
-  margin-top: 26px;
-  background: #e7e8d7;
-  padding: 15px 13px 17px;
-  border: 1px solid #c7cebb;
-}
-.archive-promo > svg {
-  float: right;
-  margin: 2px 0 0 5px;
-}
-.archive-promo h2 {
-  font:
-    italic 19px/1.2 W95FA,
-    sans-serif;
-  margin: 0;
-  color: #374730;
-  letter-spacing: -0.6px;
-}
-.archive-promo p {
-  font-size: 9px;
-  line-height: 1.9;
-  color: #5d6750;
-  margin: 11px 0 12px;
-}
-.archive-promo .web-link {
-  font-size: 10px;
-  font-weight: bold;
 }
 .counter-box {
   display: flex;
   align-items: center;
   flex-direction: column;
   gap: 8px;
-  margin-top: 24px;
-  font-size: 9px;
   color: #5d6753;
 }
 .counter-box strong {
   background: #293e32;
   color: #c9d3a1;
-  font: 12px monospace;
   padding: 5px 7px;
   box-shadow: inset 1px 1px #172a20;
   white-space: nowrap;
@@ -768,17 +567,13 @@ a {
   background: #e6e7d8;
   box-shadow: none;
   border: 1px solid #a8b49b;
-  font-size: 9px;
-  padding: 8px 4px;
   color: #344e38;
-  min-height: 30px;
 }
 .network-step:hover {
   background: #d9dfc9;
 }
 .step-hint {
   text-align: center;
-  font-size: 8px;
   line-height: 1.8;
   color: #66705c;
 }
@@ -789,8 +584,6 @@ a {
   gap: 10px;
   padding: 12px 0 17px;
   color: #66705a;
-  font-size: 8px;
-  letter-spacing: 0.4px;
 }
 .window-status {
   display: flex;
@@ -798,8 +591,6 @@ a {
   gap: 8px;
   flex-shrink: 0;
   padding: 5px 7px 2px;
-  min-height: 23px;
-  font-size: 10px;
   color: #414c40;
 }
 .window-status > span {
@@ -893,42 +684,28 @@ a {
   margin-top: 3px;
 }
 .mail-list {
-  width: 210px;
   flex-shrink: 0;
-  background: #d9ddce;
   overflow: auto;
-  padding: 3px;
-  border-right: 2px solid #8e9a87;
 }
 .mail-list button {
   width: 100%;
   box-shadow: none;
-  display: flex;
   flex-direction: column;
   text-align: left;
-  padding: 13px 10px;
   background: none;
-  border-bottom: 1px solid #bdc5b3;
-  gap: 6px;
 }
 .mail-list button.active {
   background: #2c4759;
   color: #fffceb;
 }
-.mail-list button strong {
-  font-size: 11px;
-}
 .mail-list button span {
-  font-size: 10px;
   line-height: 1.5;
 }
 .mail-list button small {
-  font-size: 9px;
   opacity: 0.85;
 }
 .mail-body {
   background: var(--paper);
-  padding: 25px 27px;
   flex: 1;
   overflow: auto;
   min-width: 0;
@@ -938,7 +715,6 @@ a {
   padding-bottom: 15px;
 }
 .letter-heading > p {
-  font-size: 10px;
   margin: 5px 0;
   color: #53624e;
 }
@@ -946,14 +722,10 @@ a {
   font:
     24px/1.2 W95FA,
     sans-serif;
-  margin: 20px 0 13px;
 }
 .letter-text {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font:
-    14px/1.9 W95FA,
-    sans-serif;
   margin: 25px 0;
 }
 .letter-actions {
@@ -966,7 +738,6 @@ a {
 }
 .fine-print {
   font-size: 10px;
-  line-height: 1.7;
   color: #58634f;
 }
 .attachment-note {
@@ -1081,12 +852,6 @@ a {
   flex-direction: column;
   gap: 5px;
 }
-.file-list > button strong {
-  font: 10px monospace;
-}
-.file-list > button small {
-  font-size: 9px;
-}
 .file-warning {
   font-size: 10px;
   line-height: 1.8;
@@ -1101,7 +866,6 @@ a {
   padding: 24px 28px;
 }
 .file-heading > span {
-  font: 9px monospace;
   color: #657159;
 }
 .file-heading h1 {
@@ -1111,14 +875,10 @@ a {
   margin: 12px 0;
 }
 .file-heading > p {
-  font-size: 11px;
   color: #64705b;
   line-height: 1.7;
 }
 .file-reader pre {
-  font:
-    11px/1.9 "Courier New",
-    monospace;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   border-top: 1px solid #c4ceba;
@@ -1135,9 +895,6 @@ a {
   display: flex;
   gap: 8px;
   margin: 15px 0;
-}
-.file-actions button {
-  font-size: 10px;
 }
 .people-app {
   display: flex;
@@ -1161,7 +918,6 @@ a {
   gap: 9px;
   width: 100%;
   padding: 14px 7px;
-  font-size: 10px;
 }
 .people-list button.active {
   background: #2c4759;
@@ -1174,7 +930,6 @@ a {
 }
 .people-list small {
   display: block;
-  font-size: 9px;
   opacity: 0.85;
   margin-top: 5px;
 }
@@ -1206,9 +961,6 @@ a {
   color: #58674f;
 }
 .profile blockquote {
-  font:
-    italic 15px/1.8 W95FA,
-    sans-serif;
   margin: 25px 0;
   color: #4a5b42;
 }
@@ -1231,7 +983,6 @@ a {
 }
 .inspector {
   margin-top: 28px;
-  font-size: 10px;
 }
 .inspector summary {
   color: #4f6346;
@@ -1239,11 +990,7 @@ a {
   line-height: 1.7;
 }
 .inspector h2 {
-  font-size: 12px;
   margin: 22px 0 10px;
-}
-.inspector p {
-  line-height: 1.8;
 }
 .relationship {
   display: flex;
@@ -1277,7 +1024,6 @@ a {
   margin: 0 0 8px;
 }
 .notebook-app > header p {
-  font-size: 11px;
   margin: 0;
   color: #58644e;
 }
@@ -1292,7 +1038,6 @@ a {
   gap: 16px;
   border-bottom: 1px solid #ced5c0;
   padding: 17px 0;
-  font-size: 10px;
   color: #626d57;
 }
 .investigation-steps span:before {
@@ -1307,13 +1052,6 @@ a {
 }
 .notebook-empty {
   padding: 28px 0;
-  font-size: 12px;
-  line-height: 1.9;
-}
-.notebook-empty h2 {
-  font:
-    26px W95FA,
-    sans-serif;
 }
 .notebook-empty > p {
   max-width: 400px;
@@ -1323,7 +1061,6 @@ a {
   padding: 25px 0;
 }
 .evidence-note > small {
-  font: 10px monospace;
   color: #617055;
 }
 .evidence-note h2 {
@@ -1378,7 +1115,6 @@ a {
 }
 .resolution > small {
   color: #715b34;
-  font-size: 10px;
 }
 .monitor-app {
   padding: 9px 7px;
@@ -1403,9 +1139,6 @@ a {
   overflow: auto;
   box-shadow: var(--inset);
   padding: 16px;
-  font:
-    11px/1.8 "Courier New",
-    monospace;
 }
 .console-heading {
   display: flex;
@@ -1413,7 +1146,6 @@ a {
   border-bottom: 1px solid #4c6250;
   padding-bottom: 10px;
   font-size: 10px;
-  letter-spacing: 1px;
 }
 .console-lines {
   padding: 8px 0;
@@ -1444,7 +1176,6 @@ a {
 }
 .event-log p {
   font-size: 10px;
-  margin: 9px 0;
   line-height: 1.8;
 }
 .event-log p > span {
@@ -1541,7 +1272,6 @@ a {
   right: 23px;
   background: #e7e7d6;
   z-index: 2;
-  width: 265px;
   box-shadow:
     var(--bevel),
     2px 3px 8px #0a332950;
@@ -1553,7 +1283,6 @@ a {
   gap: 7px;
   background: #b4c1a9;
   padding: 5px 7px;
-  font-size: 11px;
 }
 .notification-heading > button {
   margin-left: auto;
@@ -1569,16 +1298,6 @@ a {
   text-align: left;
   display: flex;
   flex-direction: column;
-  gap: 9px;
-  padding: 15px;
-}
-.notification-body strong {
-  font-size: 11px;
-}
-.notification-body > span {
-  font:
-    italic 15px W95FA,
-    sans-serif;
 }
 .notification-body small {
   font-size: 9px;
@@ -1601,11 +1320,7 @@ a {
   align-items: center;
   gap: 12px;
 }
-.error-toast > svg {
-  flex-shrink: 0;
-}
 .error-toast p {
-  font-size: 11px;
   line-height: 1.7;
   flex: 1;
   margin: 0;
@@ -1634,9 +1349,6 @@ a {
   padding: 3px 9px;
   min-height: 31px;
 }
-.start-button strong {
-  font-size: 12px;
-}
 .task-divider {
   width: 3px;
   height: 28px;
@@ -1658,7 +1370,6 @@ a {
   max-width: 180px;
   flex: 1;
   text-align: left;
-  font-size: 11px;
   height: 30px;
   padding: 4px 7px;
 }
@@ -1692,10 +1403,8 @@ a {
 }
 .task-status .model-indicator {
   gap: 6px;
-  font-size: 9px;
 }
 .task-status time {
-  font-size: 10px;
   margin-left: 4px;
 }
 .start-menu {
@@ -1741,7 +1450,6 @@ a {
   box-shadow: none;
   text-align: left;
   padding: 9px;
-  font-size: 11px;
 }
 .start-items > button:hover {
   background: #2c4656;
@@ -1760,27 +1468,14 @@ a {
 .boot-screen {
   position: absolute;
   inset: 0;
-  background: #142822;
   color: #d5ddc8;
   z-index: 1500;
   display: flex;
   flex-direction: column;
   padding: 30px 40px;
 }
-.boot-top,
-.boot-bottom {
-  display: flex;
-  justify-content: space-between;
-  font:
-    10px/1.6 "Courier New",
-    monospace;
-  letter-spacing: 1px;
-  gap: 20px;
-  color: #a4b59c;
-}
 .boot-main {
   margin: auto;
-  width: min(500px, 100%);
   padding: 40px 0;
 }
 .boot-logo {
@@ -1789,28 +1484,14 @@ a {
   gap: 18px;
 }
 .boot-logo > span {
-  font-size: 44px;
-  letter-spacing: 3px;
-  font-weight: bold;
   color: #f2f0d8;
 }
 .boot-cursor {
   color: #9cbb89;
   animation: blink 1.5s steps(1) infinite;
 }
-.boot-premise {
-  font:
-    25px/1.5 W95FA,
-    sans-serif;
-  color: #c9d6ba;
-  margin: 35px 0;
-}
 .boot-diagnostics {
-  font:
-    11px/1.7 "Courier New",
-    monospace;
   color: #abbca0;
-  max-width: 370px;
   margin: 0 0 30px;
 }
 .boot-diagnostics p {
@@ -1819,20 +1500,16 @@ a {
 }
 .boot-diagnostics span {
   color: #cae3aa;
-  font-size: 10px;
 }
 .boot-diagnostics .boot-unknown {
   color: #ddc08a;
 }
 .boot-connect {
-  background: #d7dfbf;
   box-shadow: none;
   padding: 14px 22px;
   font-size: 13px;
-  font-weight: bold;
   color: #213e2e;
   width: 100%;
-  max-width: 370px;
   text-align: left;
 }
 .boot-connect:hover {
@@ -1842,16 +1519,10 @@ a {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 10px;
   color: #a8b99a;
   margin-top: 19px;
 }
-.boot-bottom {
-  font-size: 9px;
-  letter-spacing: 0.3px;
-}
 .exhibition-banner {
-  height: 30px;
   display: flex;
   gap: 15px;
   align-items: center;
@@ -1870,9 +1541,6 @@ a {
 .exhibition-banner a {
   color: #554327;
   white-space: nowrap;
-}
-.exhibition .windows-area {
-  top: 30px;
 }
 .exhibition .desktop-meta {
   top: 55px;
@@ -1904,10 +1572,6 @@ body:has(.reduced-motion) {
   }
 }
 @media (min-width: 1600px) {
-  .wallpaper {
-    right: 12%;
-    top: 34%;
-  }
   .desktop-icons {
     top: 35px;
     gap: 24px;
@@ -1966,20 +1630,6 @@ body:has(.reduced-motion) {
     font-size: 8px;
     right: 17px;
   }
-  .wallpaper {
-    right: 10%;
-    top: 35%;
-  }
-  .wallpaper-mark {
-    font-size: 145px;
-  }
-  .wallpaper-name {
-    font-size: 25px;
-    letter-spacing: 7px;
-  }
-  .wallpaper p {
-    font-size: 13px;
-  }
   .mail-notification {
     display: none;
   }
@@ -1994,13 +1644,9 @@ body:has(.reduced-motion) {
   .task-status time {
     display: none;
   }
-  .task-status .model-indicator {
-    font-size: 8px;
-  }
   .task-buttons button {
     min-width: 84px;
     max-width: 120px;
-    font-size: 10px;
   }
   .start-button {
     padding: 3px 5px;
@@ -2019,7 +1665,6 @@ body:has(.reduced-motion) {
     display: none;
   }
   .address {
-    font-size: 10px;
     padding: 6px;
   }
   .connection-mark {
@@ -2030,56 +1675,30 @@ body:has(.reduced-motion) {
   }
   .web-date {
     padding-top: 13px;
-    font-size: 8px;
     gap: 5px;
   }
   .web-date span:last-child {
-    font-size: 8px;
     gap: 4px;
-  }
-  .web-masthead {
-    padding: 22px 0 18px;
-  }
-  .web-name {
-    font-size: 26px;
-    letter-spacing: -1.3px;
   }
   .web-masthead p:last-child {
     font-size: 9px;
     margin-top: 10px;
   }
-  .masthead-symbol {
-    display: none;
-  }
   .web-nav {
     flex-wrap: wrap;
-    gap: 2px;
     padding: 4px;
   }
   .web-nav button,
   .web-nav button:first-child {
-    font-size: 9px;
-    padding: 5px 8px;
     border: 0;
     min-height: 25px;
   }
   .web-nav button:last-child {
     margin-left: 0;
   }
-  .web-announcement {
-    padding: 11px 0;
-    font-size: 10px;
-    gap: 7px;
-  }
-  .web-announcement span:last-child {
-    display: none;
-  }
   .web-columns {
     display: block;
     padding: 20px 0 0;
-  }
-  .section-title h1 {
-    font-size: 25px;
   }
   .post {
     gap: 9px;
@@ -2087,13 +1706,6 @@ body:has(.reduced-motion) {
   }
   .post-header {
     flex-wrap: wrap;
-  }
-  .post-header time {
-    font-size: 8px;
-  }
-  .post p {
-    font-size: 12px;
-    line-height: 1.85;
   }
   .web-sidebar {
     display: none;
@@ -2106,11 +1718,7 @@ body:has(.reduced-motion) {
   .post-meta {
     gap: 9px;
   }
-  .web-footer {
-    font-size: 7px;
-  }
   .window-status {
-    font-size: 8px;
     padding: 4px 2px 2px;
     gap: 4px;
   }
@@ -2123,48 +1731,23 @@ body:has(.reduced-motion) {
     padding: 7px 4px;
   }
   .app-toolbar > button {
-    font-size: 10px;
     padding: 6px;
   }
   .toolbar-note {
     display: none;
   }
-  .mail-layout {
-    flex-direction: column;
-  }
   .mail-list {
     width: auto;
-    max-height: 116px;
     flex-shrink: 0;
     border-right: 0;
     display: flex;
     border-bottom: 2px solid #8e9a87;
   }
   .mail-list button {
-    min-width: 180px;
-    padding: 10px;
-    gap: 4px;
     justify-content: start;
   }
-  .mail-list button > span {
-    font-size: 9px;
-  }
-  .mail-list button small {
-    font-size: 8px;
-  }
-  .mail-body {
-    padding: 18px;
-  }
   .letter-text {
-    font-size: 14px;
-    line-height: 1.8;
     margin: 22px 0;
-  }
-  .letter-heading h1 {
-    font-size: 22px;
-  }
-  .letter-actions button {
-    font-size: 9px;
   }
   .archive-layout {
     flex-direction: column;
@@ -2185,40 +1768,22 @@ body:has(.reduced-motion) {
   .file-list > button {
     width: auto;
     padding: 8px 7px;
-    min-width: 145px;
     gap: 7px;
   }
   .file-list > button > span > strong {
     font-size: 9px;
   }
-  .file-list > button small {
-    font-size: 8px;
-  }
-  .file-list > button > svg {
-    width: 22px;
-  }
   .file-reader {
     padding: 20px;
   }
   .file-reader pre {
-    font-size: 10px;
     line-height: 1.9;
-  }
-  .file-heading h1 {
-    font-size: 23px;
   }
   .search-field {
     font-size: 9px;
     gap: 5px;
   }
   .search-field input {
-    width: 125px;
-    font-size: 10px;
-  }
-  .app-toolbar > svg {
-    width: 25px;
-  }
-  .app-toolbar > div > strong {
     font-size: 10px;
   }
   .app-toolbar > div > small {
@@ -2241,44 +1806,30 @@ body:has(.reduced-motion) {
     gap: 6px;
     flex: 1;
     justify-content: center;
-    font-size: 9px;
   }
   .people-list .avatar {
     width: 22px;
     height: 24px;
     font-size: 11px;
   }
-  .people-list small {
-    font-size: 8px;
-  }
   .profile {
     padding: 21px;
-  }
-  .profile-heading h1 {
-    font-size: 25px;
   }
   .notebook-app > header {
     padding: 18px 15px;
     gap: 11px;
   }
   .notebook-app > header h1 {
-    font-size: 22px;
     line-height: 1.2;
   }
   .notebook-app > header p {
     font-size: 10px;
     line-height: 1.6;
   }
-  .notebook-app > header > svg {
-    width: 30px;
-    flex-shrink: 0;
-  }
   .notebook-scroll {
     padding: 0 20px 20px;
   }
   .investigation-steps {
-    font-size: 8px;
-    gap: 10px;
     padding: 15px 0;
     line-height: 1.7;
   }
@@ -2300,11 +1851,7 @@ body:has(.reduced-motion) {
   .monitor-app {
     padding: 7px 4px;
   }
-  .monitor-screen {
-    padding: 12px 10px;
-  }
   .console-heading {
-    font-size: 8px;
     letter-spacing: 0;
   }
   .console-lines p {
@@ -2329,9 +1876,6 @@ body:has(.reduced-motion) {
   .monitor-controls button {
     font-size: 9px;
   }
-  .monitor-note {
-    font-size: 9px;
-  }
   .monitor-settings label {
     width: 100%;
     font-size: 9px;
@@ -2345,47 +1889,17 @@ body:has(.reduced-motion) {
   .boot-screen {
     padding: 22px;
   }
-  .boot-top {
-    font-size: 8px;
-    letter-spacing: 0;
-  }
-  .boot-top > span:last-child {
-    display: none;
-  }
-  .boot-logo {
-    gap: 13px;
-  }
-  .boot-logo > svg {
-    width: 45px;
-  }
   .boot-logo > span {
-    font-size: 33px;
     letter-spacing: 2px;
-  }
-  .boot-premise {
-    font-size: 24px;
-    margin: 30px 0;
   }
   .boot-diagnostics {
     font-size: 10px;
-  }
-  .boot-bottom {
-    font-size: 8px;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .boot-main {
-    padding: 20px 0;
-  }
-  .boot-connect {
-    font-size: 12px;
   }
   .error-toast {
     bottom: 49px;
     padding: 12px;
   }
   .exhibition-banner {
-    height: 42px;
     font-size: 8px;
     gap: 8px;
     justify-content: start;
@@ -2396,9 +1910,6 @@ body:has(.reduced-motion) {
   .exhibition-banner > a {
     margin-left: auto;
     font-size: 8px;
-  }
-  .exhibition .windows-area {
-    top: 42px;
   }
   .exhibition .desktop-meta {
     top: 65px;
@@ -2417,31 +1928,20 @@ body:has(.reduced-motion) {
   image-rendering: pixelated;
   flex-shrink: 0;
 }
-:root {
-  --paper: #fffef8;
-  --shell: #c6c6c6;
-  --navy: #000080;
-}
 .web-page {
   font-family: W95FA, sans-serif;
-  background: #fffef8;
 }
 .web-date {
-  font-size: 10px;
-  padding: 10px 0;
   border-color: #b4b5b0;
 }
 .web-masthead {
   justify-content: center;
-  padding: 22px 0 18px;
   text-align: center;
 }
 .web-name {
   font-family: W95FA, sans-serif;
   font-size: 44px;
   font-weight: 600;
-  letter-spacing: -2px;
-  color: #253b74;
   line-height: 1;
 }
 .web-name > span {
@@ -2453,7 +1953,6 @@ body:has(.reduced-motion) {
   color: #243b56;
 }
 .web-nav {
-  background: #e4e7ef;
   border-top: 1px solid #9ba6bc;
   border-bottom: 1px solid #9ba6bc;
   padding: 4px 0;
@@ -2471,21 +1970,11 @@ body:has(.reduced-motion) {
   color: #162e83;
   font-weight: 600;
 }
-.web-nav button:hover {
-  background: #d2d8e7;
-}
 .web-nav button:last-child {
   margin-left: 0;
 }
-.web-columns {
-  padding-top: 22px;
-  gap: 25px;
-  grid-template-columns: minmax(0, 1fr) 185px;
-}
 .section-title {
   background: #e9e9dd;
-  padding: 7px 9px;
-  margin-bottom: 5px;
   border-top: 1px solid #b1b3a2;
   border-bottom: 1px solid #b1b3a2;
 }
@@ -2493,7 +1982,6 @@ body:has(.reduced-motion) {
   font-family: W95FA, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0;
   color: #20291e;
 }
 .section-title label {
@@ -2504,28 +1992,15 @@ body:has(.reduced-motion) {
   padding: 2px 5px;
 }
 .post {
-  padding: 16px 1px;
   border-color: #d6d6c9;
 }
 .post-header .web-link {
-  font-size: 13px;
-  font-weight: 600;
   text-decoration: underline;
   color: #142e8a;
-}
-.post-header time {
-  font-size: 10px;
 }
 .post p {
   font-size: 13px;
   line-height: 1.7;
-  margin: 9px 0 10px;
-}
-.post-meta {
-  font-size: 10px;
-}
-.provenance {
-  font-size: 9px;
 }
 .avatar {
   font-family: W95FA, sans-serif;
@@ -2540,15 +2015,10 @@ body:has(.reduced-motion) {
   font-size: 12px;
   font-weight: 600;
   background: #e9e9dd;
-  padding: 8px 6px;
   margin: 0 0 7px;
 }
 .online-person strong {
-  font-size: 12px;
   color: #142e8a;
-}
-.online-person small {
-  font-size: 9px;
 }
 .archive-photo {
   margin: 22px 0 12px;
@@ -2562,27 +2032,18 @@ body:has(.reduced-motion) {
   border: 1px solid #747d77;
 }
 .archive-photo figcaption {
-  font-size: 9px;
-  line-height: 1.7;
   margin-top: 7px;
   color: #53594c;
 }
 .archive-photo a {
   color: #394e6c;
 }
-.archive-link {
-  font-size: 11px;
-}
 .counter-box {
   margin-top: 20px;
-  font-size: 10px;
 }
 .network-step {
   font-size: 11px;
   min-height: 34px;
-}
-.step-hint {
-  font-size: 9px;
 }
 .feed-end {
   font-family: W95FA, sans-serif;
@@ -2598,11 +2059,7 @@ body:has(.reduced-motion) {
   color: #4d5d4c;
 }
 .title-drag {
-  font-size: 14px;
   letter-spacing: 0.15px;
-}
-.titlebar {
-  min-height: 28px;
 }
 .menubar button {
   font-size: 13px;
@@ -2613,7 +2070,6 @@ body:has(.reduced-motion) {
   font-size: 12px;
 }
 .desktop-icon span {
-  font-size: 13px;
   line-height: 1.2;
 }
 .task-buttons button {
@@ -2641,22 +2097,6 @@ body:has(.reduced-motion) {
   font-family: W95FA, sans-serif;
   font-weight: 600;
   font-size: 24px;
-  letter-spacing: -0.6px;
-}
-.mail-list button strong {
-  font-size: 13px;
-}
-.mail-list button span {
-  font-size: 12px;
-}
-.mail-list button small {
-  font-size: 11px;
-}
-.app-toolbar > button {
-  font-size: 13px;
-}
-.window-status {
-  font-size: 11px;
 }
 .file-reader,
 .mail-body,
@@ -2676,12 +2116,10 @@ body:has(.reduced-motion) {
   font-family: "W95FA", sans-serif;
   font-size: 50px;
   font-weight: 400;
-  letter-spacing: 2px;
 }
 @media (max-width: 739px) {
   .web-name {
     font-size: 34px;
-    letter-spacing: -1.6px;
   }
   .web-name > span {
     font-size: 14px;
@@ -2689,17 +2127,9 @@ body:has(.reduced-motion) {
     margin-top: 8px;
     margin-left: 0;
   }
-  .web-masthead {
-    padding: 22px 0;
-  }
   .web-nav {
     gap: 0;
     justify-content: center;
-  }
-  .web-nav button,
-  .web-nav button:first-child {
-    font-size: 11px;
-    padding: 6px 10px;
   }
   .web-date {
     font-size: 9px;
@@ -2710,51 +2140,8 @@ body:has(.reduced-motion) {
   .web-columns {
     padding-top: 18px;
   }
-  .section-title h1 {
-    font-size: 14px;
-  }
   .section-title label {
     font-size: 9px;
-  }
-  .post-header .web-link {
-    font-size: 13px;
-  }
-  .post p {
-    font-size: 13px;
-  }
-  .post-header time {
-    font-size: 9px;
-  }
-  .post-meta {
-    font-size: 10px;
-  }
-  .web-footer {
-    font-size: 8px;
-  }
-  .title-drag {
-    font-size: 13px;
-  }
-  .menubar button {
-    font-size: 12px;
-  }
-  .address {
-    font-size: 11px;
-  }
-  .task-buttons button {
-    font-size: 12px;
-  }
-  .window-status {
-    font-size: 10px;
-  }
-  .boot-logo > span {
-    font-size: 37px;
-  }
-  .boot-logo > .pixel-icon {
-    width: 45px;
-    height: 45px;
-  }
-  .app-toolbar > button {
-    font-size: 12px;
   }
   .app-toolbar > .pixel-icon {
     width: 25px;
@@ -2767,18 +2154,6 @@ body:has(.reduced-motion) {
   .notebook-app > header > .pixel-icon {
     width: 30px;
     height: 30px;
-  }
-  .mail-list button strong {
-    font-size: 12px;
-  }
-  .mail-list button span {
-    font-size: 11px;
-  }
-  .mail-list button small {
-    font-size: 10px;
-  }
-  .notebook-app > header h1 {
-    font-size: 23px;
   }
 }
 /* User-directed legibility pass: actual pixel type, no modern serif, no micro-labels. */
@@ -2800,9 +2175,6 @@ body:has(.reduced-motion) {
 .desktop {
   background: #0d2521;
 }
-.wallpaper {
-  display: none;
-}
 .desktop-meta {
   display: none;
 }
@@ -2823,12 +2195,6 @@ body:has(.reduced-motion) {
 }
 .web-name > span {
   display: none;
-}
-.web-masthead {
-  padding: 25px 0 20px;
-}
-.web-page {
-  background: #f1efe4;
 }
 .web-date {
   font-size: 14px;
@@ -3015,10 +2381,6 @@ body:has(.reduced-motion) {
 }
 .letter-heading > p {
   font-size: 15px;
-}
-.mail-list button strong {
-  font-size: 16px;
-  font-weight: 400;
 }
 .mail-list button span {
   font-size: 15px;
@@ -3215,11 +2577,6 @@ body:has(.reduced-motion) {
 .mail-notification {
   width: 285px;
 }
-.boot-top,
-.boot-bottom,
-.boot-premise {
-  display: none;
-}
 .boot-screen {
   background: #0b1916;
 }
@@ -3273,7 +2630,6 @@ body:has(.reduced-motion) {
 .exhibition-banner,
 .exhibition-banner strong,
 .exhibition-banner a {
-  font-size: 13px;
   letter-spacing: 0;
 }
 .exhibition-banner {
@@ -3288,9 +2644,6 @@ body:has(.reduced-motion) {
       39px/1 W95FA,
       sans-serif;
     letter-spacing: 1px;
-  }
-  .web-masthead {
-    padding: 23px 0 18px;
   }
   .web-date,
   .web-date span:last-child {
@@ -3360,27 +2713,14 @@ body:has(.reduced-motion) {
   .search-field input {
     width: 125px;
   }
-  .mail-list button strong {
-    font-size: 15px;
-  }
   .mail-list button span {
     font-size: 14px;
   }
   .mail-list button small {
     font-size: 13px;
   }
-  .mail-list {
-    max-height: 124px;
-  }
-  .mail-body {
-    padding: 20px;
-  }
   .letter-text {
-    font-size: 18px;
     line-height: 1.55;
-  }
-  .letter-heading h1 {
-    font-size: 26px;
   }
   .letter-actions button {
     font-size: 15px;
@@ -3724,4 +3064,562 @@ body:has(.reduced-motion) {
     18px/1.55 W95FA,
     sans-serif;
   margin: 16px 0 4px;
+}
+/* 98.css supplies the native control grammar. These bindings adapt its desktop to React. */
+:root {
+  --shell: #c0c0c0;
+  --navy: #000080;
+  --teal: #008080;
+  --paper: #fff;
+}
+.desktop {
+  background: #008080;
+}
+.desktop-photograph,
+.boot-screen:before {
+  display: none;
+}
+.os-window {
+  box-shadow: 2px 3px 7px #0005;
+}
+.window-frame {
+  background: #c0c0c0;
+}
+.titlebar {
+  background: #808080;
+}
+.focused .titlebar {
+  background: #000080;
+}
+.title-drag {
+  color: #fff;
+  font-family: W95FA, sans-serif;
+  text-shadow: none;
+  font-size: 16px;
+  font-weight: 400;
+}
+.window-buttons button {
+  min-width: 20px;
+  min-height: 20px;
+  width: 20px;
+  height: 20px;
+}
+.window-buttons {
+  gap: 3px;
+}
+.desktop input[type="checkbox"],
+.desktop input[type="radio"] {
+  appearance: auto;
+  -webkit-appearance: auto;
+  position: static;
+  opacity: 1;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  box-shadow: none;
+  transform: none;
+  accent-color: #000080;
+}
+.desktop label:before,
+.desktop label:after {
+  content: none !important;
+}
+.web-link,
+.menubar button,
+.task-status button {
+  min-width: 0;
+}
+.desktop-icons {
+  gap: 15px;
+  top: 22px;
+  left: 14px;
+  width: 98px;
+}
+.desktop-icon {
+  cursor: default;
+  min-height: 75px;
+  outline-offset: -1px;
+}
+.desktop-icon:hover {
+  background: none;
+}
+.desktop-icon.chosen > span {
+  background: #000080;
+  color: #fff;
+  outline: 1px dotted #fff;
+}
+.desktop-icon span {
+  font-size: 15px;
+  text-shadow: 1px 1px #000;
+}
+.desktop-icon > .pixel-icon {
+  width: 32px;
+  height: 32px;
+}
+.taskbar {
+  height: 39px;
+  background: #c0c0c0;
+}
+.task-buttons button {
+  font-size: 15px;
+  font-weight: 400;
+}
+.task-status {
+  background: #c0c0c0;
+}
+.mail-notification {
+  background: #ffffe1;
+}
+.notification-heading {
+  background: #c0c0c0;
+}
+.notification-body > span {
+  font-size: 17px;
+}
+.web-page {
+  background: #fff;
+}
+.web-nav {
+  background: #eee;
+}
+.section-title,
+.online-box h2 {
+  background: #e7e7e7;
+}
+.browser-tools > button {
+  box-shadow: none;
+}
+.web-footer {
+  font-size: 13px;
+}
+.start-spine {
+  background: #808080;
+  font-size: 23px;
+}
+.start-spine > span {
+  display: none;
+}
+.boot-screen {
+  background: #000;
+  padding: 28px;
+  color: #c3c3c3;
+}
+.power-screen {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 220px;
+}
+.power-screen > .boot-connect {
+  font:
+    18px W95FA,
+    sans-serif;
+  min-width: 160px;
+  max-width: 200px;
+  padding: 10px;
+  background: #c0c0c0;
+  box-shadow: var(--bevel);
+  color: #000;
+  text-align: center;
+}
+.power-screen .boot-sound {
+  margin: 0;
+  color: #bdbdbd;
+  font-size: 16px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.post-screen {
+  font:
+    22px/1.4 VT323,
+    monospace;
+  color: #c3c3c3;
+  padding: 5px 10px;
+}
+.post-screen p {
+  margin: 4px 0;
+}
+.post-cursor {
+  animation: blink 1s steps(1) infinite;
+}
+.boot-loading {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.boot-loading h1 {
+  font:
+    76px/0.9 W95FA,
+    sans-serif;
+  color: #ddd;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0 0 50px;
+}
+.boot-loading h1 > span {
+  font:
+    44px W95FA,
+    sans-serif;
+  margin-left: 7px;
+}
+.boot-loading p {
+  font:
+    20px W95FA,
+    sans-serif;
+  color: #bbb;
+  margin: 20px 0;
+}
+.boot-progress {
+  display: flex;
+  border: 2px inset #888;
+  padding: 3px;
+  gap: 3px;
+  width: 295px;
+  height: 30px;
+  background: #090909;
+}
+.boot-progress i {
+  width: 16px;
+  height: 19px;
+  background: #111;
+}
+.boot-progress i.lit {
+  background: #a4a4a4;
+}
+.skip-boot {
+  position: absolute;
+  bottom: 25px;
+  right: 28px;
+  color: #aaa;
+  background: none;
+  box-shadow: none;
+  font:
+    15px W95FA,
+    sans-serif;
+  padding: 6px;
+  min-width: 0;
+  text-decoration: underline;
+}
+.skip-boot:hover {
+  background: none;
+  color: #fff;
+}
+.plain-notepad {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.plain-notepad > textarea {
+  flex: 1;
+  min-height: 0;
+  resize: none;
+  outline: none;
+  margin: 3px 0 0;
+  padding: 12px 14px;
+  font:
+    18px/1.35 VT323,
+    monospace;
+  white-space: pre;
+  overflow: auto;
+  background: #fff;
+  color: #000;
+  box-shadow: var(--inset);
+}
+.plain-notepad .menubar {
+  background: #c0c0c0;
+}
+.explorer-address {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 4px 6px 8px;
+  font:
+    15px W95FA,
+    sans-serif;
+}
+.explorer-address > span {
+  background: #fff;
+  box-shadow: var(--inset);
+  padding: 5px 8px;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.archive-app .menubar {
+  align-items: center;
+  padding: 4px;
+}
+.archive-app .search-field {
+  margin-left: auto;
+  gap: 5px;
+}
+.archive-app .search-field input {
+  width: 150px;
+}
+.file-list {
+  background: #fff;
+  width: 205px;
+  padding: 12px 6px;
+}
+.file-list > p:first-child {
+  font-size: 16px;
+  letter-spacing: 0;
+  margin-bottom: 16px;
+}
+.file-list > button {
+  padding: 10px 7px;
+}
+.file-list > button.active {
+  background: #000080;
+}
+.file-list > button strong {
+  font-size: 15px;
+}
+.file-list > button small {
+  font-size: 13px;
+}
+.file-reader {
+  background: #fff;
+  padding: 15px 22px;
+}
+.file-heading h1 {
+  font-size: 23px;
+  margin: 3px 0 10px;
+}
+.file-heading > span {
+  font:
+    15px W95FA,
+    sans-serif;
+}
+.file-reader pre {
+  border: 0;
+  font:
+    18px/1.35 VT323,
+    monospace;
+  margin: 14px 0;
+  padding: 5px 0;
+}
+.file-send-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #c0c0c0;
+  padding: 10px;
+}
+.file-send-menu button {
+  font-size: 16px;
+}
+.file-policy {
+  margin: 15px 0 0;
+  padding: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+}
+.file-policy legend,
+.file-policy label,
+.file-policy p,
+.file-policy button {
+  font:
+    16px W95FA,
+    sans-serif;
+}
+.file-policy label {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.file-policy button {
+  margin-left: auto;
+}
+.games-app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.game-folder {
+  flex: 1;
+  display: flex;
+  gap: 45px;
+  align-content: flex-start;
+  align-items: start;
+  flex-wrap: wrap;
+  padding: 35px;
+  background: #fff;
+}
+.game-folder > button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 13px;
+  background: none;
+  box-shadow: none;
+  max-width: 220px;
+  padding: 12px;
+  color: #000;
+}
+.game-folder > button:hover {
+  background: #000080;
+  color: #fff;
+}
+.game-folder strong {
+  font:
+    20px W95FA,
+    sans-serif;
+  font-weight: 400;
+}
+.game-folder span {
+  font:
+    15px W95FA,
+    sans-serif;
+}
+.games-app > iframe {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  border: 0;
+  background: #111;
+}
+.game-credits {
+  font:
+    14px W95FA,
+    sans-serif;
+  padding: 8px;
+  min-height: 31px;
+}
+.game-credits a {
+  color: #000080;
+}
+@media (max-width: 739px) {
+  .desktop-icons {
+    top: 21px;
+    left: 18px;
+    gap: 14px;
+  }
+  .boot-screen {
+    padding: 18px;
+  }
+  .post-screen {
+    font-size: 20px;
+    padding: 0;
+  }
+  .boot-loading h1 {
+    font-size: 54px;
+  }
+  .boot-loading h1 > span {
+    font-size: 33px;
+  }
+  .boot-progress {
+    width: 260px;
+  }
+  .boot-progress i {
+    width: 14px;
+  }
+  .archive-app .menubar button {
+    font-size: 14px;
+    padding: 6px;
+  }
+  .archive-app .search-field input {
+    width: 92px;
+  }
+  .explorer-address {
+    font-size: 14px;
+  }
+  .file-list {
+    width: auto;
+    display: flex;
+    padding: 7px 5px;
+  }
+  .file-list > p:first-child {
+    display: none;
+  }
+  .file-list > button {
+    min-width: 170px;
+  }
+  .file-reader {
+    padding: 16px;
+  }
+  .plain-notepad > textarea {
+    font-size: 20px;
+  }
+  .game-folder {
+    gap: 20px;
+    padding: 20px;
+  }
+  .game-folder > button {
+    max-width: 160px;
+  }
+  .game-credits {
+    font-size: 13px;
+  }
+}
+.desktop.wallpaper-forest {
+  background: #142523 url("/assets/forest.jpg") center / cover no-repeat;
+}
+.desktop.wallpaper-forest:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 15, 16, 0.44);
+  pointer-events: none;
+}
+.desktop.wallpaper-plain {
+  background: #008080;
+}
+.game-folder {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 25px 35px;
+  overflow: auto;
+  align-content: start;
+}
+.game-folder > button {
+  width: 100%;
+  max-width: none;
+  min-height: 120px;
+}
+.game-folder strong {
+  font-weight: 400;
+}
+.game-folder span {
+  font-size: 15px;
+}
+@media (max-width: 739px) {
+  .game-folder {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+    padding: 20px 10px;
+  }
+  .game-folder > button {
+    max-width: none;
+    padding: 8px 3px;
+  }
+  .game-folder span {
+    font-size: 14px;
+  }
+}
+.desktop .window,
+.desktop button,
+.desktop input,
+.desktop select,
+.desktop label {
+  font-family: W95FA, sans-serif;
+}
+.plain-notepad > textarea {
+  font-family: VT323, monospace;
+}
+
+.monitor-quota {
+  margin: 8px 12px;
+  font-size: 15px;
+  line-height: 1.4;
 }

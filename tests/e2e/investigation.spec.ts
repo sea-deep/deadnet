@@ -1,5 +1,13 @@
-import { test, expect } from "@playwright/test";
-async function openApp(page: import("@playwright/test").Page, name: string) {
+import { test, expect, type Page } from "@playwright/test";
+async function boot(page: Page) {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Power on", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Computer startup" })
+    .waitFor({ state: "hidden" });
+}
+async function openApp(page: Page, name: string) {
   await page.getByRole("button", { name: "Start", exact: true }).click();
   await page
     .getByRole("navigation", { name: "Start menu" })
@@ -12,67 +20,64 @@ test.beforeEach(async ({ request }) => {
   });
   await request.post("/api/action", { data: { type: "reset" } });
 });
-test("visitor recovers a contradiction, shares it privately, sees a lasting consequence, and resolves the archive", async ({
+test("a file shared privately changes another account and persists across a reload", async ({
   page,
   request,
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/");
-  await page.getByRole("button", { name: "Establish connection" }).click();
+  await boot(page);
+  await openApp(page, "My Documents");
+  let files = page.getByRole("region", { name: "My Documents" });
   await expect(
-    page.getByRole("heading", { name: "The neighborhood" }),
+    files.getByText("External clients: 0", { exact: false }),
   ).toBeVisible();
-  await openApp(page, "GhostMail");
-  const mail = page.getByRole("region", { name: "GhostMail" });
+  await files.getByRole("button", { name: "Send To…" }).click();
+  await files.getByRole("button", { name: "Mara Voss", exact: true }).click();
+  let inbox = page.getByRole("region", { name: "Inbox" });
+  await inbox
+    .getByRole("textbox", { name: "Message", exact: true })
+    .fill("Have you seen this log?");
+  await inbox.getByRole("button", { name: "Send privately" }).click();
   await expect(
-    mail.getByRole("heading", { name: "Before you open the archive" }),
-  ).toBeVisible();
-  await openApp(page, "Archive.exe");
-  const archive = page.getByRole("region", { name: "Archive.exe" });
-  await expect(
-    archive.getByText("External clients: 0", { exact: false }),
-  ).toBeVisible();
-  await archive.getByRole("button", { name: "Recover this record" }).click();
-  await expect(
-    archive.getByRole("button", { name: "Saved in notebook" }),
-  ).toBeDisabled();
-  await archive.getByRole("button", { name: "Open notebook" }).click();
-  const notebook = page.getByRole("region", { name: "Evidence notebook" });
-  await notebook.getByRole("button", { name: "Tell one account…" }).click();
-  await notebook.getByRole("button", { name: "Tell Mara" }).click();
-  await mail.getByRole("button", { name: "Sent", exact: true }).click();
-  await expect(
-    mail.getByRole("button", { name: "A quiet word", exact: false }).first(),
+    inbox.getByRole("heading", { name: "A quiet word", exact: false }),
   ).toBeVisible();
   await request.post("/api/action", { data: { type: "tick" } });
-  const saved = await (await request.get("/api/state")).json();
+  let state = await (await request.get("/api/state")).json();
   expect(
-    saved.world.agents.find((a: { id: string }) => a.id === "len").knownFacts,
+    state.world.agents.find((a: { id: string }) => a.id === "len").knownFacts,
   ).toContain("carrier");
-  await page.reload();
-  await page.getByRole("button", { name: "Establish connection" }).click();
-  await openApp(page, "Archive.exe");
-  const again = page.getByRole("region", { name: "Archive.exe" });
-  await again.getByRole("button", { name: "HAPPY_BIRTHDAY.EML" }).click();
-  await again.getByRole("button", { name: "Recover this record" }).click();
-  await expect(
-    again.getByRole("button", { name: "Saved in notebook" }),
-  ).toBeDisabled();
-  await again.getByRole("button", { name: "CONTINUITY.INI" }).click();
-  await again.getByRole("button", { name: "Recover this record" }).click();
-  await expect(
-    again.getByRole("button", { name: "Saved in notebook" }),
-  ).toBeDisabled();
-  await again.getByRole("button", { name: "Open notebook" }).click();
-  const final = page.getByRole("region", { name: "Evidence notebook" });
-  await final
-    .getByRole("button", { name: "Release the complete record" })
+  await boot(page);
+  await openApp(page, "My Documents");
+  files = page.getByRole("region", { name: "My Documents" });
+  await files
+    .getByRole("button", { name: "HAPPY_BIRTHDAY.EML", exact: false })
     .click();
   await expect(
-    final.getByRole("heading", { name: "The correction is permanent." }),
+    files.getByText("Delivery count: 50", { exact: false }),
   ).toBeVisible();
-  const state = await (await request.get("/api/state")).json();
+  await expect
+    .poll(async () => {
+      const x = await (await request.get("/api/state")).json();
+      return x.world.collected;
+    })
+    .toContain("birthday");
+  await files
+    .getByRole("button", { name: "CONTINUITY.INI", exact: false })
+    .click();
+  await expect(
+    files.getByText("Purpose=Preserve the conversation", { exact: false }),
+  ).toBeVisible();
+  await expect
+    .poll(async () => {
+      const x = await (await request.get("/api/state")).json();
+      return x.world.collected;
+    })
+    .toContain("manifest");
+  await files.getByRole("radio", { name: "Everyone on the network" }).check();
+  await files.getByRole("button", { name: "Apply", exact: true }).click();
+  await expect(files.getByText("Permissions saved: public.")).toBeVisible();
+  state = await (await request.get("/api/state")).json();
   expect(state.world.ending).toBe("exposed");
   expect(errors).toEqual([]);
   expect(
@@ -81,51 +86,53 @@ test("visitor recovers a contradiction, shares it privately, sees a lasting cons
     ),
   ).toBe(true);
 });
-test("window controls, keyboard movement, archive search, reduced motion, and service validation", async ({
+test("desktop controls, saved notes, wallpaper, mute and service validation", async ({
   page,
   request,
 }, testInfo) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  await page.getByRole("button", { name: "Establish connection" }).click();
-  const browser = page.getByRole("region", { name: "DeadBrowser" });
-  await browser.getByRole("button", { name: "Minimize DeadBrowser" }).click();
+  await boot(page);
+  await openApp(page, "Internet");
+  const browser = page.getByRole("region", { name: "Internet" });
+  await browser.getByRole("button", { name: "Minimize Internet" }).click();
   await expect(browser).toBeHidden();
   await page
     .locator(".task-buttons")
-    .getByRole("button", { name: "DeadBrowser" })
+    .getByRole("button", { name: "Internet", exact: true })
     .click();
   await expect(browser).toBeVisible();
-  await browser.getByRole("button", { name: "Maximize DeadBrowser" }).click();
-  await expect(browser).toBeVisible();
-  await openApp(page, "Archive.exe");
-  const archive = page.getByRole("region", { name: "Archive.exe" });
-  await archive
-    .getByRole("textbox", { name: "Search archive" })
-    .fill("birthday");
-  await expect(
-    archive.getByRole("button", { name: "HAPPY_BIRTHDAY.EML" }),
-  ).toBeVisible();
-  await expect(
-    archive.getByRole("button", { name: "CARRIER.LOG" }),
-  ).toHaveCount(0);
-  await archive.getByRole("button", { name: "Close Archive.exe" }).click();
-  await expect(archive).toHaveCount(0);
   if (testInfo.project.name === "desktop") {
-    const title = browser.getByLabel("DeadBrowser title bar.", {
-      exact: false,
-    });
+    const title = browser.getByLabel("Internet title bar.", { exact: false });
     await title.focus();
-    await title.press("Enter");
     await title.press("ArrowRight");
   }
-  const bad = await request.post("/api/action", {
-    data: { type: "message", target: "unknown", text: "x" },
-  });
-  expect(bad.status()).toBe(400);
-  const cross = await request.post("/api/action", {
-    data: { type: "reset" },
-    headers: { Origin: "https://unrelated.invalid" },
-  });
-  expect(cross.status()).toBe(403);
+  await openApp(page, "Notepad");
+  const notes = page.getByRole("textbox", { name: "Notepad document" });
+  await notes.fill("milk\nbatteries\nwho left the line open?");
+  await boot(page);
+  await openApp(page, "Notepad");
+  await expect(
+    page.getByRole("textbox", { name: "Notepad document" }),
+  ).toHaveValue("milk\nbatteries\nwho left the line open?");
+  await page.getByRole("button", { name: "Mute sound", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Enable sound", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Start", exact: true }).click();
+  await page.getByRole("button", { name: "Use plain wallpaper" }).click();
+  await expect(page.locator(".desktop")).toHaveClass(/wallpaper-plain/);
+  expect(
+    (
+      await request.post("/api/action", {
+        data: { type: "message", target: "unknown", text: "x" },
+      })
+    ).status(),
+  ).toBe(400);
+  expect(
+    (
+      await request.post("/api/action", {
+        data: { type: "reset" },
+        headers: { Origin: "https://unrelated.invalid" },
+      })
+    ).status(),
+  ).toBe(403);
 });

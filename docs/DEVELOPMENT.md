@@ -9,3 +9,9 @@
 - Browser automation initially could read screenshots but could not write to the workspace through its server-side path policy. Local Playwright is used for reproducible on-disk captures; no path-policy bypass.
 
 Further verification results and measured failures are recorded in evidence/ and benchmarks, not invented here.
+
+- User feedback changed the visual direction: sourced W95FA/VT323, actual Yahoo/Netscape references, Fugue PNG icons, 98.css shell adaptation, plain editable Notepad, full BIOS/power sequence, forest photo and CC0 ambience. Removed repeated technical marketing copy and abandoned the demo video at the user’s request.
+- Vendored six MIT games with pinned revisions and visible author credits. The initial iframe directory URL opened the desktop recursively through Vite’s SPA fallback. Explicit index.html URLs and rewritten Hocus routes fixed it. Verified real gameplay starts in Chrome.
+- ElevenLabs configured from the explicitly authorized sibling project key; no key was logged or committed. One Daniel-voice render was measured and reused from SQLite cache; UI playback checked.
+- Added OpenRouter open-weight transport and persistent free-account caps. Strict json_schema routing was unsupported by the chosen free Gemma endpoint, so hosted requests use JSON mode plus actor-specific prompt schema and authoritative server validation. Some alternative free endpoints require reasoning; removed the blanket reasoning-disable parameter. Gemma’s shared free provider pool nevertheless returned 429. Kept that failure visible instead of silently using a paid route.
+- Added burst/day limits, upstream cooldown persistence, free-model-only validation, reset resistance and no-retry-on-429 tests. Changed development to tsx watch including .env so backend settings reload. Removed unused cloud-deployment tooling and its audit findings. Public hosted inference remains unshipped; existing Pages exhibition stays explicitly scripted.

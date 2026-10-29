@@ -12,10 +12,14 @@ Reference screenshots are research evidence, not application assets or replaceme
 
 ## Shipped asset provenance
 
-- **Fugue Icons**, Yusuke Kamiyamane, CC BY 3.0. [Author’s site](https://p.yusukekamiyamane.com/); PNG files obtained from the [University of Kent mirror](https://github.com/unikent/fugue-icons). Eight original PNG files, no AI upscaling or traced SVG. Author attribution appears in DeadBrowser’s footer and public/assets/icons/LICENSE.txt.
+- **Fugue Icons**, Yusuke Kamiyamane, CC BY 3.0. [Author’s site](https://p.yusukekamiyamane.com/); PNG files obtained from the [University of Kent mirror](https://github.com/unikent/fugue-icons). Nine original PNG files, no AI upscaling or traced SVG. Author attribution appears in DeadBrowser’s footer and public/assets/icons/LICENSE.txt.
 - **W95FA / WIN95FA**, Alina Sava; SIL Open Font License. Self-hosted WOFF2 from Fontsource. Used for functional UI and story text; this is not a distributed Microsoft font. License in public/assets/fonts/W95FA-LICENSE.txt.
 - **VT323**, Peter Hull; SIL Open Font License. Self-hosted WOFF2 from @fontsource/vt323 5.3.0. Used for actual terminal records and boot diagnostics. License shipped beside font.
 - **Earthrise**, NASA / William Anders (Apollo 8, 1968), public-domain US federal imagery. [NASA source](https://science.nasa.gov/resource/image-earthrise/). An actual photograph in the fictional cached-image panel; identified and credited. It is not presented as original project photography.
-- **Pumpkin Sun**, NASA/GSFC/SDO, October 8, 2014. [NASA source](https://svs.gsfc.nasa.gov/11711/). Actual false-color extreme-ultraviolet solar imagery, combining two wavelength captures; not a visible-light photograph or AI illustration. Used as a dark desktop/boot background, scaled by CSS. Credit in CREDITS.md. It supplies an uncanny Halloween face without a stock ghost or invented artwork.
+- **Pumpkin Sun**, NASA/GSFC/SDO, October 8, 2014. [NASA source](https://svs.gsfc.nasa.gov/11711/). Actual false-color extreme-ultraviolet solar imagery, combining two wavelength captures; not a visible-light photograph or AI illustration. Used in an earlier desktop revision; the current desktop uses a forest photograph. Credit in CREDITS.md. It supplies an uncanny Halloween face without a stock ghost or invented artwork.
 
 No modern serif font remains in the UI. The earlier handmade SVG icons and promotional boot taglines were removed following user feedback. Technical model details live in System Monitor. Baseline/replay disclosures remain visible because hiding them would misrepresent inference.
+
+## Final atmosphere
+
+The current desktop uses Sebastian Unrau’s [actual forest photograph](https://unsplash.com/photos/trees-on-forest-with-sun-rays-sp-p7uuT0tw), under the Unsplash License. It is a cached raster wallpaper with a CSS tint, not an AI-generated asset. Plain teal remains selectable through Start. The shell adapts 98.css rather than drawing a synthetic approximation of an OS. The Inbox layout follows the inspected Netscape screenshot; Notepad is an ordinary editable document.

@@ -7,7 +7,8 @@ export type IconName =
   | "monitor"
   | "notebook"
   | "speaker"
-  | "disk";
+  | "disk"
+  | "games";
 export function PixelIcon({
   name,
   size = 32,

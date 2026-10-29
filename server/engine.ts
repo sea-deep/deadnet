@@ -191,6 +191,13 @@ export class Engine {
           origin: "system",
         });
     } catch (error) {
+      if (error instanceof RuleError && error.status === 429) {
+        const saved = this.world();
+        saved.auto = false;
+        saved.revision++;
+        this.store.save(saved, "quota-pause");
+        throw error;
+      }
       w.traces.push({
         ...((error as { trace?: object }).trace || {
           provider: this.model.name,
@@ -211,7 +218,7 @@ export class Engine {
       this.event(w, {
         actor: "system",
         channel: "system",
-        text: `${agent.name} could not respond. Local generation failed; incoming information remains unread. Retry a turn or check System Monitor.`,
+        text: `${agent.name} could not respond. Generation failed; incoming information remains unread. Retry a turn or check System Monitor.`,
         sourceId: incoming.id,
         origin: "system",
       });
@@ -242,7 +249,10 @@ export class Engine {
           const e = this.evidence(w, action.evidenceId);
           if (!w.collected.includes(e.id)) {
             w.collected.push(e.id);
-            if (e.id === "birthday")
+            if (
+              e.id === "birthday" &&
+              !w.events.some((event) => event.audioTranscript)
+            )
               this.event(w, {
                 actor: "sysop",
                 channel: "mail",
@@ -256,7 +266,7 @@ export class Engine {
             this.event(w, {
               actor: "system",
               channel: "system",
-              text: `Recovered ${e.filename}. Evidence kept in your notebook. No accounts notified.`,
+              text: `Opened ${e.filename}. No accounts notified.`,
               origin: "system",
             });
           }

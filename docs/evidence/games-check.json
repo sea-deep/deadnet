@@ -1,0 +1,26 @@
+{
+  "results": {
+    "2048": {
+      "tiles": 4
+    },
+    "Snake": {
+      "children": 21,
+      "gameReady": "[Paused]Press [space] to unpause.patorjk.com - source code - pat's youtubeLength: 1Highscore: 0patorjk.compat's youtubeJavaScript SnakeUse the arrow keys on your keyboard to play the game. On Windows, press F11 to play in Full Screen mode.Play Game\n      \n        Theme:\n        Light Theme by yokesharunMain Theme by patorjkDark Theme by KenyStevGreen Theme by CoffeeCatDEMatrix Theme by Geahad HaymorTheme by Senura RatnayakeSnake Head Theme by Rb64Black and purple Theme by LucassSantossNeon Theme by Daisy21000Clean Theme by CrashoutKing123Original Theme by DylanLCrockerGolden Theme By JosephVoboril29Cotton Candy Theme by KiwiNguyen29OG Theme by NevanJohnson\n      \n      \n        Mode:\n        \n          Easy\n          Medium\n          Hard\n          Impossible\n          Rush\n        \n      \n      \n        Full Screen\n      \n    JavaScript SnakeYou died :(Play Again?JavaScript SnakeYou win! :DPlay Again?"
+    },
+    "Flappy Bird": {
+      "state": "playing",
+      "score": 0
+    },
+    "Tetris": {
+      "playing": true,
+      "canvases": 5
+    },
+    "Phantomicus": {
+      "canvases": 2
+    },
+    "Hocus :focus": {
+      "level2": true
+    }
+  },
+  "errors": []
+}

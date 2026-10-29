@@ -61,6 +61,7 @@ export interface Trace {
   inputTokens: number;
   outputTokens: number;
   tokensPerSecond: number;
+  costUsd?: number;
   sourceId?: string;
   attempts: number;
   error?: string;
@@ -88,6 +89,12 @@ export interface Status {
   provider: string;
   model: string;
   message: string;
+  quota?: {
+    globalUsed: number;
+    globalLimit: number;
+    visitorUsed: number;
+    visitorLimit: number;
+  };
   voice: boolean;
   busy: boolean;
 }

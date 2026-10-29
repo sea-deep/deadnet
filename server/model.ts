@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createHash } from "node:crypto";
+
 import type { Agent, Event, Trace, World } from "../src/types.ts";
 import { disclosableFacts } from "./knowledge.ts";
 import { ARCHIVE } from "./seed.ts";
@@ -18,6 +18,14 @@ export interface ModelAdapter {
   model: string;
   available(): Promise<boolean>;
   generate(input: ModelInput): Promise<Generation>;
+}
+export async function hashPrompt(messages: unknown) {
+  const bytes = new TextEncoder().encode(JSON.stringify(messages));
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)]
+    .map((n) => n.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 16);
 }
 export function schemaFor(input: ModelInput) {
   const schema = z.toJSONSchema(DecisionSchema);
@@ -126,10 +134,7 @@ export class LocalModel implements ModelAdapter {
   async generate(input: ModelInput): Promise<Generation> {
     const start = performance.now();
     const messages = promptFor(input);
-    const promptHash = createHash("sha256")
-      .update(JSON.stringify(messages))
-      .digest("hex")
-      .slice(0, 16);
+    const promptHash = await hashPrompt(messages);
     let lastError: unknown;
     let attempts = 0;
     let inputTokens = 0,
