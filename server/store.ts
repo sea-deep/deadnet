@@ -2,6 +2,7 @@ import { DatabaseSync } from "node:sqlite";
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import type { World } from "../src/types.ts";
+import { isSavedWorld } from "../src/saved-world.ts";
 import { seedWorld } from "./seed.ts";
 export class Store {
   readonly db: DatabaseSync;
@@ -88,7 +89,16 @@ export class VisitorStore {
   }
   load(): World {
     const row = this.row();
-    if (row) return JSON.parse(row.snapshot);
+    if (row) {
+      try {
+        // A stale schema or interrupted write must not brick one visitor's
+        // cached engine; fall through and recreate a clean world instead.
+        const parsed: unknown = JSON.parse(row.snapshot);
+        if (isSavedWorld(parsed)) return parsed;
+      } catch {
+        /* Recreate below. */
+      }
+    }
     // Pruning can remove a world while its engine is still cached; recreate it
     // instead of dereferencing a missing row.
     const world = seedWorld();

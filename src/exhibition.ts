@@ -2,11 +2,17 @@ import { Engine } from "../server/engine";
 import { BaselineModel } from "../server/baseline";
 import { ARCHIVE, seedWorld } from "../server/seed";
 import type { Action, World } from "./types";
+import { isSavedWorld } from "./saved-world";
 const key = "deadnet-case-westhaven-v4";
 let memory: World = seedWorld("baseline");
 try {
   const saved = localStorage.getItem(key);
-  if (saved) memory = JSON.parse(saved);
+  if (saved) {
+    // Browser storage is untrusted: a stale or truncated world must not take
+    // down every window that reads it.
+    const parsed: unknown = JSON.parse(saved);
+    if (isSavedWorld(parsed)) memory = parsed;
+  }
 } catch {
   /* Storage may be blocked in private browser sessions. */
 }
@@ -55,6 +61,8 @@ setInterval(() => {
     void engine.dispatch({ type: "tick" });
 }, 35000);
 export function restore(world: World) {
+  if (!isSavedWorld(world))
+    throw new Error("That isn’t a save file for this case.");
   store.save(world);
   return read();
 }

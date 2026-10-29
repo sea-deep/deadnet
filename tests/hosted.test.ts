@@ -39,6 +39,24 @@ test("a pruned visitor world is recreated instead of crashing its cached engine"
   store.close();
 });
 
+test("a damaged visitor world is replaced instead of crashing its account", () => {
+  const store = new Store(":memory:");
+  const visitor = new VisitorStore(store, "damaged");
+  for (const snapshot of ["{not json", '{"version":1,"agents":[]}']) {
+    store.db
+      .prepare("UPDATE visitor_world SET snapshot=? WHERE visitor=?")
+      .run(snapshot, "damaged");
+    const loaded = visitor.load();
+    assert.equal(loaded.version, 1);
+    assert.equal(loaded.agents.length, 4);
+    assert.equal(
+      loaded.events.some((event) => event.actor === "mara"),
+      true,
+    );
+  }
+  store.close();
+});
+
 test("leaked JSON punctuation is stripped from model replies", () => {
   const d = DecisionSchema.parse({
     text: 'who are you?"}',
