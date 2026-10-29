@@ -55,11 +55,30 @@ export async function restore(world: World): Promise<Snapshot> {
 }
 
 const SAVE_KEY = "deadnet-save-v1";
+/** Validate the shape we actually depend on before trusting browser storage. */
+export function isSavedWorld(value: unknown): value is World {
+  if (!value || typeof value !== "object") return false;
+  const w = value as Partial<World>;
+  return (
+    w.version === 1 &&
+    typeof w.storyId === "string" &&
+    typeof w.tick === "number" &&
+    typeof w.revision === "number" &&
+    Array.isArray(w.agents) &&
+    Array.isArray(w.events) &&
+    Array.isArray(w.collected) &&
+    Array.isArray(w.published) &&
+    Array.isArray(w.traces) &&
+    (w.played === undefined || Array.isArray(w.played))
+  );
+}
 /** The browser's copy of the case, written after every change. */
 export function readSave(): World | undefined {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
-    return raw ? (JSON.parse(raw) as World) : undefined;
+    if (!raw) return undefined;
+    const parsed: unknown = JSON.parse(raw);
+    return isSavedWorld(parsed) ? parsed : undefined;
   } catch {
     return undefined;
   }

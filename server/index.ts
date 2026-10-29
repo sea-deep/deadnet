@@ -181,7 +181,14 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("mode"), mode: z.enum(["live", "baseline"]) }),
   z.object({
     type: z.literal("played"),
-    game: z.enum(["snake", "flappy", "tetris", "2048", "phantomicus"]),
+    game: z.enum([
+      "snake",
+      "flappy",
+      "tetris",
+      "2048",
+      "phantomicus",
+      "hocus",
+    ]),
   }),
   z.object({ type: z.literal("auto"), enabled: z.boolean() }),
   z.object({ type: z.literal("renew") }),
@@ -206,6 +213,7 @@ const gameId = z.enum([
   "tetris",
   "2048",
   "phantomicus",
+  "hocus",
 ]);
 /** A save must belong to this story and stay within the game's own limits. */
 const saveSchema = z.object({

@@ -52,6 +52,25 @@ const components = {
   games: Games,
   spirit: Spirit,
 };
+/** Keep keyboard focus inside a modal dialog until it is dismissed. */
+function keepFocusInside(e: React.KeyboardEvent<HTMLElement>) {
+  if (e.key !== "Tab") return;
+  const controls = Array.from(
+    e.currentTarget.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  );
+  if (!controls.length) return;
+  const first = controls[0],
+    last = controls.at(-1)!;
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+}
 const defaults: Record<AppId, { width: number; height: number }> = {
   readme: { width: 640, height: 640 },
   browser: { width: 970, height: 740 },
@@ -106,16 +125,50 @@ export default function App() {
       return false;
     }
   });
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [stickyOpen, setStickyOpen] = useState(true);
+  const [stickyExpanded, setStickyExpanded] = useState(() => innerWidth >= 740);
+  const [readMail, setReadMail] = useState<string[]>(() => {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("deadnet-read-mail") || "[]",
+      );
+      return Array.isArray(saved)
+        ? saved.filter((id): id is string => typeof id === "string")
+        : [];
+    } catch {
+      return [];
+    }
+  });
   const [propertiesOpen, setPropertiesOpen] = useState(false);
   const received = useRef<Set<string> | null>(null);
   const incomingMail =
     data?.world.events.filter(
       (e) => e.channel === "mail" && e.to === "visitor" && e.actor !== "nora",
     ) || [];
+  const unreadMail = incomingMail.filter((e) => !readMail.includes(e.id));
   const noticeMail = incomingMail.find((e) => e.id === noticeId);
+  // Read receipts survive reloads so the badge never re-counts old mail.
+  useEffect(() => {
+    try {
+      localStorage.setItem("deadnet-read-mail", JSON.stringify(readMail));
+    } catch {}
+  }, [readMail]);
+  // Anything visible in an open inbox counts as read, including mail that
+  // arrives while the window is already on screen.
+  const mailOpen = windows.some((w) => w.id === "mail" && !w.minimized);
+  useEffect(() => {
+    if (!mailOpen || incomingMail.length === 0) return;
+    const ids = incomingMail.map((e) => e.id);
+    setReadMail((old) => {
+      const next = [...new Set([...old, ...ids])];
+      return next.length === old.length ? old : next;
+    });
+  }, [mailOpen, incomingMail.map((e) => e.id).join(",")]);
   useEffect(() => {
     if (!data) return;
     if (received.current) {
@@ -216,6 +269,8 @@ export default function App() {
       if (e.key === "Escape") {
         setStart(false);
         setContextMenu(null);
+        setConfirmReset(false);
+        setPropertiesOpen(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -228,7 +283,10 @@ export default function App() {
       if (!target?.closest(".context-menu")) {
         setContextMenu(null);
       }
-      if (!target?.closest(".start-menu") && !target?.closest(".start-button")) {
+      if (
+        !target?.closest(".start-menu") &&
+        !target?.closest(".start-button")
+      ) {
         setStart(false);
       }
     };
@@ -236,39 +294,42 @@ export default function App() {
     return () => window.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const open = useCallback((id: AppId) => {
-    setStart(false);
-    setContextMenu(null);
-    tone("window_open", muted);
-    if (id === "mail") setNotice(false);
-    setWindows((old) => {
-      const existing = old.find((w) => w.id === id);
-      if (existing)
-        return old.map((w) =>
-          w.id === id ? { ...w, minimized: false, z: ++z.current } : w,
-        );
-      const index = old.length;
-      return [
-        ...old,
-        {
-          id,
-          x: Math.min(
-            150 + index * 38,
-            Math.max(0, innerWidth - defaults[id].width - 20),
-          ),
-          y: Math.min(
-            45 + index * 32,
-            Math.max(0, innerHeight - defaults[id].height - 65),
-          ),
-          width: Math.min(defaults[id].width, innerWidth - 32),
-          height: Math.min(defaults[id].height, innerHeight - 90),
-          minimized: false,
-          maximized: false,
-          z: ++z.current,
-        },
-      ];
-    });
-  }, [muted]);
+  const open = useCallback(
+    (id: AppId) => {
+      setStart(false);
+      setContextMenu(null);
+      tone("window_open", muted);
+      if (id === "mail") setNotice(false);
+      setWindows((old) => {
+        const existing = old.find((w) => w.id === id);
+        if (existing)
+          return old.map((w) =>
+            w.id === id ? { ...w, minimized: false, z: ++z.current } : w,
+          );
+        const index = old.length;
+        return [
+          ...old,
+          {
+            id,
+            x: Math.min(
+              150 + index * 38,
+              Math.max(0, innerWidth - defaults[id].width - 20),
+            ),
+            y: Math.min(
+              45 + index * 32,
+              Math.max(0, innerHeight - defaults[id].height - 65),
+            ),
+            width: Math.min(defaults[id].width, innerWidth - 32),
+            height: Math.min(defaults[id].height, innerHeight - 90),
+            minimized: false,
+            maximized: false,
+            z: ++z.current,
+          },
+        ];
+      });
+    },
+    [muted],
+  );
   function launchGame(id: GameId) {
     setGameRequest({ id, nonce: Date.now() });
     open("games");
@@ -285,7 +346,10 @@ export default function App() {
     setError("");
     try {
       // Starting over on purpose (Start menu or System Monitor) drops the save.
-      if (action.type === "reset") clearSave();
+      if (action.type === "reset") {
+        clearSave();
+        setReadMail([]);
+      }
       const next = await act(action);
       setData(next);
       if (action.type === "message" || action.type === "tick")
@@ -458,17 +522,8 @@ export default function App() {
             <PixelIcon name={APP_INFO[id].icon} size={36} />
             <span>
               {APP_INFO[id].title}
-              {id === "mail" && data ? (
-                <b>
-                  {
-                    data.world.events.filter(
-                      (e) =>
-                        e.channel === "mail" &&
-                        e.to === "visitor" &&
-                        e.actor !== "nora",
-                    ).length
-                  }
-                </b>
+              {id === "mail" && data && unreadMail.length > 0 ? (
+                <b>{unreadMail.length}</b>
               ) : null}
             </span>
           </button>
@@ -725,6 +780,17 @@ export default function App() {
               <PixelIcon name="monitor" size={25} />
               Start over…
             </button>
+            <button
+              onClick={() => {
+                setStart(false);
+                setStickyOpen(true);
+                setStickyExpanded(true);
+                tone("click", muted);
+              }}
+            >
+              <PixelIcon name="notebook" size={25} />
+              Nora’s note
+            </button>
             <hr />
             <button onClick={() => setMuted(!muted)}>
               <PixelIcon name="speaker" size={25} />
@@ -784,8 +850,10 @@ export default function App() {
           <div
             className="window retro-dialog"
             role="alertdialog"
+            aria-modal="true"
             aria-labelledby="reset-title"
             aria-describedby="reset-text"
+            onKeyDown={keepFocusInside}
           >
             <div className="title-bar">
               <div className="title-bar-text" id="reset-title">
@@ -829,27 +897,48 @@ export default function App() {
         </div>
       )}
       {connected && stickyOpen && (
-        <aside className="sticky-note" aria-label="Nora's sticky note">
+        <aside
+          className={`sticky-note ${mobile ? "mobile" : ""} ${mobile && !stickyExpanded ? "collapsed" : ""}`}
+          aria-label="Nora's sticky note"
+        >
           <div className="sticky-header">
             <strong>ROOM 317 — DO NOT REMOVE</strong>
-            <button
-              aria-label="Dismiss note"
-              onClick={() => {
-                tone("click", muted);
-                setStickyOpen(false);
-              }}
-            >
-              ×
-            </button>
+            <span className="sticky-actions">
+              {mobile && (
+                <button
+                  aria-expanded={stickyExpanded}
+                  aria-label={
+                    stickyExpanded ? "Collapse Nora's note" : "Read Nora's note"
+                  }
+                  onClick={() => {
+                    tone("click", muted);
+                    setStickyExpanded(!stickyExpanded);
+                  }}
+                >
+                  {stickyExpanded ? "Fold" : "Read"}
+                </button>
+              )}
+              <button
+                aria-label="Dismiss note"
+                onClick={() => {
+                  tone("click", muted);
+                  setStickyOpen(false);
+                }}
+              >
+                ×
+              </button>
+            </span>
           </div>
-          <div className="sticky-body">
-            <p>• Owen asked for inspection keys.</p>
-            <p>• DO NOT give STAFF-04 until Adam checks signatures.</p>
-            <p>• Len left at 02:58.</p>
-            <p>• Tape is under Adam's keyboard.</p>
-            <p>• Door locked from inside.</p>
-            <small>OCT 31 · 03:17:00</small>
-          </div>
+          {(!mobile || stickyExpanded) && (
+            <div className="sticky-body">
+              <p>• Owen asked for inspection keys.</p>
+              <p>• DO NOT give STAFF-04 until Adam checks signatures.</p>
+              <p>• Len left at 02:58.</p>
+              <p>• Tape is under Adam's keyboard.</p>
+              <p>• Door locked from inside.</p>
+              <small>OCT 31 · 03:17:00</small>
+            </div>
+          )}
         </aside>
       )}
       {contextMenu && (
@@ -951,7 +1040,9 @@ export default function App() {
           <div
             className="window retro-dialog properties-dialog"
             role="dialog"
+            aria-modal="true"
             aria-labelledby="props-title"
+            onKeyDown={keepFocusInside}
           >
             <div className="title-bar">
               <div className="title-bar-text" id="props-title">
@@ -975,11 +1066,25 @@ export default function App() {
                 <PixelIcon name="monitor" size={48} />
                 <div className="props-details">
                   <strong>System:</strong>
-                  <p>DEADNET 95 OSR2<br />Version 4.03.1214</p>
+                  <p>
+                    DEADNET 95 OSR2
+                    <br />
+                    Version 4.03.1214
+                  </p>
                   <strong>Registered to:</strong>
-                  <p>Nora Vale<br />Westhaven House · Room 317<br />Node ID: 884-317-09</p>
+                  <p>
+                    Nora Vale
+                    <br />
+                    Westhaven House · Room 317
+                    <br />
+                    Node ID: 884-317-09
+                  </p>
                   <strong>Computer:</strong>
-                  <p>Intel Pentium II Processor<br />32.0 MB RAM · DN-1200 HD (1.2 GB)</p>
+                  <p>
+                    Intel Pentium II Processor
+                    <br />
+                    32.0 MB RAM · DN-1200 HD (1.2 GB)
+                  </p>
                 </div>
               </div>
             </div>
@@ -1066,7 +1171,9 @@ export default function App() {
                   : "Disconnected"}
             </span>
           </button>
-          <time title="31 OCT 1999 03:17:00 AM — Westhaven House Room 317">03:17 AM</time>
+          <time title="31 OCT 1999 03:17:00 AM — Westhaven House Room 317">
+            03:17 AM
+          </time>
         </div>
       </footer>
       {!connected && (

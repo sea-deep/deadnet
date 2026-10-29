@@ -4119,6 +4119,49 @@ body .desktop .game-sprite-icon {
 .info-toast {
   background: #fffbe6;
 }
+/* Last-resort surface when the interface cannot render. */
+.fatal-screen {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: #175b56;
+  color: #f7f7e7;
+}
+.fatal-panel {
+  width: min(520px, 100%);
+  background: #c0c0c0;
+  color: #1d231f;
+  padding: 18px;
+  box-shadow: var(--bevel), 3px 5px 16px #052c3480;
+  font-family: W95FA, sans-serif;
+}
+.fatal-panel h1 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 400;
+}
+.fatal-panel p {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.fatal-panel pre {
+  margin: 0 0 14px;
+  max-height: 140px;
+  overflow: auto;
+  padding: 8px;
+  background: #fffef6;
+  box-shadow: var(--inset);
+  font: 14px/1.4 VT323, monospace;
+  white-space: pre-wrap;
+}
+.fatal-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 /* Hourglass while a reply is being written, like the real thing. */
 .desktop.busy,
 .desktop.busy * {
@@ -4243,6 +4286,50 @@ body .desktop .game-sprite-icon {
   font-size: 11px;
   color: #7b6926;
   text-align: right;
+}
+.sticky-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+}
+.sticky-note.mobile {
+  top: auto;
+  bottom: 47px;
+  right: 8px;
+  left: auto;
+  width: min(290px, calc(100% - 16px));
+  max-height: 58dvh;
+  overflow: auto;
+  transform: none;
+  padding: 8px 10px;
+  z-index: 8;
+}
+.sticky-note.mobile:hover {
+  transform: none;
+}
+.sticky-note.mobile.collapsed {
+  width: auto;
+  max-width: calc(100% - 16px);
+  padding: 5px 8px;
+}
+.sticky-note.mobile.collapsed .sticky-header {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
+  gap: 10px;
+}
+.sticky-note.mobile .sticky-header strong {
+  font-size: 12px;
+}
+.sticky-note.mobile .sticky-header button {
+  font-size: 13px;
+  padding: 2px 5px;
+  min-height: 22px;
+  text-decoration: underline;
+}
+.sticky-note.mobile .sticky-body p {
+  font-size: 14px;
 }
 
 /* --- CRT Screen Overlay --- */

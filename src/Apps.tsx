@@ -403,7 +403,8 @@ export function Mail({
   const visibleMessages = messages.filter((e) =>
     folder === "inbox" ? e.to === "visitor" : e.actor === "visitor",
   );
-  const message = messages.find((e) => e.id === selected) || messages[0];
+  const message =
+    visibleMessages.find((e) => e.id === selected) || visibleMessages[0];
   useEffect(() => {
     return () => {
       if (audio) URL.revokeObjectURL(audio);
@@ -417,7 +418,7 @@ export function Mail({
     setPosition(0);
     setDuration(0);
     setPlaying(false);
-  }, [selected]);
+  }, [message?.id]);
   async function play() {
     if (!message) return;
     if (audio && audioElement.current) {
@@ -447,8 +448,9 @@ export function Mail({
         </button>
         <button
           onClick={() => {
+            setFolder("inbox");
             setCompose(false);
-            if (messages[0]) setSelected(messages[0].id);
+            if (visibleMessages[0]) setSelected(visibleMessages[0].id);
           }}
         >
           Inbox ({messages.filter((e) => e.to === "visitor").length})
@@ -514,6 +516,8 @@ export function Mail({
                   });
                   if (ok) {
                     setText("");
+                    // Show the letter that was just sent, in the Sent folder.
+                    setFolder("sent");
                     setSelected("latest");
                     setCompose(false);
                   }
@@ -774,13 +778,26 @@ function Explorer({
       (bin ? e.id === "manifest" : true) &&
       `${e.filename} ${e.folder}`.toLowerCase().includes(search.toLowerCase()),
   );
-  const record = data.archive.find((e) => e.id === selected) || records[0] || data.archive[0];
+  // Keep the selection coherent when a search hides the current file.
+  const visibleSelected = records.some((e) => e.id === selected)
+    ? selected
+    : records[0]?.id;
+  const record =
+    data.archive.find((e) => e.id === visibleSelected) ||
+    records[0] ||
+    data.archive[0];
   const progress = caseProgress(data.world);
-  const readable = !record.locked || progress.unlocked;
+  const readable =
+    Boolean(records.length) && (!record.locked || progress.unlocked);
   useEffect(() => {
-    if (readable && !data.world.collected.includes(selected) && !busy)
-      void perform({ type: "collect", evidenceId: selected });
-  }, [selected, readable, busy, data.world.collected.join(",")]);
+    if (
+      visibleSelected &&
+      readable &&
+      !data.world.collected.includes(visibleSelected) &&
+      !busy
+    )
+      void perform({ type: "collect", evidenceId: visibleSelected });
+  }, [visibleSelected, readable, busy, data.world.collected.join(",")]);
   function save() {
     const url = URL.createObjectURL(
       new Blob([record.body], { type: "text/plain" }),
@@ -820,10 +837,7 @@ function Explorer({
         </label>
       </div>
       <div className="explorer-address">
-        Address{" "}
-        <span>
-          {bin ? "C:\\RECYCLED" : "C:\\WINDOWS\\Case 317"}
-        </span>
+        Address <span>{bin ? "C:\\RECYCLED" : "C:\\WINDOWS\\Case 317"}</span>
       </div>
       <div className="archive-layout">
         <aside className="file-list">
@@ -831,7 +845,7 @@ function Explorer({
           {records.map((e) => (
             <button
               key={e.id}
-              className={selected === e.id ? "active" : ""}
+              className={visibleSelected === e.id ? "active" : ""}
               onClick={() => {
                 setSelected(e.id);
                 setSendMenu(false);
@@ -842,142 +856,167 @@ function Explorer({
                   e.id === "birthday"
                     ? "mail"
                     : e.id === "manifest"
-                      ? (bin ? "recycle" : "disk")
+                      ? bin
+                        ? "recycle"
+                        : "disk"
                       : "notebook"
                 }
                 size={27}
               />
               <span>
                 <strong>{e.filename}</strong>
-                <small>{e.id === "manifest" && !readable ? "Damaged · 18 KB" : e.folder}</small>
+                <small>
+                  {e.id === "manifest" && !readable
+                    ? "Damaged · 18 KB"
+                    : e.folder}
+                </small>
               </span>
             </button>
           ))}
           {!records.length && <p>No files found.</p>}
         </aside>
-        <main className="file-reader">
-          <div className="file-heading">
-            <h1>{record.filename}</h1>
-            <span>
-              {bin
-                ? "Deleted by: SYSOP · 02 NOV 1999 · 23:40 · Original location: C:\\Case 317\\CASE_14.BAK"
-                : `Modified: ${record.date}`}
-            </span>
-          </div>
-          <pre>
-            {readable
-              ? record.body
-              : `Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data:\n  ${progress.files >= 2 ? "[x]" : "[ ]"} Open DOOR_0317.LOG and OCT31_CHAT.TXT (${progress.files}/2)\n  ${progress.games >= GAMES_TO_RECOVER ? "[x]" : "[ ]"} Play ${GAMES_TO_RECOVER} of Nora’s games to recover their saves (${progress.games}/${GAMES_TO_RECOVER})`}
-          </pre>
-          {!readable && progress.games < GAMES_TO_RECOVER && (
-            <button onClick={() => open("games")}>Open Nora’s games</button>
-          )}
-          {emptyNotice && (
-            <div className="empty-trash-notice" role="alert">
-              <span>Recycle Bin emptied. Deleted sector fragments remain inspectable.</span>
-              <button onClick={() => setEmptyNotice(false)}>OK</button>
+        {records.length ? (
+          <main className="file-reader">
+            <div className="file-heading">
+              <h1>{record.filename}</h1>
+              <span>
+                {bin
+                  ? "Deleted by: SYSOP · 02 NOV 1999 · 23:40 · Original location: C:\\Case 317\\CASE_14.BAK"
+                  : `Modified: ${record.date}`}
+              </span>
             </div>
-          )}
-          {sendMenu && (
-            <div className="file-send-menu" aria-label="Send file to">
-              {data.world.agents
-                .filter((a) => a.id !== "nora")
-                .map((a) => (
-                  <button
-                    key={a.id}
-                    disabled={busy}
-                    onClick={() => {
-                      composeTo(a.id, record.id);
-                      setSendMenu(false);
-                    }}
-                  >
-                    {a.name}
-                  </button>
-                ))}
-              <button
-                disabled={busy || data.world.ending === "sealed"}
-                onClick={() => {
-                  void perform({ type: "publish", evidenceId: record.id });
-                  setSendMenu(false);
-                }}
-              >
-                Network mailing list
-              </button>
-            </div>
-          )}
-          {record.id === "manifest" && readable && (
-            <fieldset className="file-policy">
-              <legend>Case file</legend>
-              {data.world.ending === "open" ? (
-                <>
-                  <p className="fine-print">
-                    Who opened room 317 at 03:17? Publish the evidence and name
-                    them, or keep the case private.
-                  </p>
-                  <label>
-                    <input
-                      type="radio"
-                      name="sharing"
-                      checked={policy === "sealed"}
-                      disabled={data.world.published.length > 0}
-                      onChange={() => setPolicy("sealed")}
-                    />{" "}
-                    Keep private
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="sharing"
-                      checked={policy === "exposed"}
-                      onChange={() => setPolicy("exposed")}
-                    />{" "}
-                    Publish case evidence
-                  </label>
-                  {policy === "exposed" && (
+            <pre>
+              {readable
+                ? record.body
+                : `Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data:\n  ${progress.files >= 2 ? "[x]" : "[ ]"} Open DOOR_0317.LOG and OCT31_CHAT.TXT (${progress.files}/2)\n  ${progress.games >= GAMES_TO_RECOVER ? "[x]" : "[ ]"} Play ${GAMES_TO_RECOVER} of Nora’s games to recover their saves (${progress.games}/${GAMES_TO_RECOVER})`}
+            </pre>
+            {!readable && progress.games < GAMES_TO_RECOVER && (
+              <button onClick={() => open("games")}>Open Nora’s games</button>
+            )}
+            {emptyNotice && (
+              <div className="empty-trash-notice" role="alert">
+                <span>
+                  Recycle Bin emptied. Deleted sector fragments remain
+                  inspectable.
+                </span>
+                <button onClick={() => setEmptyNotice(false)}>OK</button>
+              </div>
+            )}
+            {sendMenu && (
+              <div className="file-send-menu" aria-label="Send file to">
+                {data.world.agents
+                  .filter((a) => a.id !== "nora")
+                  .map((a) => (
+                    <button
+                      key={a.id}
+                      disabled={busy}
+                      onClick={() => {
+                        composeTo(a.id, record.id);
+                        setSendMenu(false);
+                      }}
+                    >
+                      {a.name}
+                    </button>
+                  ))}
+                <button
+                  disabled={busy || data.world.ending === "sealed"}
+                  onClick={() => {
+                    void perform({ type: "publish", evidenceId: record.id });
+                    setSendMenu(false);
+                  }}
+                >
+                  Network mailing list
+                </button>
+              </div>
+            )}
+            {record.id === "manifest" && readable && (
+              <fieldset className="file-policy">
+                <legend>Case file</legend>
+                {data.world.ending === "open" ? (
+                  <>
+                    <p className="fine-print">
+                      Who opened room 317 at 03:17? Publish the evidence and
+                      name them, or keep the case private.
+                    </p>
                     <label>
-                      Suspect{" "}
-                      <select
-                        aria-label="Report suspect"
-                        value={suspect}
-                        onChange={(e) =>
-                          setSuspect(e.target.value as typeof suspect)
-                        }
-                      >
-                        <option value="">Choose a name</option>
-                        {data.world.agents
-                          .filter((a) => a.id !== "nora")
-                          .map((a) => (
-                            <option value={a.id} key={a.id}>
-                              {a.name}
-                            </option>
-                          ))}
-                      </select>
+                      <input
+                        type="radio"
+                        name="sharing"
+                        checked={policy === "sealed"}
+                        disabled={data.world.published.length > 0}
+                        onChange={() => setPolicy("sealed")}
+                      />{" "}
+                      Keep private
                     </label>
-                  )}
-                  <button
-                    disabled={busy || (policy === "exposed" && !suspect)}
-                    onClick={() =>
-                      void perform({
-                        type: "resolve",
-                        choice: policy,
-                        suspect: suspect || undefined,
-                      })
-                    }
-                  >
-                    {policy === "exposed" ? "File report" : "Keep case private"}
-                  </button>
-                  <p className="fine-print">This choice is final.</p>
-                </>
-              ) : (
-                <p>
-                  {data.world.ending === "exposed"
-                    ? `Report filed. You named ${data.world.agents.find((a) => a.id === data.world.accused)?.name ?? "a suspect"}. Check Unknown Signal and Inbox for what happened next.`
-                    : "Case kept private. Check Unknown Signal and Inbox for what happened next."}
-                </p>
-              )}
-            </fieldset>
-          )}
-        </main>
+                    <label>
+                      <input
+                        type="radio"
+                        name="sharing"
+                        checked={policy === "exposed"}
+                        onChange={() => setPolicy("exposed")}
+                      />{" "}
+                      Publish case evidence
+                    </label>
+                    {policy === "exposed" && (
+                      <label>
+                        Suspect{" "}
+                        <select
+                          aria-label="Report suspect"
+                          value={suspect}
+                          onChange={(e) =>
+                            setSuspect(e.target.value as typeof suspect)
+                          }
+                        >
+                          <option value="">Choose a name</option>
+                          {data.world.agents
+                            .filter((a) => a.id !== "nora")
+                            .map((a) => (
+                              <option value={a.id} key={a.id}>
+                                {a.name}
+                              </option>
+                            ))}
+                        </select>
+                      </label>
+                    )}
+                    <button
+                      disabled={busy || (policy === "exposed" && !suspect)}
+                      onClick={() =>
+                        void perform({
+                          type: "resolve",
+                          choice: policy,
+                          suspect: suspect || undefined,
+                        })
+                      }
+                    >
+                      {policy === "exposed"
+                        ? "File report"
+                        : "Keep case private"}
+                    </button>
+                    <p className="fine-print">This choice is final.</p>
+                  </>
+                ) : (
+                  <p>
+                    {data.world.ending === "exposed"
+                      ? `Report filed. You named ${data.world.agents.find((a) => a.id === data.world.accused)?.name ?? "a suspect"}. Check Unknown Signal and Inbox for what happened next.`
+                      : "Case kept private. Check Unknown Signal and Inbox for what happened next."}
+                  </p>
+                )}
+              </fieldset>
+            )}
+          </main>
+        ) : (
+          <main className="file-reader empty">
+            <div className="file-heading">
+              <h1>No files found</h1>
+              <span>{bin ? "Trash Bin" : "C:\\WINDOWS\\Case 317"}</span>
+            </div>
+            <p className="empty">
+              Nothing here matches “{search}”. Clear the Find field to see every
+              recovered object.
+            </p>
+            <button onClick={() => setSearch("")}>Show all files</button>
+          </main>
+        )}
       </div>
       <div className="window-status">
         <span>{records.length} object(s)</span>
@@ -987,25 +1026,26 @@ function Explorer({
   );
 }
 export function People({ data, target, setTarget, open, composeTo }: AppProps) {
-  const a = data.world.agents.find((a) => a.id === target)!;
+  const people = data.world.agents.filter((p) => p.id !== "nora");
+  const a =
+    people.find((p) => p.id === target) ?? people[0] ?? data.world.agents[0];
+  if (!a) return <p className="empty-state">No accounts on this network.</p>;
   return (
     <div className="people-app">
       <aside className="people-list">
-        {data.world.agents
-          .filter((p) => p.id !== "nora")
-          .map((p) => (
-            <button
-              key={p.id}
-              className={p.id === target ? "active" : ""}
-              onClick={() => setTarget(p.id)}
-            >
-              <Stamp id={p.id} data={data} />
-              <span>
-                {p.name}
-                <small>@{p.handle}</small>
-              </span>
-            </button>
-          ))}
+        {people.map((p) => (
+          <button
+            key={p.id}
+            className={p.id === a.id ? "active" : ""}
+            onClick={() => setTarget(p.id)}
+          >
+            <Stamp id={p.id} data={data} />
+            <span>
+              {p.name}
+              <small>@{p.handle}</small>
+            </span>
+          </button>
+        ))}
       </aside>
       <main className="profile">
         <div className="profile-heading">
@@ -1263,9 +1303,15 @@ export function Games({
     const t = setInterval(() => {
       if (document.hidden) return;
       setSeconds((n) => {
-        if (n + 1 === PLAY_TO_RECOVER)
+        const next = n + 1;
+        // Retry every five seconds if the save could not be recorded (for
+        // example while the server is briefly unreachable).
+        if (
+          next === PLAY_TO_RECOVER ||
+          (next > PLAY_TO_RECOVER && next % 5 === 0)
+        )
           void perform({ type: "played", game: game as GameId });
-        return n + 1;
+        return next;
       });
     }, 1000);
     return () => clearInterval(t);
@@ -1287,8 +1333,14 @@ export function Games({
   };
   useEffect(syncSound, [muted, activeApp, game, run, paused, soundOff]);
   function key(k: string, down: boolean) {
-    const wasd: Record<string, string> = { w: "ArrowUp", a: "ArrowLeft", s: "ArrowDown", d: "ArrowRight" };
-    const mapped = wasd[k] || k;
+    const wasd: Record<string, string> = {
+      w: "ArrowUp",
+      a: "ArrowLeft",
+      s: "ArrowDown",
+      d: "ArrowRight",
+    };
+    const backwards = k === "Shift+Tab";
+    const mapped = wasd[k] || (backwards ? "Tab" : k);
     const codes: Record<string, number> = {
       ArrowLeft: 37,
       ArrowUp: 38,
@@ -1296,6 +1348,8 @@ export function Games({
       ArrowDown: 40,
       " ": 32,
       Enter: 13,
+      Tab: 9,
+      Escape: 27,
     };
     frame.current?.contentWindow?.postMessage(
       {
@@ -1304,6 +1358,7 @@ export function Games({
         code: mapped === " " ? "Space" : mapped,
         keyCode: codes[mapped],
         down,
+        shiftKey: backwards,
       },
       location.origin,
     );
@@ -1311,16 +1366,21 @@ export function Games({
   const keys =
     game === "flappy"
       ? [" "]
-      : game === "phantomicus"
-        ? ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight", " ", "Enter"]
-        : [
-            "ArrowLeft",
-            "ArrowUp",
-            "ArrowDown",
-            "ArrowRight",
-            "w", "a", "s", "d",
-            ...(game === "tetris" || game === "snake" ? [" "] : []),
-          ];
+      : game === "hocus"
+        ? ["Tab", "Shift+Tab", "Enter"]
+        : game === "phantomicus"
+          ? ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight", " ", "Enter"]
+          : [
+              "ArrowLeft",
+              "ArrowUp",
+              "ArrowDown",
+              "ArrowRight",
+              "w",
+              "a",
+              "s",
+              "d",
+              ...(game === "tetris" || game === "snake" ? [" "] : []),
+            ];
   // Keys pressed while the desktop (not the game frame) has focus still reach
   // the game, e.g. right after opening it from a desktop icon.
   useEffect(() => {
@@ -1328,10 +1388,11 @@ export function Games({
     const forward = (down: boolean) => (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t?.closest("input, textarea, select, [contenteditable]")) return;
-      if (!keys.includes(e.key)) return;
+      const backwards = game === "hocus" && e.key === "Tab" && e.shiftKey;
+      if (!backwards && !keys.includes(e.key)) return;
       e.preventDefault();
       if (down && e.repeat) return;
-      key(e.key, down);
+      key(backwards ? "Shift+Tab" : e.key, down);
     };
     const down = forward(true),
       up = forward(false);
@@ -1444,6 +1505,7 @@ export function Games({
                   ArrowDown: "↓",
                   ArrowRight: "→",
                   " ": "Space",
+                  "Shift+Tab": "⇧Tab",
                 } as Record<string, string>
               )[k] || k}
             </button>

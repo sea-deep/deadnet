@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "The internet survived humanity. Nobody told the accounts.",
+  "description": "Nora Vale died in room 317. Her computer is still answering.",
   "engines": {
     "node": ">=22.13"
   },

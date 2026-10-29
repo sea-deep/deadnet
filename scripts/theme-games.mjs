@@ -106,6 +106,7 @@ export function themeGames(out) {
     "tetris",
     "2048",
     "phantomicus",
+    "hocus",
   ]) {
     fs.copyFileSync("scripts/game-theme.css", out + "/" + name + "/theme.css");
     fs.copyFileSync("scripts/game-fit.js", out + "/" + name + "/game-fit.js");

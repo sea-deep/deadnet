@@ -152,6 +152,76 @@ test("desktop controls, saved notes, wallpaper, mute and service validation", as
   ).toBe(403);
 });
 
+test("the sixth game, Hocus :focus, boots and its host keyboard reaches level 2", async ({
+  page,
+}) => {
+  await boot(page);
+  await openApp(page, "Games");
+  const games = page.getByRole("region", { name: "Games" });
+  await expect(
+    games.getByRole("button", { name: "Hocus :focus", exact: false }),
+  ).toBeVisible();
+  await games
+    .getByRole("button", { name: "Hocus :focus", exact: false })
+    .click();
+  const game = page.frameLocator('iframe[title="Hocus :focus"]');
+  await expect(
+    game.getByRole("heading", { name: "HOCUS :FOCUS" }),
+  ).toBeVisible();
+  await game.getByRole("button", { name: "pumpkin Finish" }).focus();
+  await games.getByRole("button", { name: "Enter", exact: true }).click();
+  await expect(game.getByText("Level 2", { exact: true })).toBeVisible();
+});
+
+test("searching the file explorer never leaves a stale selection or reader", async ({
+  page,
+}) => {
+  await boot(page);
+  await openApp(page, "File Explorer");
+  const files = page.getByRole("region", { name: "File Explorer" });
+  await files.getByLabel("Search files").fill("zzzz-no-such-file");
+  await expect(
+    files.getByRole("heading", { name: "No files found" }),
+  ).toBeVisible();
+  await files.getByRole("button", { name: "Show all files" }).click();
+  await expect(
+    files.getByRole("button", { name: /DOOR_0317\.LOG/ }),
+  ).toBeVisible();
+});
+
+test("a corrupt browser save is ignored instead of blanking the desktop", async ({
+  page,
+}) => {
+  await boot(page);
+  await page.evaluate(() => {
+    localStorage.setItem(
+      "deadnet-save-v1",
+      JSON.stringify({ version: 1, storyId: 42 }),
+    );
+  });
+  await page.reload();
+  await page.getByRole("button", { name: "Power on", exact: true }).click();
+  await page.getByRole("button", { name: "Skip startup" }).click();
+  await expect(
+    page.getByRole("navigation", { name: "Desktop applications" }),
+  ).toBeVisible();
+});
+
+test("the pinned note folds on small screens instead of covering the desktop", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "mobile-only layout");
+  await boot(page);
+  const note = page.locator(".sticky-note");
+  await expect(note).toBeVisible();
+  await expect(note).toHaveClass(/collapsed/);
+  await expect(note.getByText("Owen asked for inspection keys")).toBeHidden();
+  await note.getByRole("button", { name: "Read Nora's note" }).click();
+  await expect(note.getByText("Owen asked for inspection keys")).toBeVisible();
+  await note.getByRole("button", { name: "Collapse Nora's note" }).click();
+  await expect(note).toHaveClass(/collapsed/);
+});
+
 test("the desktop opens a selected game directly and the private signal accepts an attached clue", async ({
   page,
   request,
@@ -192,4 +262,58 @@ test("the desktop opens a selected game directly and the private signal accepts 
       .filter((e: { actor: string }) => e.actor === "nora")
       .at(-1).to,
   ).toBe("visitor");
+});
+
+test("the mail badge counts unread letters and clears once the inbox is opened", async ({
+  page,
+}) => {
+  await boot(page);
+  const desktop = page.getByRole("navigation", {
+    name: "Desktop applications",
+  });
+  const icon = desktop.getByRole("button", { name: /^Inbox/ });
+  const badge = icon.locator("b");
+  await expect(badge).toBeVisible();
+  const count = Number(await badge.textContent());
+  expect(count).toBeGreaterThan(0);
+  if (await page.evaluate(() => innerWidth < 740)) await icon.click();
+  else await icon.dblclick();
+  const inbox = page.getByRole("region", { name: "Inbox" });
+  await expect(inbox).toBeVisible();
+  await inbox.getByRole("button", { name: "Close Inbox" }).click();
+  await expect(inbox).toBeHidden();
+  await expect(badge).toBeHidden();
+  // Read receipts survive a reload, so old mail is not counted again.
+  await page.reload();
+  await page.getByRole("button", { name: "Power on", exact: true }).click();
+  await page.getByRole("button", { name: "Skip startup" }).click();
+  await expect(
+    page
+      .getByRole("navigation", { name: "Desktop applications" })
+      .getByRole("button", { name: "Inbox", exact: true })
+      .locator("b"),
+  ).toBeHidden();
+});
+
+test("switching to Sent never leaves an inbox letter in the reader", async ({
+  page,
+}) => {
+  await boot(page);
+  await openApp(page, "Inbox");
+  const inbox = page.getByRole("region", { name: "Inbox" });
+  await expect(
+    inbox.getByRole("heading", { name: "They think you fell" }),
+  ).toBeVisible();
+  await inbox.getByRole("button", { name: "Sent", exact: true }).click();
+  await expect(inbox.getByText("No correspondence yet.")).toBeVisible();
+  await expect(
+    inbox.getByRole("heading", { name: "They think you fell" }),
+  ).toBeHidden();
+  await inbox
+    .getByRole("button", { name: /^Inbox \(/ })
+    .first()
+    .click();
+  await expect(
+    inbox.getByRole("heading", { name: "They think you fell" }),
+  ).toBeVisible();
 });

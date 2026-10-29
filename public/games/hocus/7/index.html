@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="../deadnet-host.js"></script>
+	<meta charset="UTF-8">
+	<title>Hocus :focus — Level 7</title>
+	<meta name="description" content="A keyboard navigation horror game. Find the 🎃 pumpkin.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<link rel="stylesheet" type="text/css" href="../assets/css/hocus.css">
+	<meta property="og:title" content="Hocus :focus">
+	<meta property="og:description" content="A keyboard navigation horror game. Find the 🎃 pumpkin.">
+	<meta property="og:image" content="https://focus.hteumeuleu.com/assets/images/og.png">
+<link rel="stylesheet" href="../theme.css"></head>
+<body data-game="hocus">
+	<div class="page">
+		<header class="header" role="banner">
+			<h1 class="title"><a href="../index.html">HOCUS :FOCUS</a></h1>
+			<p class="subtitle">
+				A keyboard accessibility horror&nbsp;game.
+			</p>
+		</header>
+		<main class="main" role="main">
+			<div class="rules">
+	<p>Let’s get back home. Look out for that <span class="char" style="color:#f1f1f1;"><span aria-hidden="true">🕳️</span> trap</span>. Try to take a step back.</p>
+</div>
+<form action="../8/index.html">
+	<div class="game has-focus-styles">
+		<div class="scoreboard">
+			<span class="level">Level 7</span>
+			<span class="timer">00:00.00</span>
+		</div>
+		<button type="button" class="icon is-start" autofocus="autofocus"><span role="img" aria-label="woman mage">🧙‍♀️</span> <span class="badge">Start</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="snake">🐍</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="coffin">⚰️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="skull">💀</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="fallen leaf">🍂</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="owl">🦉</span></button>
+		<button type="button" class="icon is-trap"><span role="img" aria-label="hole">🕳️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="wilted flower">🥀</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="candle">🕯️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="bat">🦇</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="spider">🕷️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="spider web">🕸️</span></button>
+		<button type="button" class="icon"><span role="img" aria-label="chestnut">🌰</span></button>
+		<button type="submit" class="icon is-finish"><span role="img" aria-label="pumpkin">🎃</span> <span class="badge">Finish</span></button>
+	</div>
+</form>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	document.querySelector('.is-trap + .icon').addEventListener('focus', function(event) {
+		this.previousElementSibling.focus();
+	});
+});
+</script>
+<div class="instructions">
+	<p class="is-key-next">
+		<kbd>TAB</kbd> Next
+	</p>
+	<p class="is-key-previous">
+		<kbd>SHIFT</kbd> + <kbd>TAB</kbd> Previous
+	</p>
+	<p class="is-key-validate">
+		<kbd>ENTER</kbd> Validate
+	</p>
+</div>
+
+		</main>
+		<footer class="footer" role="contentinfo">
+			<p>A monstrosity  made by <a href="https://mastodon.social/@HTeuMeuLeu">@HTeuMeuLeu</a>.</p>
+			<p><a href="https://github.com/hteumeuleu/hocus-focus">View code on GitHub</a></p>
+		</footer>
+	</div>
+	
+	<script src="../assets/js/hocus.js" defer></script>
+	<noscript><style>.timer{display:none;}</style></noscript>
+	
+<script src="../game-fit.js"></script></body>
+</html>
