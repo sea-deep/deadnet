@@ -190,6 +190,8 @@ export default function App() {
   const z = useRef(10);
   const generation = useRef(false);
   const root = useRef<HTMLDivElement>(null);
+  const startButton = useRef<HTMLButtonElement>(null);
+  const startMenu = useRef<HTMLElement>(null);
   // Autosave: the browser keeps a copy of the case after every change.
   useEffect(() => {
     // Only real progress is saved, so an emptied server never overwrites it.
@@ -267,6 +269,7 @@ export default function App() {
         void refreshDesktop();
       }
       if (e.key === "Escape") {
+        if (start) startButton.current?.focus();
         setStart(false);
         setContextMenu(null);
         setConfirmReset(false);
@@ -275,7 +278,12 @@ export default function App() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [refreshDesktop]);
+  }, [refreshDesktop, start]);
+  // Opening Start puts keyboard users on its first command immediately.
+  useEffect(() => {
+    if (start)
+      startMenu.current?.querySelector<HTMLButtonElement>("button")?.focus();
+  }, [start]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -602,6 +610,9 @@ export default function App() {
                 <section
                   className="window-frame window"
                   aria-label={APP_INFO[w.id].title}
+                  onFocusCapture={() => {
+                    if (focused !== w.id) update(w.id, { z: ++z.current });
+                  }}
                 >
                   <div className="titlebar title-bar">
                     <div
@@ -720,7 +731,24 @@ export default function App() {
         </div>
       )}
       {start && (
-        <nav className="start-menu" aria-label="Start menu">
+        <nav
+          ref={startMenu}
+          className="start-menu"
+          aria-label="Start menu"
+          onKeyDown={(e) => {
+            if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+            const items = Array.from(
+              e.currentTarget.querySelectorAll<HTMLButtonElement>("button"),
+            );
+            if (!items.length) return;
+            e.preventDefault();
+            const at = items.indexOf(
+              document.activeElement as HTMLButtonElement,
+            );
+            const step = e.key === "ArrowDown" ? 1 : -1;
+            items[(at + step + items.length) % items.length]?.focus();
+          }}
+        >
           <div className="start-spine">
             NORA VALE<span> PERSONAL COMPUTER</span>
           </div>
@@ -878,7 +906,6 @@ export default function App() {
             </div>
             <div className="retro-dialog-buttons">
               <button
-                autoFocus
                 onClick={async () => {
                   setConfirmReset(false);
                   if (await perform({ type: "reset" })) {
@@ -891,7 +918,9 @@ export default function App() {
               >
                 Yes
               </button>
-              <button onClick={() => setConfirmReset(false)}>No</button>
+              <button autoFocus onClick={() => setConfirmReset(false)}>
+                No
+              </button>
             </div>
           </div>
         </div>
@@ -1114,6 +1143,7 @@ export default function App() {
       )}
       <footer inert={!connected} className="taskbar">
         <button
+          ref={startButton}
           className={`start-button ${start ? "pressed" : ""}`}
           onClick={() => {
             tone("click", muted);
@@ -1129,6 +1159,7 @@ export default function App() {
           {windows.map((w) => (
             <button
               key={w.id}
+              aria-pressed={focused === w.id && !w.minimized}
               className={
                 focused === w.id && !w.minimized ? "pressed active" : ""
               }

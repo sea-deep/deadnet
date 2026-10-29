@@ -340,3 +340,19 @@ test("Address Book opens a compose window addressed to the chosen account", asyn
     "len",
   );
 });
+
+test("Start is keyboard-navigable and returns focus when dismissed", async ({
+  page,
+}) => {
+  await boot(page);
+  const start = page.getByRole("button", { name: "Start", exact: true });
+  await start.click();
+  const menu = page.getByRole("navigation", { name: "Start menu" });
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole("button").first()).toBeFocused();
+  await page.keyboard.press("ArrowDown");
+  await expect(menu.getByRole("button").nth(1)).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(menu).toBeHidden();
+  await expect(start).toBeFocused();
+});
