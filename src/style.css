@@ -3350,6 +3350,27 @@ body:has(.reduced-motion) {
 .plain-notepad .menubar {
   background: #c0c0c0;
 }
+.notepad-hint {
+  margin-left: auto;
+  align-self: center;
+  padding: 0 8px;
+  font-size: 11px;
+  color: #4b4b4b;
+}
+.notepad-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 5px 7px;
+  font-size: 12px;
+  color: #3f3a1f;
+  background: #ffffdc;
+  border-bottom: 1px solid #808080;
+}
+.notepad-confirm span {
+  flex: 1 1 190px;
+}
 .explorer-address {
   display: flex;
   gap: 10px;

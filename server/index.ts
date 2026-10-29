@@ -308,28 +308,45 @@ app.use(
     _next: express.NextFunction,
   ) => {
     const err = error as Error;
+    // Body-parser reports malformed or oversized payloads with its own 4xx.
+    const parseStatus =
+      typeof error === "object" && error !== null
+        ? [
+            (error as { status?: unknown }).status,
+            (error as { statusCode?: unknown }).statusCode,
+          ].find(
+            (value): value is number =>
+              typeof value === "number" && value >= 400 && value < 500,
+          )
+        : undefined;
+    const status =
+      error instanceof RuleError
+        ? error.status
+        : error instanceof z.ZodError
+          ? 400
+          : (parseStatus ?? 500);
     if (error instanceof RuleError && error.status === 429)
       res.setHeader(
         "Retry-After",
         String((error as RuleError & { retryAfter?: number }).retryAfter || 60),
       );
-    res
-      .status(
+    res.status(status).json({
+      error:
         error instanceof RuleError
-          ? error.status
+          ? err.message
           : error instanceof z.ZodError
-            ? 400
-            : 500,
-      )
-      .json({
-        error:
-          error instanceof RuleError
-            ? err.message
-            : error instanceof z.ZodError
-              ? "Invalid action. Check the selected account, file, and message length."
-              : "The local service could not complete this action. Your saved investigation is intact.",
-      });
-    if (!(error instanceof RuleError) && !(error instanceof z.ZodError))
+            ? "Invalid action. Check the selected account, file, and message length."
+            : (error as { type?: string }).type === "entity.too.large"
+              ? "That request is too large."
+              : (error as { type?: string }).type === "entity.parse.failed"
+                ? "The request body isn’t valid JSON."
+                : "The local service could not complete this action. Your saved investigation is intact.",
+    });
+    if (
+      !(error instanceof RuleError) &&
+      !(error instanceof z.ZodError) &&
+      status >= 500
+    )
       console.error(err.message);
   },
 );

@@ -434,7 +434,12 @@ export function Mail({
     setVoiceError("");
     try {
       const r = await fetch(`/api/audio/${message.id}`, { method: "POST" });
-      if (!r.ok) throw new Error((await r.json()).error);
+      if (!r.ok) {
+        const detail = (await r.json().catch(() => ({}))) as {
+          error?: string;
+        };
+        throw new Error(detail.error || `Recording unavailable (${r.status}).`);
+      }
       const blob = await r.blob();
       if (requestId.current === current) setAudio(URL.createObjectURL(blob));
     } catch (e) {
@@ -685,6 +690,13 @@ export function Mail({
                       onTimeUpdate={(e) =>
                         setPosition(e.currentTarget.currentTime)
                       }
+                      onError={() => {
+                        setPlaying(false);
+                        duckAmbient(false);
+                        setVoiceError(
+                          "The recording couldn’t play. Read the transcript instead.",
+                        );
+                      }}
                     />
                     <div
                       className="voice-transport"
@@ -1240,8 +1252,10 @@ export function Notebook() {
       return initial;
     }
   });
+  const [confirmClear, setConfirmClear] = useState(false);
   function edit(value: string) {
     setText(value);
+    setConfirmClear(false);
     try {
       localStorage.setItem("deadnet-case-notes-v3", value);
     } catch {
@@ -1256,10 +1270,19 @@ export function Notebook() {
     a.click();
     setTimeout(() => URL.revokeObjectURL(u), 1000);
   }
+  const lines = text.split("\n").length;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   return (
     <div className="plain-notepad">
       <div className="menubar">
-        <button onClick={() => edit("")}>New</button>
+        <button
+          onClick={() => {
+            if (text.trim()) setConfirmClear(true);
+            else edit("");
+          }}
+        >
+          New
+        </button>
         <button onClick={save}>Save As…</button>
         <button
           onClick={() => {
@@ -1268,16 +1291,41 @@ export function Notebook() {
         >
           Copy
         </button>
+        <span className="notepad-hint">Ctrl/Cmd+S saves a copy</span>
       </div>
+      {confirmClear && (
+        <div className="notepad-confirm" role="alert" aria-label="Clear notes">
+          <span>Clear all notes? This can’t be undone.</span>
+          <button
+            onClick={() => {
+              edit("");
+            }}
+          >
+            Clear notes
+          </button>
+          <button autoFocus onClick={() => setConfirmClear(false)}>
+            Cancel
+          </button>
+        </div>
+      )}
       <textarea
         aria-label="Notepad document"
         spellCheck={false}
         value={text}
         onChange={(e) => edit(e.target.value)}
+        onKeyDown={(e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
+            e.preventDefault();
+            save();
+          }
+        }}
       />
       <div className="window-status">
         <span>notes.txt</span>
-        <span>Ln {text.split("\n").length}</span>
+        <span>
+          {lines} {lines === 1 ? "line" : "lines"} · {words}{" "}
+          {words === 1 ? "word" : "words"}
+        </span>
       </div>
     </div>
   );
@@ -1303,28 +1351,30 @@ export function Games({
   const played = data.world.played || [];
   const recovered = Boolean(game && played.includes(game));
   const [seconds, setSeconds] = useState(0);
+  // Keep elapsed time in a ref: state updaters must stay pure, and StrictMode
+  // can invoke them twice, which would double-submit a recovered save.
+  const elapsed = useRef(0);
   // Playing a game for a while recovers its save, which CASE_14.BAK needs.
   useEffect(() => {
+    elapsed.current = 0;
     setSeconds(0);
-  }, [game]);
+  }, [game, run]);
   useEffect(() => {
     if (!game || recovered || paused || activeApp !== "games") return;
     const t = setInterval(() => {
       if (document.hidden) return;
-      setSeconds((n) => {
-        const next = n + 1;
-        // Retry every five seconds if the save could not be recorded (for
-        // example while the server is briefly unreachable).
-        if (
-          next === PLAY_TO_RECOVER ||
-          (next > PLAY_TO_RECOVER && next % 5 === 0)
-        )
-          void perform({ type: "played", game: game as GameId });
-        return next;
-      });
+      elapsed.current += 1;
+      setSeconds(elapsed.current);
+      // Retry every five seconds if the save could not be recorded (for
+      // example while the server is briefly unreachable).
+      if (
+        elapsed.current === PLAY_TO_RECOVER ||
+        (elapsed.current > PLAY_TO_RECOVER && elapsed.current % 5 === 0)
+      )
+        void perform({ type: "played", game: game as GameId });
     }, 1000);
     return () => clearInterval(t);
-  }, [game, recovered, paused, activeApp]);
+  }, [game, run, recovered, paused, activeApp]);
   const progress = caseProgress(data.world);
   const syncSound = () => {
     const child = frame.current?.contentWindow;

@@ -341,6 +341,59 @@ test("Address Book opens a compose window addressed to the chosen account", asyn
   );
 });
 
+test("Notepad asks before clearing notes and Cmd/Ctrl+S exports a copy", async ({
+  page,
+}) => {
+  await boot(page);
+  await openApp(page, "Notepad");
+  const notepad = page.getByRole("region", { name: "Notepad" });
+  const notes = notepad.getByRole("textbox", { name: "Notepad document" });
+  await notes.fill("first clue\nsecond clue");
+  await expect(notepad.getByText("2 lines · 4 words")).toBeVisible();
+  const download = page.waitForEvent("download");
+  await notes.press("ControlOrMeta+s");
+  expect((await download).suggestedFilename()).toBe("notes.txt");
+  await notepad.getByRole("button", { name: "New", exact: true }).click();
+  const warning = notepad.getByRole("alert", { name: "Clear notes" });
+  await expect(warning).toBeVisible();
+  await warning.getByRole("button", { name: "Cancel" }).click();
+  await expect(notes).toHaveValue("first clue\nsecond clue");
+  await notepad.getByRole("button", { name: "New", exact: true }).click();
+  await warning.getByRole("button", { name: "Clear notes" }).click();
+  await expect(notes).toHaveValue("");
+  await expect(notepad.getByText("1 line · 0 words")).toBeVisible();
+});
+
+test("the service reports malformed and oversized request bodies as client errors", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const malformed = await page.evaluate(async () => {
+    const r = await fetch("/api/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{",
+    });
+    return { status: r.status, error: (await r.json()).error as string };
+  });
+  expect(malformed.status).toBe(400);
+  expect(malformed.error).toContain("JSON");
+  const oversized = await page.evaluate(async () => {
+    const r = await fetch("/api/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "message",
+        target: "mara",
+        text: "x".repeat(9000),
+      }),
+    });
+    return { status: r.status, error: (await r.json()).error as string };
+  });
+  expect(oversized.status).toBe(413);
+  expect(oversized.error).toContain("too large");
+});
+
 test("Start is keyboard-navigable and returns focus when dismissed", async ({
   page,
 }) => {

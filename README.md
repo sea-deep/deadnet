@@ -63,11 +63,11 @@ The model has no shell, filesystem, browser or external messaging tools. Actor-s
 ## Verification
 
 ```sh
-npm test                       # 20 engine/audio/quota/provider/hosting tests
+npm test                       # 31 engine/audio/quota/provider/hosting/save tests
 npm run build
 npm run demo:build              # explicitly scripted static exhibition
 npx playwright install chrome
-npm run test:e2e                # 6 desktop/mobile investigation/shell/signal tests
+npm run test:e2e                # 13 desktop/mobile investigation/shell/signal tests
 npm run games:build             # reproducible credited game adaptations
 npx tsx scripts/check-games.ts  # local server required
 npx tsx scripts/check-sound.ts

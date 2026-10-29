@@ -189,6 +189,9 @@ export default function App() {
   }>();
   const z = useRef(10);
   const generation = useRef(false);
+  // Bumped when the visitor acts, so a slow GET that started earlier cannot
+  // overwrite the newer snapshot it raced with.
+  const stateSeq = useRef(0);
   const root = useRef<HTMLDivElement>(null);
   const startButton = useRef<HTMLButtonElement>(null);
   const startMenu = useRef<HTMLElement>(null);
@@ -210,6 +213,7 @@ export default function App() {
   useEffect(() => {
     let alive = true;
     async function refresh() {
+      const seq = stateSeq.current;
       try {
         let snapshot = await readState();
         // The server can lose a hosted case (e.g. a restart); bring back the
@@ -232,13 +236,14 @@ export default function App() {
           }
           checkedSave.current = false;
         }
-        if (alive) {
+        // An action may have committed while this request was in flight.
+        if (alive && seq === stateSeq.current) {
           setData(snapshot);
           // Connection is back: drop a stale "can't reach the server" notice.
           setError((old) => (old === OFFLINE_MESSAGE ? "" : old));
         }
       } catch (e) {
-        if (alive) setError((e as Error).message);
+        if (alive && seq === stateSeq.current) setError((e as Error).message);
       }
     }
     void refresh();
@@ -263,9 +268,10 @@ export default function App() {
     setIsRefreshing(true);
     setSelectedIcon(undefined);
     setContextMenu(null);
+    const seq = stateSeq.current;
     try {
       const snap = await readState();
-      setData(snap);
+      if (seq === stateSeq.current) setData(snap);
     } catch {}
     setTimeout(() => setIsRefreshing(false), 450);
   }, [muted]);
@@ -358,6 +364,7 @@ export default function App() {
   async function perform(action: Action) {
     if (generation.current) return false;
     generation.current = true;
+    stateSeq.current += 1;
     setBusy(true);
     setError("");
     try {
