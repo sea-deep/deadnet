@@ -1981,6 +1981,9 @@ export function Spirit({ data, perform, busy, open }: AppProps) {
           required
         />
         <div>
+          <small className="spirit-count" aria-live="polite">
+            {text.length}/1000
+          </small>
           <button type="button" onClick={() => open("archive")}>
             My Documents
           </button>

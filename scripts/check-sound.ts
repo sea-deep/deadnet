@@ -32,10 +32,11 @@ const games = p.getByRole("region", { name: "Games" });
 await games.getByRole("button", { name: "Flappy Bat", exact: false }).click();
 await expect
   .poll(() =>
-    p.evaluate(() =>
-      (window as any).__audios
-        .filter((a: HTMLAudioElement) => a.src.includes("ambient-horror"))
-        .every((a: HTMLAudioElement) => a.paused),
+    p.evaluate(
+      () =>
+        (window as any).__audios
+          .filter((a: HTMLAudioElement) => a.src.includes("ambient-horror"))
+          .every((a: HTMLAudioElement) => a.paused || a.volume <= 0.03), // games duck the ambience
     ),
   )
   .toBe(true);
@@ -75,7 +76,7 @@ await expect
 console.log(
   JSON.stringify({
     ambientPlayedAfterGesture: true,
-    ambientPausedForGames: true,
+    ambientQuietForGames: true,
     mutePropagatesToGame: true,
     muteStopsAmbient: true,
   }),

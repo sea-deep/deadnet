@@ -1227,6 +1227,11 @@ a {
   font-size: inherit;
   text-decoration: underline;
 }
+.spirit-count {
+  align-self: center;
+  font-size: 11px;
+  color: #4b4b4b;
+}
 .monitor-controls {
   display: flex;
   align-items: center;
@@ -3571,7 +3576,9 @@ body:has(.reduced-motion) {
   text-align: center;
   background: rgba(21, 16, 29, 0.94);
   color: #e5dbca;
-  font: 18px W95FA, sans-serif;
+  font:
+    18px W95FA,
+    sans-serif;
 }
 .game-overlay p {
   margin: 0;

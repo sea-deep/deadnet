@@ -79,7 +79,8 @@ function isTrace(value: unknown): value is Trace {
   )
     return false;
   for (const key of ["sourceId", "error", "action", "promptHash"])
-    if (value[key] !== undefined && typeof value[key] !== "string") return false;
+    if (value[key] !== undefined && typeof value[key] !== "string")
+      return false;
   return true;
 }
 function isAgent(value: unknown): value is Agent {

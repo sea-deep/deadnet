@@ -83,6 +83,19 @@ const defaults: Record<AppId, { width: number; height: number }> = {
   games: { width: 900, height: 680 },
   spirit: { width: 620, height: 610 },
 };
+/** Polling should not re-render the desktop when nothing it displays changed. */
+function sameSnapshot(a: Snapshot, b: Snapshot) {
+  return (
+    a.world.revision === b.world.revision &&
+    a.world.remainingTurns === b.world.remainingTurns &&
+    a.status.busy === b.status.busy &&
+    a.status.available === b.status.available &&
+    a.status.model === b.status.model &&
+    a.status.voice === b.status.voice &&
+    a.status.autonomy === b.status.autonomy &&
+    JSON.stringify(a.status.quota) === JSON.stringify(b.status.quota)
+  );
+}
 export default function App() {
   const [data, setData] = useState<Snapshot>();
   const [error, setError] = useState("");
@@ -246,7 +259,9 @@ export default function App() {
         }
         // An action may have committed while this request was in flight.
         if (alive && seq === stateSeq.current) {
-          setData(snapshot);
+          setData((old) =>
+            old && sameSnapshot(old, snapshot) ? old : snapshot,
+          );
           // Connection is back: drop a stale "can't reach the server" notice.
           setError((old) => (old === OFFLINE_MESSAGE ? "" : old));
         }
@@ -279,7 +294,8 @@ export default function App() {
     const seq = stateSeq.current;
     try {
       const snap = await readState();
-      if (seq === stateSeq.current) setData(snap);
+      if (seq === stateSeq.current)
+        setData((old) => (old && sameSnapshot(old, snap) ? old : snap));
     } catch {}
     setTimeout(() => setIsRefreshing(false), 450);
   }, [muted]);
