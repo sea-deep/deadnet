@@ -329,12 +329,14 @@ a {
 }
 .address {
   flex: 1;
+  min-width: 0;
   background: #f9f9f2;
   box-shadow: var(--inset);
   padding: 6px 9px;
   font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .address span {
   color: #62695f;
@@ -3369,6 +3371,10 @@ body:has(.reduced-motion) {
 .archive-app .menubar {
   align-items: center;
   padding: 4px;
+  flex-wrap: wrap;
+}
+.archive-app .menubar button {
+  white-space: nowrap;
 }
 .archive-app .search-field {
   margin-left: auto;
