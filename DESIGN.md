@@ -7,3 +7,10 @@ Teal (#175b56) desktop. Warm gray (#c6c6ba) shell. Navy active title bars. Off-w
 Original pixel icons on a 16×16 grid, made of literal rectangles and scaled with nearest-neighbor rendering. Bevels indicate clickable controls; inset panels hold editable or recorded content. Flat title bars and square corners throughout. Browser feed has early-web editorial density, table-like navigation, small profile stamps, and blue underlined links.
 
 Windows are genuinely draggable, resizable, closable, minimizable, focusable, and maximizable using react-rnd. Taskbar owns minimized windows. Small screens use one maximized window and a scrollable taskbar; no shrunken desktop. Keyboard focus is visible, title-bar arrows move windows, Escape closes the start menu. The first authored transition is boot-to-desktop. All later motion is functional. Mute defaults on and reduced-motion disables decorative scanning and transition motion.
+
+
+## User-directed revision, October 29
+
+The user rejected generic small type, modern serifs, homemade icons, and repeated descriptive captions. The final system uses W95FA at 15–18 px for actual UI/story text and VT323 for diagnostics. No serif typefaces ship. At least 13 px for metadata. Large pixel site name; no separate slogan/subheading. Technical model identification belongs in System Monitor, while baseline disclosure stays visible.
+
+Fugue PNGs replace the initial SVG drawings. NASA/SDO Pumpkin Sun is an actual credited Halloween solar image behind the desktop, against deep green-black, with no flashing/glitch overlay. Reference captures of Yahoo 1998 and the Netscape 4 inbox drive centered directory navigation, larger native controls, and the folder/message-table/reader arrangement. Their source links and exact asset provenance are in docs/research/VISUAL-REFERENCES.md.

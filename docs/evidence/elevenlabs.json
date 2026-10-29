@@ -1,0 +1,23 @@
+{
+  "measuredAt": "2026-10-29T08:29:04.052Z",
+  "provider": "ElevenLabs",
+  "model": "eleven_flash_v2_5",
+  "voice": "Daniel — Steady Broadcaster (premade licensed library voice)",
+  "voiceId": "onwK4e9ZLuTAKqWW03F9",
+  "transcript": "Len's mother did not call. There has not been a call in fifty years. I keep the line open because he still asks if someone is there. I don't know if it is crueler to answer, or to let it ring.",
+  "characters": 192,
+  "firstPlaybackMs": 1062,
+  "cachedPlaybackMs": 0,
+  "bytes": 238697,
+  "cacheBytesMatch": true,
+  "generationRequests": 1,
+  "subscriptionCharacterCountBefore": 14723,
+  "subscriptionCharacterCountAfter": 14723,
+  "observedCreditDelta": 0,
+  "notes": [
+    "Billing counter delta is observed account-wide usage, not a dollar invoice. Concurrent use can affect it.",
+    "The second playback uses SQLite audio cache. No second generation is sent.",
+    "Generated MP3 remains in ignored .data; not redistributed as a standalone asset.",
+    "Narrative: a recovered operator voicemail contradicts the routine written status report. The complete transcript is accessible without paid voice."
+  ]
+}

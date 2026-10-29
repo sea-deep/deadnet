@@ -1,6 +1,6 @@
 # Credits and licenses
 
-DEADNET story, characters, copy, pixel-grid drawings, CSS, and synthesized system tones were created for this repository beginning October 29, 2026. No Microsoft logos, original Windows icons, proprietary font files, sampled system sounds, or real deceased individuals’ likenesses/voices are included. OS-era interaction conventions are a reference, not an affiliation.
+DEADNET story, characters, copy, CSS, and synthesized system tones were created for this repository beginning October 29, 2026. Sourced assets are listed below. No Microsoft logos, original Windows icons, proprietary font files, sampled system sounds, or real deceased individuals’ likenesses/voices are included. OS-era interaction conventions are a reference, not an affiliation.
 
 Creative and technical influences: [Hypnospace Outlaw](https://www.hypnospace.net/), [98.js](https://github.com/1j01/98), [Generative Agents](https://github.com/joonspk-research/generative_agents), and [AI Town](https://github.com/AITownFun/ai-town). These are credited precedents; their nontrivial source code and content were not copied. The research comparison is in research/DECISIONS.md.
 
@@ -11,3 +11,14 @@ Gemma 4 weights are separately distributed by Google under Apache-2.0 according 
 Optional ElevenLabs audio uses the configured provider account and a voice the user has rights to use. No paid voice recording is redistributed by default. The cache is ignored. Provider and voice licenses govern generated recordings separately from this code license.
 
 Implementation and writing assisted by OpenAI Codex. Generated story turns are labeled individually in the product. The submission must disclose AI assistance as `some_ai` if staged through DEV.
+
+
+## Sourced visual assets
+
+Fugue PNG icons © Yusuke Kamiyamane, CC BY 3.0, [author](https://p.yusukekamiyamane.com/), [distribution mirror](https://github.com/unikent/fugue-icons). License shipped in public/assets/icons/LICENSE.txt; visible attribution in browser footer. No icons were traced or generated.
+
+W95FA by Alina Sava and VT323 by Peter Hull: SIL Open Font License, self-hosted WOFF2 distributions from Fontsource; licenses beside the fonts. Earlier IBM Plex experiments are not shipped.
+
+[Earthrise](https://science.nasa.gov/resource/image-earthrise/), NASA / William Anders, Apollo 8, 1968. [Pumpkin Sun](https://svs.gsfc.nasa.gov/11711/), NASA/GSFC/SDO, 2014, a composite of real extreme-ultraviolet solar captures, not a visible-light photo or AI image. NASA US federal imagery is public domain subject to its [media usage guidelines](https://www.nasa.gov/nasa-brand-center/images-and-media/). No NASA endorsement implied. The latter appears behind the desktop and boot screen; the former is a credited cached image in DeadBrowser.
+
+Actual Yahoo 1998 and Netscape mailbox reference screenshots were inspected for navigation density, functional type sizing, and split-pane layout. Their copyrights remain with the respective owners; no vendor graphics or reference screenshots ship inside the application. See research/VISUAL-REFERENCES.md.

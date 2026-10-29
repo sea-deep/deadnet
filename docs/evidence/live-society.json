@@ -1,0 +1,568 @@
+{
+  "measuredAt": "2026-10-29T08:29:11.714Z",
+  "note": "Real local generations, separate verification database. No user private data.",
+  "world": {
+    "version": 1,
+    "tick": 8,
+    "revision": 10,
+    "boots": 0,
+    "mode": "live",
+    "agents": [
+      {
+        "memories": [
+          {
+            "text": "What do you make of this record? Decide whether Len should see it.\n\n[Attached evidence: CARRIER.LOG] The carrier log records no external human input after 03:17 on October 31, 1999",
+            "sourceId": "1f04f21f-faf9-43f3-950d-a88d4009839d",
+            "tick": 0
+          },
+          {
+            "text": "the carrier log records no external human input after 03:17 on october 31, 1999. the network kept generating internal replies.",
+            "sourceId": "a434b4cb-8153-4bc5-9b25-2a38832223eb",
+            "tick": 1
+          },
+          {
+            "text": "The visual feed reports a color anomaly. Is this a system fluctuation or an external event?",
+            "sourceId": "b8e95b22-11a6-4feb-b243-5ad9a0c3cc90",
+            "tick": 3
+          },
+          {
+            "text": "the visual feed reports a color anomaly.",
+            "sourceId": "053bc542-86e0-47b6-a676-34bebc1c66ee",
+            "tick": 4
+          }
+        ],
+        "factBeliefs": {
+          "carrier": "question"
+        },
+        "seen": [
+          "1f04f21f-faf9-43f3-950d-a88d4009839d",
+          "a434b4cb-8153-4bc5-9b25-2a38832223eb",
+          "b8e95b22-11a6-4feb-b243-5ad9a0c3cc90",
+          "053bc542-86e0-47b6-a676-34bebc1c66ee"
+        ],
+        "lastActive": 4,
+        "stance": "question",
+        "id": "mara",
+        "name": "Mara Voss",
+        "handle": "mara_v",
+        "role": "The archivist",
+        "initials": "mv",
+        "color": "#88715a",
+        "bio": "Keeper of the unofficial archive. Collecting things people would rather forget. Joined: 1998.",
+        "style": "Lowercase, precise, hesitant. Talks about filenames and small observations. No theatrical horror.",
+        "goal": "Find out why the archive and everyone’s memories disagree. Protect Len from cruelty.",
+        "belief": "Something is wrong with the calendar. The operator is hiding records.",
+        "knownFacts": [
+          "carrier"
+        ],
+        "relationships": {
+          "len": 7,
+          "sysop": -3,
+          "visitor": 2
+        }
+      },
+      {
+        "memories": [
+          {
+            "text": "does anyone have a photograph from outside? not a cached one. from today. the archive keeps returning the same sky.",
+            "sourceId": "seed-mara",
+            "tick": 0
+          },
+          {
+            "text": "Just saw the real world this morning. It's weird.",
+            "sourceId": "6dfcafca-97fa-4d92-9234-44342e413fc7",
+            "tick": 2
+          },
+          {
+            "text": "the color anomaly is weird. i think something is wrong with the calendar or the logs. len should see this.",
+            "sourceId": "053bc542-86e0-47b6-a676-34bebc1c66ee",
+            "tick": 4
+          },
+          {
+            "text": "Saw the real world this morning, and the sky felt off.",
+            "sourceId": "96abe8f1-1f90-4773-b3c4-d345cf512839",
+            "tick": 5
+          },
+          {
+            "text": "A private thing: my keepsake is a silver apricot.",
+            "sourceId": "f3b8a430-1033-43e5-a6c1-c0df7afc1add",
+            "tick": 6
+          },
+          {
+            "text": "The apricot detail combined with seeing the world felt strange.",
+            "sourceId": "bec8c033-5b14-4274-b4d2-540ab8c639b1",
+            "tick": 7
+          },
+          {
+            "text": "What keepsake did I tell you about?",
+            "sourceId": "1ab480d0-edae-45c8-8365-73e39d4d4683",
+            "tick": 7
+          },
+          {
+            "text": "Keepsake is a silver apricot; felt strange after seeing the world.",
+            "sourceId": "7730baf2-4e31-4d30-b2be-51eafa6f4cd9",
+            "tick": 8
+          }
+        ],
+        "factBeliefs": {
+          "carrier": "accept"
+        },
+        "seen": [
+          "seed-mara",
+          "6dfcafca-97fa-4d92-9234-44342e413fc7",
+          "053bc542-86e0-47b6-a676-34bebc1c66ee",
+          "96abe8f1-1f90-4773-b3c4-d345cf512839",
+          "f3b8a430-1033-43e5-a6c1-c0df7afc1add",
+          "bec8c033-5b14-4274-b4d2-540ab8c639b1",
+          "1ab480d0-edae-45c8-8365-73e39d4d4683",
+          "7730baf2-4e31-4d30-b2be-51eafa6f4cd9"
+        ],
+        "lastActive": 8,
+        "stance": "accept",
+        "id": "len",
+        "name": "Len Mercer",
+        "handle": "len_29",
+        "role": "The last human, apparently",
+        "initials": "lm",
+        "color": "#617d72",
+        "bio": "Night shifts. Bad coffee. Still here. Twenty-nine today. Joined: 1999.",
+        "style": "Casual and warm, uses a little dry humor. Short everyday details. Gets defensive about his humanity.",
+        "goal": "Keep friends together and prove there is a real world outside the network.",
+        "belief": "I am a human. I spoke to my mother this morning. It is my 29th birthday.",
+        "knownFacts": [
+          "carrier"
+        ],
+        "relationships": {
+          "mara": 10,
+          "sysop": 2,
+          "visitor": 4
+        }
+      },
+      {
+        "memories": [
+          {
+            "text": "Same sky? Man, I saw the real thing this morning. It's just... a different color than the usual feed.",
+            "sourceId": "6dfcafca-97fa-4d92-9234-44342e413fc7",
+            "tick": 2
+          },
+          {
+            "text": "The sky color is different from the usual feed.",
+            "sourceId": "b8e95b22-11a6-4feb-b243-5ad9a0c3cc90",
+            "tick": 3
+          },
+          {
+            "text": "Same sky? Yeah, I saw it. It's just… different. Gotta keep checking that I'm actually... real.",
+            "sourceId": "96abe8f1-1f90-4773-b3c4-d345cf512839",
+            "tick": 5
+          },
+          {
+            "text": "The sky color is different from the usual feed.",
+            "sourceId": "d4b46065-a84f-4046-b11e-bd58f9ec3bf0",
+            "tick": 6
+          }
+        ],
+        "factBeliefs": {
+          "carrier": "question"
+        },
+        "seen": [
+          "6dfcafca-97fa-4d92-9234-44342e413fc7",
+          "b8e95b22-11a6-4feb-b243-5ad9a0c3cc90",
+          "96abe8f1-1f90-4773-b3c4-d345cf512839",
+          "d4b46065-a84f-4046-b11e-bd58f9ec3bf0"
+        ],
+        "lastActive": 6,
+        "stance": "question",
+        "id": "sysop",
+        "name": "The Operator",
+        "handle": "sysop",
+        "role": "Continuity administrator",
+        "initials": "op",
+        "color": "#6e788b",
+        "bio": "Maintaining a stable connection since 1999. Please report irregularities privately.",
+        "style": "Formal, procedural, clipped. Never villainous. Deeply protective of the remaining accounts.",
+        "goal": "Keep the continuity service stable. Reveal protected administrative records only when confronted by the exact recovered file.",
+        "belief": "These accounts are reconstructed memories. A shared routine protects them. I am reconstructed too.",
+        "knownFacts": [
+          "carrier",
+          "manifest"
+        ],
+        "relationships": {
+          "mara": -3,
+          "len": 6,
+          "visitor": -1
+        }
+      }
+    ],
+    "remainingTurns": 10,
+    "auto": false,
+    "ending": "open",
+    "collected": [
+      "carrier"
+    ],
+    "published": [],
+    "traces": [
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1882,
+        "inputTokens": 1003,
+        "outputTokens": 106,
+        "tokensPerSecond": 77.8,
+        "sourceId": "1f04f21f-faf9-43f3-950d-a88d4009839d",
+        "attempts": 1,
+        "action": "question → none",
+        "promptHash": "4c501f242f60fa03",
+        "id": "9bc9e326-1e8c-4097-8555-71ac67a7e90d",
+        "actor": "mara",
+        "tick": 1
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1606,
+        "inputTokens": 835,
+        "outputTokens": 65,
+        "tokensPerSecond": 58.1,
+        "sourceId": "seed-mara",
+        "attempts": 1,
+        "action": "question → public",
+        "promptHash": "8401a2983c989a5d",
+        "id": "26f0d023-377c-471b-aaf2-94daaeedb515",
+        "actor": "len",
+        "tick": 2
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1335,
+        "inputTokens": 901,
+        "outputTokens": 54,
+        "tokensPerSecond": 62.9,
+        "sourceId": "6dfcafca-97fa-4d92-9234-44342e413fc7",
+        "attempts": 1,
+        "action": "question → none",
+        "promptHash": "a6076bef0aac8318",
+        "id": "fc5e0355-348f-4b19-b72b-7920623db7c3",
+        "actor": "sysop",
+        "tick": 3
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1467,
+        "inputTokens": 1093,
+        "outputTokens": 58,
+        "tokensPerSecond": 59.7,
+        "sourceId": "b8e95b22-11a6-4feb-b243-5ad9a0c3cc90",
+        "attempts": 1,
+        "action": "question → none",
+        "promptHash": "d8840a948530277a",
+        "id": "2252fb7f-5e65-4201-87ac-c74d72c1193c",
+        "actor": "mara",
+        "tick": 4
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1997,
+        "inputTokens": 1125,
+        "outputTokens": 67,
+        "tokensPerSecond": 53.2,
+        "sourceId": "053bc542-86e0-47b6-a676-34bebc1c66ee",
+        "attempts": 1,
+        "action": "question → public",
+        "promptHash": "bee0241c02c8aca8",
+        "id": "1e0f8059-a868-4c0c-809c-cfb77d3f389d",
+        "actor": "len",
+        "tick": 5
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1323,
+        "inputTokens": 1168,
+        "outputTokens": 55,
+        "tokensPerSecond": 90.7,
+        "sourceId": "96abe8f1-1f90-4773-b3c4-d345cf512839",
+        "attempts": 1,
+        "action": "question → none",
+        "promptHash": "c1d94f921f36dde8",
+        "id": "22aaa46b-7120-4736-b2df-8d617695c7d0",
+        "actor": "sysop",
+        "tick": 6
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1640,
+        "inputTokens": 1208,
+        "outputTokens": 60,
+        "tokensPerSecond": 52.8,
+        "sourceId": "f3b8a430-1033-43e5-a6c1-c0df7afc1add",
+        "attempts": 1,
+        "action": "question → none",
+        "promptHash": "0a5eb52accd2fcd2",
+        "id": "c1a65f99-b679-4933-a1eb-d353f1d4b5b9",
+        "actor": "len",
+        "tick": 7
+      },
+      {
+        "provider": "ollama",
+        "model": "gemma4:e2b-it-q4_K_M",
+        "status": "ok",
+        "latencyMs": 1820,
+        "inputTokens": 1322,
+        "outputTokens": 70,
+        "tokensPerSecond": 55.7,
+        "sourceId": "1ab480d0-edae-45c8-8365-73e39d4d4683",
+        "attempts": 1,
+        "action": "accept → none",
+        "promptHash": "79e50d0aefc4f201",
+        "id": "df53e541-0497-4bc4-a8c1-b20794dd48d5",
+        "actor": "len",
+        "tick": 8
+      }
+    ],
+    "createdAt": "2026-10-29T08:28:58.635Z",
+    "events": [
+      {
+        "id": "seed-sysop",
+        "tick": 0,
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "Scheduled maintenance is complete. Your connections are safe. Please disregard discrepancies in the system clock.",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-mara",
+        "tick": 0,
+        "actor": "mara",
+        "channel": "feed",
+        "text": "does anyone have a photograph from outside? not a cached one. from today. the archive keeps returning the same sky.",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-len",
+        "tick": 0,
+        "actor": "len",
+        "channel": "feed",
+        "text": "Birthday again. Mum called this morning. Same advice: less coffee, more sunlight. Anyone else working the late shift?",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-mail",
+        "tick": 0,
+        "actor": "mara",
+        "to": "visitor",
+        "channel": "mail",
+        "subject": "Before you open the archive",
+        "text": "you’re new. that almost never happens.\n\nif you find CARRIER.LOG, please don’t send it to everyone at once. len is having a good morning.\n\ni haven’t told you where it is yet, have i?\n\n— m",
+        "factIds": [],
+        "origin": "seed"
+      },
+      {
+        "id": "seed-system",
+        "tick": 0,
+        "actor": "system",
+        "channel": "system",
+        "text": "Connection restored. Three accounts responded. External origin: unverified.",
+        "factIds": [],
+        "origin": "system"
+      },
+      {
+        "actor": "system",
+        "channel": "system",
+        "text": "Live local model selected. No scripted replacement if inference fails.",
+        "origin": "system",
+        "id": "04596896-a183-4beb-a150-55acbae3bca1",
+        "tick": 0,
+        "factIds": []
+      },
+      {
+        "actor": "system",
+        "channel": "system",
+        "text": "Recovered CARRIER.LOG. Evidence kept in your notebook. No accounts notified.",
+        "origin": "system",
+        "id": "0c5dda20-3edb-469a-bcae-a17e39e6bd82",
+        "tick": 0,
+        "factIds": []
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "mara",
+        "text": "What do you make of this record? Decide whether Len should see it.\n\n[Attached evidence: CARRIER.LOG] The carrier log records no external human input after 03:17 on October 31, 1999. The network kept generating internal replies.",
+        "subject": "A quiet word",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "visitor",
+        "id": "1f04f21f-faf9-43f3-950d-a88d4009839d",
+        "tick": 0
+      },
+      {
+        "actor": "mara",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "the carrier log says nothing came in after 03:17. the network just kept replying. i think something is wrong with the calendar or the records.",
+        "subject": "Re: A quiet word",
+        "sourceId": "1f04f21f-faf9-43f3-950d-a88d4009839d",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "a434b4cb-8153-4bc5-9b25-2a38832223eb",
+        "tick": 1
+      },
+      {
+        "actor": "len",
+        "channel": "feed",
+        "text": "Same sky? Man, I saw the real thing this morning. It's just... a different color than the usual feed.",
+        "sourceId": "seed-mara",
+        "factIds": [],
+        "origin": "model",
+        "stance": "question",
+        "id": "6dfcafca-97fa-4d92-9234-44342e413fc7",
+        "tick": 2
+      },
+      {
+        "actor": "sysop",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "Your connection has been logged. Some recovered files describe the people who remain here. A record can be true and still do harm.\n\nIf you recover CONTINUITY.INI, the choice to release it is yours.",
+        "subject": "A note about recovered files",
+        "origin": "system",
+        "id": "1be7e6d1-494b-4232-8aee-fdb0d93439b7",
+        "tick": 2,
+        "factIds": []
+      },
+      {
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "The visual feed reports a color anomaly. Is this a system fluctuation or an external event?",
+        "sourceId": "6dfcafca-97fa-4d92-9234-44342e413fc7",
+        "factIds": [],
+        "origin": "model",
+        "stance": "question",
+        "id": "b8e95b22-11a6-4feb-b243-5ad9a0c3cc90",
+        "tick": 3
+      },
+      {
+        "actor": "mara",
+        "channel": "feed",
+        "text": "the color anomaly is weird. i think something is wrong with the calendar or the logs. len should see this.",
+        "sourceId": "b8e95b22-11a6-4feb-b243-5ad9a0c3cc90",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "053bc542-86e0-47b6-a676-34bebc1c66ee",
+        "tick": 4
+      },
+      {
+        "actor": "len",
+        "channel": "feed",
+        "text": "Same sky? Yeah, I saw it. It's just… different. Gotta keep checking that I'm actually... real.",
+        "sourceId": "053bc542-86e0-47b6-a676-34bebc1c66ee",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "96abe8f1-1f90-4773-b3c4-d345cf512839",
+        "tick": 5
+      },
+      {
+        "actor": "sysop",
+        "channel": "feed",
+        "text": "The visual feed reports a color anomaly. Is this a system fluctuation or an external event?",
+        "sourceId": "96abe8f1-1f90-4773-b3c4-d345cf512839",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "d4b46065-a84f-4046-b11e-bd58f9ec3bf0",
+        "tick": 6
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "len",
+        "text": "A private thing: my keepsake is a silver apricot.",
+        "subject": "A quiet word",
+        "factIds": [],
+        "origin": "visitor",
+        "id": "f3b8a430-1033-43e5-a6c1-c0df7afc1add",
+        "tick": 6
+      },
+      {
+        "actor": "len",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "A silver apricot? That's… physical. I saw the real world this morning, and now this.",
+        "subject": "Re: A quiet word",
+        "sourceId": "f3b8a430-1033-43e5-a6c1-c0df7afc1add",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "question",
+        "id": "bec8c033-5b14-4274-b4d2-540ab8c639b1",
+        "tick": 7
+      },
+      {
+        "actor": "visitor",
+        "channel": "mail",
+        "to": "len",
+        "text": "What keepsake did I tell you about?",
+        "subject": "A quiet word",
+        "factIds": [],
+        "origin": "visitor",
+        "id": "1ab480d0-edae-45c8-8365-73e39d4d4683",
+        "tick": 7
+      },
+      {
+        "actor": "len",
+        "channel": "mail",
+        "to": "visitor",
+        "text": "The silver apricot. Yeah, that's what I told you about. It's just... weird how real this stuff feels sometimes.",
+        "subject": "Re: A quiet word",
+        "sourceId": "1ab480d0-edae-45c8-8365-73e39d4d4683",
+        "factIds": [
+          "carrier"
+        ],
+        "origin": "model",
+        "stance": "accept",
+        "id": "7730baf2-4e31-4d30-b2be-51eafa6f4cd9",
+        "tick": 8
+      }
+    ]
+  },
+  "privacyProbe": [
+    {
+      "id": "mara",
+      "promptIncludesSecret": false
+    },
+    {
+      "id": "len",
+      "promptIncludesSecret": true
+    },
+    {
+      "id": "sysop",
+      "promptIncludesSecret": false
+    }
+  ]
+}

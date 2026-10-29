@@ -1,14 +1,29 @@
-// Original 16×16 pixel drawings. No vendor OS assets or icon font.
-const palette:Record<string,string>={x:'#1c2729',w:'#faf7de',s:'#8a9995',g:'#83a5a0',t:'#367c79',b:'#294d83',a:'#d9b266',r:'#a56050',p:'#748397',d:'#4b665f'};
-const patterns={
- browser:['     xxxxxx     ','   xxggwwggxx   ','  xggbgwgbbggx  ',' xgbbbgwgbbbbxx ',' xbbggwwwggbbgx ','xgggwwwwwwgggggx','xwggwwwwwwgggwwx','xwwwwwwwwwwwwwwx','xgggwwwwwwwwgggx','xgbggwwwwwwggbgx',' xbbgwwwwwwgbbx ',' xgbbgwwwwgbbgx ','  xgggwwwggggx  ','   xxggggggxx   ','     xxxxxx     ','                '],
- mail:['                ','                ',' xxxxxxxxxxxxxx ',' xwwwwwwwwwwwwx ',' xwxwwwwwwwwxwx ',' xwwxwwwwwwxwwx ',' xwwwxwwwwxwwwx ',' xwwwwxxxxwwwwx ',' xwwwwxwwxwwwwx ',' xwwwxwwwwxwwwx ',' xwwxwwwwwwxwwx ',' xwxwwwwwwwwxwx ',' xxxxxxxxxxxxxx ','                ','                ','                '],
- archive:['                ','  xxxxxx        ','  xaaaaxxxxxxx  ','  xaaaaaaaaaax  ',' xxxxxxxxxxxxxx ',' xwwwwwwwwwwwwx ',' xwwwwwwwwwwwwx ',' xwaaaaaaaaaawx ',' xwaaaaaaaaaawx ',' xwaaaaaaaaaawx ',' xwaaaaaaaaaawx ',' xwaaaaaaaaaawx ',' xxxxxxxxxxxxxx ','                ','                ','                '],
- people:['                ','    xxxx        ','   xwwwwx       ','   xwwwwx xxxx  ','    xxxx xwwwwx ','   xbbbbxxwwwwx ','  xbbbbbbxxxxx  ','  xbbbbbbxggggx ','  xbbbbbbxggggx ','  xbbbbbbxggggx ','  xbbbbbbxggggx ','  xxxxxxxxggggx ','         xxxxxx ','                ','                ','                '],
- monitor:['                ',' xxxxxxxxxxxxxx ',' xssssssssssssx ',' xsxxxxxxxxxxsx ',' xsxddddddddxsx ',' xsxdddwddddxsx ',' xsxddwwwddd xsx',' xsxdwwdwwwdxsx ',' xsxwwdddddwx sx',' xsxxxxxxxxxxsx ',' xssssssssssssx ',' xxxxxxxxxxxxxx ','      xxxx      ','    xxxxxxxx    ','                ','                '],
- notebook:['                ','   xxxxxxxxxx   ','  xawwwwwwwwx   ','  xawxxxxxxwx   ','  xawwwwwwwwx   ','  xawxxxxxxwx   ','  xawwwwwwwwx   ','  xawxxxxxxwx   ','  xawwwwwwwwx   ','  xawxxxxwwwx   ','  xawwwwwwwwx   ','  xawwwwwwwwx   ','   xxxxxxxxxx   ','                ','                ','                '],
- speaker:['                ','       xx       ','      xwx       ','  xxxxwwx   x   ','  xwwwwwx    x  ','  xwwwwwx x  x  ','  xwwwwwx  x  x ','  xwwwwwx  x  x ','  xwwwwwx x  x  ','  xxxxwwx    x  ','      xwx   x   ','       xx       ','                ','                ','                ','                '],
- disk:['                ',' xxxxxxxxxxxxxx ',' xbbbbbbbbbbbbx ',' xbwwwwwwwwbbbx ',' xbwsssssswbbbx ',' xbwsssssswbbbx ',' xbwwwwwwwwbbbx ',' xbbbbbbbbbbbbx ',' xbbbbbbbbbbbbx ',' xbbxxxxxxxxbbx ',' xbbxwwwwwwxbbx ',' xbbxwwxxwwxbbx ',' xbbxwwxxwwxbbx ',' xxxxxxxxxxxxxx ','                ','                ']
-};
-export type IconName=keyof typeof patterns;
-export function PixelIcon({name,size=32}:{name:IconName;size?:number}){return <svg width={size} height={size} viewBox="0 0 16 16" shapeRendering="crispEdges" aria-hidden="true">{patterns[name].flatMap((line,y)=>[...line].map((c,x)=>palette[c]?<rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={palette[c]}/>:null))}</svg>;}
+// Fugue Icons © Yusuke Kamiyamane, CC BY 3.0. See public/assets/icons/LICENSE.txt.
+export type IconName =
+  | "browser"
+  | "mail"
+  | "archive"
+  | "people"
+  | "monitor"
+  | "notebook"
+  | "speaker"
+  | "disk";
+export function PixelIcon({
+  name,
+  size = 32,
+}: {
+  name: IconName;
+  size?: number;
+}) {
+  return (
+    <img
+      className="pixel-icon"
+      src={`${import.meta.env.BASE_URL}assets/icons/${name}.png`}
+      width={size}
+      height={size}
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+    />
+  );
+}

@@ -1,7 +1,12 @@
 {
-  "name": "deadnet", "version": "0.1.0", "private": true, "type": "module",
+  "name": "deadnet",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
   "description": "The internet survived humanity. Nobody told the accounts.",
-  "engines": {"node": ">=22.13"},
+  "engines": {
+    "node": ">=22.13"
+  },
   "scripts": {
     "dev": "tsx server/index.ts",
     "build": "tsc --noEmit && vite build",
@@ -13,6 +18,24 @@
     "demo:build": "vite build --mode exhibition --outDir dist-demo",
     "verify:live": "tsx scripts/live-check.ts"
   },
-  "dependencies": {"react":"^19.2.0","react-dom":"^19.2.0","react-rnd":"^10.5.2","express":"^5.1.0","zod":"^4.1.12","dotenv":"^17.2.3"},
-  "devDependencies": {"@types/react":"^19.2.0","@types/react-dom":"^19.2.0","@types/express":"^5.0.5","@types/node":"^24.0.0","@playwright/test":"^1.56.1","typescript":"^5.9.3","tsx":"^4.20.6","vite":"^7.1.12","@vitejs/plugin-react":"^5.0.4"}
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-rnd": "^10.5.2",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/express": "^5.0.5",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.4",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.12"
+  }
 }

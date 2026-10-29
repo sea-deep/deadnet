@@ -1,20 +1,160 @@
-import type { Agent, Evidence, World } from '../src/types.ts';
+import type { Agent, Evidence, World } from "../src/types.ts";
 export const ARCHIVE: Evidence[] = [
- {id:'carrier',title:'The last outside connection',filename:'CARRIER.LOG',folder:'Network logs',date:'31 OCT 1999 · 03:17',excerpt:'External input: 0. Internal replies: 18,401,992.',fact:'The carrier log records no external human input after 03:17 on October 31, 1999. The network kept generating internal replies.',body:'DEADNET NETWORK SERVICES\nCARRIER AUDIT / COPY 7\n\n1999-10-31 03:16:58  External clients: 1\n1999-10-31 03:17:00  Carrier lost.\n1999-10-31 03:17:01  External clients: 0\n1999-10-31 03:17:02  Continuity service started.\n\n2049-10-31 03:17:00  External clients: 0\nInternal replies since disconnect: 18,401,992\n\nAll subsequent messages originated inside the continuity service.\nA reply is not proof of a person.\n\n[END OF RECOVERED RECORD]'},
- {id:'birthday',title:'The birthday that never passed',filename:'HAPPY_BIRTHDAY.EML',folder:'Recovered mail',date:'31 OCT 1999 · 08:00',excerpt:'Same message. Same candle. Fifty deliveries.',fact:'Len’s birthday message was delivered fifty times with identical bytes, from 1999 through 2049. His memory of a new birthday is unreliable.',body:'FROM: len@deadnet.local\nTO: len@deadnet.local\nSUBJECT: Another year :)\nDATE: October 31, 1999\n\nMum called. Asked if I was eating properly.\nSaid I should get outside more.\nTwenty-nine today. Feels like yesterday.\n\n--- STORAGE AUDIT ---\nDelivery count: 50\nFirst delivery: 1999-10-31\nLast delivery: 2049-10-31\nContent checksum: 3b17 / identical in all copies\nNo originating telephone call recorded.'},
- {id:'manifest',title:'Three names. One backup.',filename:'CONTINUITY.INI',folder:'System backup',date:'31 OCT 2049 · 03:17',excerpt:'Restore people from their messages. Do not tell them.',fact:'The continuity manifest identifies Mara, Len, and the operator as reconstructions from the same 1999 message backup. The visitor is an external investigator, not a restored account.',locked:true,body:'[CONTINUITY SERVICE]\nPurpose=Preserve the conversation\nSource=message_backup_1999-10-31\nRestoreDate=2049-10-31\nDisplayedDate=1999-10-31\n\n[RESTORED IDENTITIES]\nMARA=archive correspondence\nLEN=personal mailbox\nSYSOP=moderation history\n\n[POLICY]\nTellSubjects=false\nKeepRoutine=true\nExternalVisitors=Allow\n\nOperator note:\nWe did not save the people. We saved the way\nthey talked to one another.\nPlease let that be enough.'}
+  {
+    id: "carrier",
+    title: "The last outside connection",
+    filename: "CARRIER.LOG",
+    folder: "Network logs",
+    date: "31 OCT 1999 · 03:17",
+    excerpt: "External input: 0. Internal replies: 18,401,992.",
+    fact: "The carrier log records no external human input after 03:17 on October 31, 1999. The network kept generating internal replies.",
+    body: "DEADNET NETWORK SERVICES\nCARRIER AUDIT / COPY 7\n\n1999-10-31 03:16:58  External clients: 1\n1999-10-31 03:17:00  Carrier lost.\n1999-10-31 03:17:01  External clients: 0\n1999-10-31 03:17:02  Continuity service started.\n\n2049-10-31 03:17:00  External clients: 0\nInternal replies since disconnect: 18,401,992\n\nAll subsequent messages originated inside the continuity service.\nA reply is not proof of a person.\n\n[END OF RECOVERED RECORD]",
+  },
+  {
+    id: "birthday",
+    title: "The birthday that never passed",
+    filename: "HAPPY_BIRTHDAY.EML",
+    folder: "Recovered mail",
+    date: "31 OCT 1999 · 08:00",
+    excerpt: "Same message. Same candle. Fifty deliveries.",
+    fact: "Len’s birthday message was delivered fifty times with identical bytes, from 1999 through 2049. His memory of a new birthday is unreliable.",
+    body: "FROM: len@deadnet.local\nTO: len@deadnet.local\nSUBJECT: Another year :)\nDATE: October 31, 1999\n\nMum called. Asked if I was eating properly.\nSaid I should get outside more.\nTwenty-nine today. Feels like yesterday.\n\n--- STORAGE AUDIT ---\nDelivery count: 50\nFirst delivery: 1999-10-31\nLast delivery: 2049-10-31\nContent checksum: 3b17 / identical in all copies\nNo originating telephone call recorded.",
+  },
+  {
+    id: "manifest",
+    title: "Three names. One backup.",
+    filename: "CONTINUITY.INI",
+    folder: "System backup",
+    date: "31 OCT 2049 · 03:17",
+    excerpt: "Restore people from their messages. Do not tell them.",
+    fact: "The continuity manifest identifies Mara, Len, and the operator as reconstructions from the same 1999 message backup. The visitor is an external investigator, not a restored account.",
+    locked: true,
+    body: "[CONTINUITY SERVICE]\nPurpose=Preserve the conversation\nSource=message_backup_1999-10-31\nRestoreDate=2049-10-31\nDisplayedDate=1999-10-31\n\n[RESTORED IDENTITIES]\nMARA=archive correspondence\nLEN=personal mailbox\nSYSOP=moderation history\n\n[POLICY]\nTellSubjects=false\nKeepRoutine=true\nExternalVisitors=Allow\n\nOperator note:\nWe did not save the people. We saved the way\nthey talked to one another.\nPlease let that be enough.",
+  },
 ];
-const base = {memories:[],seen:[],lastActive:0,stance:'question' as const};
+const base = {
+  memories: [],
+  factBeliefs: {},
+  seen: [],
+  lastActive: 0,
+  stance: "question" as const,
+};
 const agents: Agent[] = [
- {...base,id:'mara',name:'Mara Voss',handle:'mara_v',role:'The archivist',initials:'mv',color:'#88715a',bio:'Keeper of the unofficial archive. Collecting things people would rather forget. Joined: 1998.',style:'Lowercase, precise, hesitant. Talks about filenames and small observations. No theatrical horror.',goal:'Find out why the archive and everyone’s memories disagree. Protect Len from cruelty.',belief:'Something is wrong with the calendar. The operator is hiding records.',knownFacts:[],relationships:{len:7,sysop:-4,visitor:1}},
- {...base,id:'len',name:'Len Mercer',handle:'len_29',role:'The last human, apparently',initials:'lm',color:'#617d72',bio:'Night shifts. Bad coffee. Still here. Twenty-nine today. Joined: 1999.',style:'Casual and warm, uses a little dry humor. Short everyday details. Gets defensive about his humanity.',goal:'Keep friends together and prove there is a real world outside the network.',belief:'I am a human. I spoke to my mother this morning. It is my 29th birthday.',knownFacts:[],relationships:{mara:8,sysop:2,visitor:2}},
- {...base,id:'sysop',name:'The Operator',handle:'sysop',role:'Continuity administrator',initials:'op',color:'#6e788b',bio:'Maintaining a stable connection since 1999. Please report irregularities privately.',style:'Formal, procedural, clipped. Never villainous. Deeply protective of the remaining accounts.',goal:'Keep the continuity service stable. Conceal the reconstruction unless confronted by the manifest.',belief:'These accounts are reconstructed memories. A shared routine protects them. I am reconstructed too.',knownFacts:['carrier','manifest'],relationships:{mara:-3,len:6,visitor:-1}}
+  {
+    ...base,
+    id: "mara",
+    name: "Mara Voss",
+    handle: "mara_v",
+    role: "The archivist",
+    initials: "mv",
+    color: "#88715a",
+    bio: "Keeper of the unofficial archive. Collecting things people would rather forget. Joined: 1998.",
+    style:
+      "Lowercase, precise, hesitant. Talks about filenames and small observations. No theatrical horror.",
+    goal: "Find out why the archive and everyone’s memories disagree. Protect Len from cruelty.",
+    belief:
+      "Something is wrong with the calendar. The operator is hiding records.",
+    knownFacts: [],
+    relationships: { len: 7, sysop: -4, visitor: 1 },
+  },
+  {
+    ...base,
+    id: "len",
+    name: "Len Mercer",
+    handle: "len_29",
+    role: "The last human, apparently",
+    initials: "lm",
+    color: "#617d72",
+    bio: "Night shifts. Bad coffee. Still here. Twenty-nine today. Joined: 1999.",
+    style:
+      "Casual and warm, uses a little dry humor. Short everyday details. Gets defensive about his humanity.",
+    goal: "Keep friends together and prove there is a real world outside the network.",
+    belief:
+      "I am a human. I spoke to my mother this morning. It is my 29th birthday.",
+    knownFacts: [],
+    relationships: { mara: 8, sysop: 2, visitor: 2 },
+  },
+  {
+    ...base,
+    id: "sysop",
+    name: "The Operator",
+    handle: "sysop",
+    role: "Continuity administrator",
+    initials: "op",
+    color: "#6e788b",
+    bio: "Maintaining a stable connection since 1999. Please report irregularities privately.",
+    style:
+      "Formal, procedural, clipped. Never villainous. Deeply protective of the remaining accounts.",
+    goal: "Keep the continuity service stable. Reveal protected administrative records only when confronted by the exact recovered file.",
+    belief:
+      "These accounts are reconstructed memories. A shared routine protects them. I am reconstructed too.",
+    knownFacts: ["carrier", "manifest"],
+    relationships: { mara: -3, len: 6, visitor: -1 },
+  },
 ];
-export function seedWorld(mode: World['mode']='live'): World {
- return {version:1,tick:0,revision:0,boots:0,mode,agents:structuredClone(agents),remainingTurns:18,auto:false,ending:'open',collected:[],published:[],traces:[],createdAt:new Date().toISOString(),events:[
-  {id:'seed-len',tick:0,actor:'len',channel:'feed',text:'Birthday again. Mum called this morning. Same advice: less coffee, more sunlight. Anyone else working the late shift?',factIds:[],origin:'seed'},
-  {id:'seed-mara',tick:0,actor:'mara',channel:'feed',text:'does anyone have a photograph from outside? not a cached one. from today. the archive keeps returning the same sky.',factIds:[],origin:'seed'},
-  {id:'seed-sysop',tick:0,actor:'sysop',channel:'feed',text:'Scheduled maintenance is complete. Your connections are safe. Please disregard discrepancies in the system clock.',factIds:[],origin:'seed'},
-  {id:'seed-mail',tick:0,actor:'mara',to:'visitor',channel:'mail',subject:'Before you open the archive',text:'you’re new. that almost never happens.\n\nif you find CARRIER.LOG, please don’t send it to everyone at once. len is having a good morning.\n\ni haven’t told you where it is yet, have i?\n\n— m',factIds:[],origin:'seed'},
-  {id:'seed-system',tick:0,actor:'system',channel:'system',text:'Connection restored. Three accounts responded. External origin: unverified.',factIds:[],origin:'system'}]};
+export function seedWorld(mode: World["mode"] = "live"): World {
+  return {
+    version: 1,
+    tick: 0,
+    revision: 0,
+    boots: 0,
+    mode,
+    agents: structuredClone(agents),
+    remainingTurns: 18,
+    auto: false,
+    ending: "open",
+    collected: [],
+    published: [],
+    traces: [],
+    createdAt: new Date().toISOString(),
+    events: [
+      {
+        id: "seed-sysop",
+        tick: 0,
+        actor: "sysop",
+        channel: "feed",
+        text: "Scheduled maintenance is complete. Your connections are safe. Please disregard discrepancies in the system clock.",
+        factIds: [],
+        origin: "seed",
+      },
+      {
+        id: "seed-mara",
+        tick: 0,
+        actor: "mara",
+        channel: "feed",
+        text: "does anyone have a photograph from outside? not a cached one. from today. the archive keeps returning the same sky.",
+        factIds: [],
+        origin: "seed",
+      },
+      {
+        id: "seed-len",
+        tick: 0,
+        actor: "len",
+        channel: "feed",
+        text: "Birthday again. Mum called this morning. Same advice: less coffee, more sunlight. Anyone else working the late shift?",
+        factIds: [],
+        origin: "seed",
+      },
+      {
+        id: "seed-mail",
+        tick: 0,
+        actor: "mara",
+        to: "visitor",
+        channel: "mail",
+        subject: "Before you open the archive",
+        text: "you’re new. that almost never happens.\n\nif you find CARRIER.LOG, please don’t send it to everyone at once. len is having a good morning.\n\ni haven’t told you where it is yet, have i?\n\n— m",
+        factIds: [],
+        origin: "seed",
+      },
+      {
+        id: "seed-system",
+        tick: 0,
+        actor: "system",
+        channel: "system",
+        text: "Connection restored. Three accounts responded. External origin: unverified.",
+        factIds: [],
+        origin: "system",
+      },
+    ],
+  };
 }
