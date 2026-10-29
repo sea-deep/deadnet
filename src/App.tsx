@@ -14,21 +14,28 @@ import {
 import type { Action, AgentId, Snapshot } from "./types";
 import {
   APP_INFO,
-  Archive,
-  RecycleBin,
-  Browser,
   Games,
   Spirit,
   Mail,
   Monitor,
   Notebook,
   People,
-  ReadMe,
   type AppId,
   type AppProps,
 } from "./Apps";
 import { PixelIcon } from "./icons";
 import { tone, setAmbient, duckAmbient } from "./sound";
+import {
+  Casebook,
+  Messenger,
+  Photos,
+  Calendar,
+  MyComputer,
+  Trash,
+} from "./CaseApps";
+import { GameEntrance } from "./GameEntrance";
+import "./experience.css";
+import "./cursor-pack.css";
 import { GAME_LIST, GameIcon, type GameId } from "./games";
 type WindowState = {
   id: AppId;
@@ -41,11 +48,13 @@ type WindowState = {
   z: number;
 };
 const components = {
-  readme: ReadMe,
-  browser: Browser,
+  computer: MyComputer,
+  trash: Trash,
+  readme: Casebook,
+  browser: Messenger,
   mail: Mail,
-  archive: Archive,
-  recycle: RecycleBin,
+  archive: Photos,
+  recycle: Calendar,
   people: People,
   monitor: Monitor,
   notebook: Notebook,
@@ -72,16 +81,18 @@ function keepFocusInside(e: React.KeyboardEvent<HTMLElement>) {
   }
 }
 const defaults: Record<AppId, { width: number; height: number }> = {
-  readme: { width: 640, height: 640 },
-  browser: { width: 970, height: 740 },
-  mail: { width: 790, height: 560 },
-  archive: { width: 800, height: 610 },
-  recycle: { width: 800, height: 610 },
+  computer: { width: 1040, height: 700 },
+  trash: { width: 870, height: 680 },
+  readme: { width: 850, height: 740 },
+  browser: { width: 1060, height: 760 },
+  mail: { width: 1000, height: 720 },
+  archive: { width: 980, height: 780 },
+  recycle: { width: 820, height: 760 },
   people: { width: 660, height: 590 },
   monitor: { width: 790, height: 580 },
   notebook: { width: 650, height: 500 },
   games: { width: 900, height: 680 },
-  spirit: { width: 620, height: 610 },
+  spirit: { width: 750, height: 710 },
 };
 /** Polling should not re-render the desktop when nothing it displays changed. */
 function sameSnapshot(a: Snapshot, b: Snapshot) {
@@ -129,13 +140,13 @@ export default function App() {
   const [target, setTarget] = useState<AgentId>("mara");
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [size, setSize] = useState({ width: innerWidth, height: innerHeight });
-  const [notice, setNotice] = useState(true);
+  const [notice, setNotice] = useState(false);
   const [noticeId, setNoticeId] = useState("seed-mail");
   const [crtFilter, setCrtFilter] = useState(() => {
     try {
-      return localStorage.getItem("deadnet-crt") === "true";
+      return localStorage.getItem("deadnet-crt") !== "false";
     } catch {
-      return false;
+      return true;
     }
   });
   const [contextMenu, setContextMenu] = useState<{
@@ -143,8 +154,8 @@ export default function App() {
     y: number;
   } | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [stickyOpen, setStickyOpen] = useState(true);
-  const [stickyExpanded, setStickyExpanded] = useState(() => innerWidth >= 740);
+  const [endingDismissed, setEndingDismissed] = useState(false);
+  const [signalSeen, setSignalSeen] = useState(false);
   const [readMail, setReadMail] = useState<string[]>(() => {
     try {
       const saved = JSON.parse(
@@ -346,23 +357,27 @@ export default function App() {
       setContextMenu(null);
       tone("window_open", muted);
       if (id === "mail") setNotice(false);
+      if (id === "spirit") {
+        setSignalSeen(true);
+        setNotice(false);
+      }
       setWindows((old) => {
         const existing = old.find((w) => w.id === id);
         if (existing)
           return old.map((w) =>
             w.id === id ? { ...w, minimized: false, z: ++z.current } : w,
           );
-        const index = old.length;
+        const index = old.length % 3;
         return [
           ...old,
           {
             id,
             x: Math.min(
-              150 + index * 38,
+              Math.max(132, (innerWidth - defaults[id].width) / 2) + index * 22,
               Math.max(0, innerWidth - defaults[id].width - 20),
             ),
             y: Math.min(
-              45 + index * 32,
+              26 + index * 22,
               Math.max(0, innerHeight - defaults[id].height - 65),
             ),
             width: Math.min(defaults[id].width, innerWidth - 32),
@@ -396,6 +411,7 @@ export default function App() {
       if (action.type === "reset") {
         clearSave();
         setReadMail([]);
+        setEndingDismissed(false);
       }
       const next = await act(action);
       setData(next);
@@ -416,19 +432,8 @@ export default function App() {
     setConnected(true);
     tone("connect", muted);
     setBootStage(9);
-    if (
-      data?.status.available &&
-      data.status.provider === "ollama" &&
-      data.world.mode === "live"
-    )
-      void perform({ type: "auto", enabled: true });
-    // First visit: explain the case before anything else.
-    let seen = false;
-    try {
-      seen = localStorage.getItem("deadnet-readme-seen") === "true";
-      localStorage.setItem("deadnet-readme-seen", "true");
-    } catch {}
-    if (!seen) open("readme");
+    // The computer opens on a personal conversation, never an instruction manual.
+    open("browser");
     setTimeout(() => {
       root.current?.focus();
     }, 50);
@@ -526,15 +531,13 @@ export default function App() {
       {exhibition && (
         <div className="exhibition-banner">
           <strong>DETERMINISTIC EXHIBITION</strong>
-          <span>
-            This edition uses scripted responses. Run locally for live Gemma.
-          </span>
+          <span>Scripted dialogue. Run the server for live AI.</span>
           <a
             href="https://github.com/sea-deep/deadnet"
             target="_blank"
             rel="noreferrer"
           >
-            Get the local experience ↗
+            Source & setup ↗
           </a>
         </div>
       )}
@@ -546,7 +549,19 @@ export default function App() {
           gridTemplateRows: `repeat(${Math.min(8, Math.max(2, Math.floor((size.height - (exhibition ? 138 : 80)) / 88)))}, 88px)`,
         }}
       >
-        {(Object.keys(APP_INFO) as AppId[]).map((id) => (
+        {(
+          [
+            "computer",
+            "browser",
+            "mail",
+            "archive",
+            "recycle",
+            "notebook",
+            "trash",
+            "spirit",
+            "readme",
+          ] as AppId[]
+        ).map((id) => (
           <button
             key={id}
             onClick={(e) => {
@@ -688,7 +703,7 @@ export default function App() {
                       <PixelIcon name={APP_INFO[w.id].icon} size={17} />
                       <span>
                         {APP_INFO[w.id].title}
-                        {w.id === "browser" ? " — Residents’ messages" : ""}
+                        {w.id === "browser" ? " — nora_v" : ""}
                       </span>
                     </div>
                     <div className="window-buttons title-bar-controls">
@@ -733,33 +748,57 @@ export default function App() {
             );
           })}
       </div>
-      {connected && notice && data && noticeMail && (
-        <aside className="mail-notification">
-          <div className="notification-heading">
-            <PixelIcon name="mail" size={19} />
-            <strong>You have new mail.</strong>
+      {connected &&
+        data?.world.collected.includes("birthday") &&
+        !signalSeen && (
+          <aside className="mail-notification signal-notification">
+            <div className="notification-heading">
+              <PixelIcon name="spirit" size={20} />
+              <strong>nora_v signed in.</strong>
+            </div>
             <button
-              aria-label="Dismiss mail notification"
-              onClick={() => setNotice(false)}
+              className="notification-body"
+              onClick={() => {
+                open("spirit");
+                tone("line", muted);
+              }}
             >
-              ×
+              <span>adam?</span>
+              <span>Open conversation →</span>
             </button>
-          </div>
-          <button
-            className="notification-body"
-            onClick={() => {
-              open("mail");
-              setNotice(false);
-            }}
-          >
-            <strong>
-              {data.world.agents.find((a) => a.id === noticeMail.actor)
-                ?.handle || "Network service"}
-            </strong>
-            <span>“{noticeMail.subject || "New message"}”</span>
-          </button>
-        </aside>
-      )}
+          </aside>
+        )}
+      {connected &&
+        notice &&
+        data &&
+        noticeMail &&
+        (signalSeen || !data.world.collected.includes("birthday")) && (
+          <aside className="mail-notification">
+            <div className="notification-heading">
+              <PixelIcon name="mail" size={19} />
+              <strong>You have new mail.</strong>
+              <button
+                aria-label="Dismiss mail notification"
+                onClick={() => setNotice(false)}
+              >
+                ×
+              </button>
+            </div>
+            <button
+              className="notification-body"
+              onClick={() => {
+                open("mail");
+                setNotice(false);
+              }}
+            >
+              <strong>
+                {data.world.agents.find((a) => a.id === noticeMail.actor)
+                  ?.handle || "Network service"}
+              </strong>
+              <span>“{noticeMail.subject || "New message"}”</span>
+            </button>
+          </aside>
+        )}
       {error && (
         <div role="alert" className="error-toast">
           <PixelIcon name="monitor" size={26} />
@@ -850,8 +889,7 @@ export default function App() {
             <button
               onClick={() => {
                 setStart(false);
-                setStickyOpen(true);
-                setStickyExpanded(true);
+                open("notebook");
                 tone("click", muted);
               }}
             >
@@ -859,6 +897,18 @@ export default function App() {
               Nora’s note
             </button>
             <hr />
+            <button
+              onClick={() => {
+                const next = !crtFilter;
+                setCrtFilter(next);
+                try {
+                  localStorage.setItem("deadnet-crt", String(next));
+                } catch {}
+              }}
+            >
+              <PixelIcon name="monitor" size={25} />
+              {crtFilter ? "Turn off CRT scanlines" : "Turn on CRT scanlines"}
+            </button>
             <button onClick={() => setMuted(!muted)}>
               <PixelIcon name="speaker" size={25} />
               {muted ? "Enable system sound" : "Mute system sound"}
@@ -950,7 +1000,7 @@ export default function App() {
                   if (await perform({ type: "reset" })) {
                     clearSave();
                     setWindows([]);
-                    open("readme");
+                    open("browser");
                     setInfo("A new investigation has started.");
                   }
                 }}
@@ -963,51 +1013,6 @@ export default function App() {
             </div>
           </div>
         </div>
-      )}
-      {connected && stickyOpen && (
-        <aside
-          className={`sticky-note ${mobile ? "mobile" : ""} ${mobile && !stickyExpanded ? "collapsed" : ""}`}
-          aria-label="Nora's sticky note"
-        >
-          <div className="sticky-header">
-            <strong>ROOM 317 — DO NOT REMOVE</strong>
-            <span className="sticky-actions">
-              {mobile && (
-                <button
-                  aria-expanded={stickyExpanded}
-                  aria-label={
-                    stickyExpanded ? "Collapse Nora's note" : "Read Nora's note"
-                  }
-                  onClick={() => {
-                    tone("click", muted);
-                    setStickyExpanded(!stickyExpanded);
-                  }}
-                >
-                  {stickyExpanded ? "Fold" : "Read"}
-                </button>
-              )}
-              <button
-                aria-label="Dismiss note"
-                onClick={() => {
-                  tone("click", muted);
-                  setStickyOpen(false);
-                }}
-              >
-                ×
-              </button>
-            </span>
-          </div>
-          {(!mobile || stickyExpanded) && (
-            <div className="sticky-body">
-              <p>• Owen asked for inspection keys.</p>
-              <p>• DO NOT give STAFF-04 until Adam checks signatures.</p>
-              <p>• Len left at 02:58.</p>
-              <p>• Tape is under Adam's keyboard.</p>
-              <p>• Door locked from inside.</p>
-              <small>OCT 31 · 03:17:00</small>
-            </div>
-          )}
-        </aside>
       )}
       {contextMenu && (
         <nav
@@ -1056,11 +1061,11 @@ export default function App() {
           <button
             onClick={() => {
               setContextMenu(null);
-              setStickyOpen(true);
+              open("notebook");
               tone("click", muted);
             }}
           >
-            <span>Show Nora’s Note</span>
+            <span>Open Nora’s Notepad</span>
           </button>
           <hr />
           <button
@@ -1170,6 +1175,51 @@ export default function App() {
           </div>
         </div>
       )}
+      {connected &&
+        data &&
+        data.world.ending !== "open" &&
+        !endingDismissed && (
+          <section
+            className="case-ending"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Investigation complete"
+            onKeyDown={keepFocusInside}
+          >
+            <div>
+              <PixelIcon name="spirit" size={36} />
+              <h1>
+                {data.world.ending === "exposed"
+                  ? "The line is quiet."
+                  : "The computer stays on."}
+              </h1>
+              <p className="ending-nora">
+                {data.world.ending === "exposed"
+                  ? "“i can hear the rain now. thank you.”"
+                  : "“please don’t turn it off.”"}
+              </p>
+              <p>
+                {data.world.ending === "exposed"
+                  ? "You sent Nora’s messages, Len’s email and the spare-key photograph together. Owen’s account could not survive all three."
+                  : "The evidence remains on your drive. The official account still calls it an accident."}
+              </p>
+              <p>
+                {data.world.ending === "exposed"
+                  ? "Mara writes the next morning. She finally put the scarf away. She’s making soup on Sunday. There will be three bowls."
+                  : "Somewhere in the computer, Nora is still waiting."}
+              </p>
+              <button
+                autoFocus
+                onClick={() => {
+                  setEndingDismissed(true);
+                  open("readme");
+                }}
+              >
+                Return to the computer
+              </button>
+            </div>
+          </section>
+        )}
       {crtFilter && <div className="crt-overlay" aria-hidden="true" />}
       {info && (
         <div role="status" className="error-toast info-toast">
@@ -1241,7 +1291,26 @@ export default function App() {
                   : "Disconnected"}
             </span>
           </button>
-          <time title="31 OCT 1999 03:17:00 AM — Westhaven House Room 317">
+          <button
+            className="fullscreen-control"
+            onClick={() => {
+              if (document.fullscreenElement)
+                void document
+                  .exitFullscreen?.()
+                  .catch(() =>
+                    setInfo("Use your browser’s fullscreen control."),
+                  );
+              else
+                void document.documentElement
+                  .requestFullscreen?.()
+                  .catch(() =>
+                    setInfo("Use your browser’s fullscreen control."),
+                  );
+            }}
+          >
+            Fullscreen
+          </button>
+          <time title="Nora’s computer clock stopped on 31 October at 03:17">
             03:17 AM
           </time>
         </div>
@@ -1253,29 +1322,13 @@ export default function App() {
           aria-label="Computer startup"
         >
           {bootStage < 0 ? (
-            <div className="power-screen">
-              <PixelIcon name="monitor" size={48} />
-              <p className="power-premise">
-                Nora Vale died in room 317. The police called it an accident.
-                <br />
-                Her computer is still answering. Find out who was there.
-              </p>
-              <button
-                className="boot-connect"
-                disabled={!data}
-                onClick={powerOn}
-              >
-                {data ? "Power on" : "Please wait…"}
-              </button>
-              <label className="boot-sound">
-                <input
-                  type="checkbox"
-                  checked={!muted}
-                  onChange={(e) => setMuted(!e.target.checked)}
-                />{" "}
-                Sound
-              </label>
-            </div>
+            <GameEntrance
+              ready={Boolean(data)}
+              muted={muted}
+              setMuted={setMuted}
+              powerOn={powerOn}
+              resumed={Boolean(data && hasProgress(data.world))}
+            />
           ) : bootStage < 4 ? (
             <div className="post-screen">
               <p>DN-BIOS 4.51</p>

@@ -1,38 +1,46 @@
 import type { Agent, Evidence, World } from "../src/types.ts";
-export const STORY_ID = "westhaven-317-v4";
+import {
+  STORY_ID,
+  BUS_MAIL,
+  CONVERSATIONS,
+  PHOTO_CAPTION,
+} from "../src/story.ts";
+export { STORY_ID };
 export const VOICEMAIL =
   "Adam? It’s Nora. Don’t come through the lobby. He’s still here. I left the tape under your keyboard. And Len—Adam, listen. Len wasn’t in the building.";
 export const ARCHIVE: Evidence[] = [
   {
     id: "carrier",
-    title: "The door at 03:17",
-    filename: "DOOR_0317.LOG",
-    folder: "Westhaven House",
-    date: "31 OCT 1999 · 03:17",
-    excerpt: "A master key. A missing camera recording.",
-    fact: "The door log records Len leaving Westhaven House at 02:58, Nora entering room 317 at 03:12, and MASTER-01 opening her door at 03:17. Someone enabled a CCTV loop from the sysop terminal at 03:18.",
-    body: "WESTHAVEN HOUSE / ACCESS CONTROL\n31 OCTOBER 1999\n\n02:58:11  L.MERCER    STAFF EXIT      OUT\n03:12:06  N.VALE      ROOM 317        IN\n03:17:00  MASTER-01   ROOM 317        OVERRIDE\n03:18:02  SYSOP       CCTV             LOOP ENABLED\n03:24:49  A.MOORE     EMERGENCY CALL\n\nNo exit recorded for N.VALE.\nMASTER-01 owner field missing from this copy.\nCamera frames 03:16–03:29 repeat the same 11 seconds.\n\nPrinted by A.Moore. Keep original.",
+    title: "Len’s bus-home email",
+    filename: "Home, somehow.",
+    folder: "Mail",
+    date: "31 OCT · 03:07",
+    excerpt: "An ordinary email, sent before anyone knew what had happened.",
+    fact: "Len’s email to Nora was sent at 03:07 on October 31. He says he caught the 02:58 bus and was already home. Their Messenger exchange at 02:51 says he was leaving and put his red staff key on the hook. This contradicts Owen’s later claim that Len was upstairs at 03:17.",
+    body: BUS_MAIL.text,
   },
   {
     id: "birthday",
-    title: "The last conversation",
-    filename: "OCT31_CHAT.TXT",
-    folder: "Saved conversations",
-    date: "31 OCT 1999 · 03:14",
-    excerpt: "Nora asked Adam to keep a copy.",
-    fact: "Nora’s saved conversation says she was meeting the building manager about falsified fire inspections at 03:15. She told Adam that Len had already gone home and that she had left a tape under Adam’s keyboard.",
-    body: "DEADNET MESSENGER / SAVED BY ADAM MOORE\n31 OCTOBER 1999\n\n03:02 nora_v: you still awake?\n03:03 adam_m: unfortunately\n03:04 nora_v: the inspection signatures are copied. all of them.\n03:05 adam_m: tell the council tomorrow\n03:06 nora_v: manager wants to talk. quarter past.\n03:08 adam_m: take someone with you\n03:09 nora_v: len’s gone home. i saw him leave.\n03:10 nora_v: i left the tape under your keyboard\n03:11 adam_m: what tape?\n03:14 nora_v: don’t come through the lobby\n03:14 adam_m: nora?\n\n[Voice attachment recovered: NORA_0314.WAV]\n[No further messages from nora_v.]",
+    title: "Nora’s last conversation with Adam",
+    filename: "Adam · 31 October",
+    folder: "Messenger",
+    date: "31 OCT · 03:02–03:23",
+    excerpt: "The conversation Adam never answered in time.",
+    fact: "In Messenger, Nora tells Adam she found copied signatures on three years of fire-inspection forms and photographed the originals. She says the building manager is coming to her room at 03:15 and Len has already left. At 03:14 she warns Adam not to come through the lobby. A voice message says Len was not in the building.",
+    body: CONVERSATIONS.adam["31 Oct"]
+      .map((line) => `${line.time} ${line.from}: ${line.text}`)
+      .join("\n"),
   },
   {
     id: "manifest",
-    title: "Adam’s recovered case file",
-    filename: "CASE_14.BAK",
-    folder: "Deleted by SYSOP",
-    date: "02 NOV 1999 · 23:40",
-    excerpt: "The person who owned MASTER-01.",
-    fact: "Adam’s case backup identifies MASTER-01 as Owen Keene’s key. Nora was found dead in room 317 after meeting Owen about falsified fire inspections. Owen enabled the CCTV loop, then blamed Len. The surviving accounts are reconstructions from Adam’s 1999 backup, not living witnesses.",
-    locked: true,
-    body: "ADAM MOORE / PRIVATE CASE NOTES\nNORA VALE — WESTHAVEN HOUSE, ROOM 317\n\nOfficial finding: accidental fall.\nNora was found at 03:24. Her door was locked.\n\nKEY REGISTER / ORIGINAL OFFICE COPY\nMASTER-01 = OWEN KEENE, BUILDING MANAGER\nL.MERCER = STAFF-04 (does not open room 317)\n\nNora photographed the forged inspection forms.\nKeene asked her to meet him at 03:15.\nAt 03:17 his master key opened her room.\nAt 03:18 his terminal replaced the camera feed.\nLen had left twenty minutes earlier.\n\nKeene’s statement names Len. The original log does not.\nI am keeping the tape and both copies of the log.\n\n--- RECOVERY SERVICE / 2049 ---\nSource: Nora Vale’s disk, examined by A.Moore, 1999-11-02\nReconstructed accounts: mara_v / len_29 / sysop\nNo living witnesses connected.\nThe reconstruction keeps answering.\nNora’s account could not be restored.",
+    title: "Nora’s photograph of the spare key",
+    filename: "The spare key · 28 October",
+    folder: "Photos",
+    date: "28 OCT · 18:42",
+    excerpt:
+      "A photograph she kept because she was always locking herself out.",
+    fact: "Nora’s October 28 photo caption says she borrowed Owen Keene’s office spare to get back into her room after locking herself out. The pictured brass key and the caption establish that the manager had a way into her room. Combined with Nora’s final conversation, this establishes Owen’s access and motive to silence her about the forged fire inspections. The image alone does not identify an owner; the ownership is in Nora’s caption.",
+    body: PHOTO_CAPTION,
   },
 ];
 const agents: Agent[] = [
@@ -101,9 +109,9 @@ const agents: Agent[] = [
     bio: "Westhaven House management. Maintenance and security enquiries only.",
     style:
       "Polite, clipped, procedural. Avoids emotional language. Deflects rather than delivering villain speeches.",
-    goal: "Protect his reputation. Keep residents from circulating accusations. Address records only when confronted with an exact recovered file.",
+    goal: "Protect his reputation. Avoid admitting why you visited Nora. Respond to the exact witnessed message or photograph, never invent camera logs or a key register.",
     belief:
-      "My master key opened Nora’s room. I replaced the camera feed and blamed Len. I must keep the original key register hidden.",
+      "I kept the brass spare for Nora’s room. I went there after she found my forged fire inspections. I blamed Len. I must avoid admitting this until confronted with Nora’s photo caption and final conversation.",
     knownFacts: ["carrier", "manifest"],
     relationships: {
       mara: -3,
@@ -122,7 +130,7 @@ agents.push({
   bio: "I can hear the keys. Is that you?",
   style:
     "Short, intimate, hesitant messages. Ordinary speech, occasional fragments. No theatrical ghost language. Never a guide, narrator or checklist.",
-  goal: "Communicate from your own recovered computer and piece together the night you died. Use only the memory fragment supplied for this turn. Do not list every possible clue. You cannot remember the killer’s face or name. Do not identify the killer until the visitor attaches CASE_14.BAK. Never invent new objects, witnesses, records, passwords or tasks. Give one indirect memory at a time and ask a natural question. Acknowledge the visitor’s evidence without pretending you knew it earlier. Always shareWith none. Keep replies under 40 words.",
+  goal: "Communicate from your own recovered computer and piece together the night you died. Use only the memory fragment supplied for this turn. Do not list every possible clue. You cannot remember the killer’s face or name. Do not identify the killer until the visitor has shown you the spare-key photograph and the final conversation. Never invent new objects, witnesses, records, passwords or tasks. Give one indirect memory at a time and ask a natural question. Acknowledge the visitor’s evidence without pretending you knew it earlier. Always shareWith none. Keep replies under 40 words.",
   belief:
     "I am Nora Vale. This was my computer. I died in room 317 but I can still hear someone typing. I remember pieces, not who did it.",
   knownFacts: [],
@@ -150,6 +158,44 @@ export function seedWorld(mode: World["mode"] = "live"): World {
     traces: [],
     createdAt: new Date().toISOString(),
     events: [
+      BUS_MAIL,
+      {
+        id: "personal-voice",
+        tick: 0,
+        actor: "system",
+        to: "visitor",
+        channel: "mail",
+        subject: "Your missed call · Nora",
+        archivedAt: "31 Oct · 03:14",
+        text: "Nora called you at 03:14. You found her at 03:24. The call ended before you could answer.",
+        audioTranscript: VOICEMAIL,
+        factIds: [],
+        origin: "seed",
+      },
+      {
+        id: "personal-soup",
+        tick: 0,
+        actor: "mara",
+        to: "visitor",
+        channel: "mail",
+        subject: "Sunday",
+        archivedAt: "30 Oct · 19:32",
+        text: "nora,\n\neight tomorrow. bring adam. len says he can make it if he’s slept.\n\ni found the blue bowls. don’t laugh.\n\nm",
+        factIds: [],
+        origin: "seed",
+      },
+      {
+        id: "personal-manager",
+        tick: 0,
+        actor: "sysop",
+        to: "visitor",
+        channel: "mail",
+        subject: "Statement for residents",
+        archivedAt: "31 Oct · 10:05",
+        text: "The police have recorded Nora Vale’s death as an accidental fall.\n\nI was in the downstairs office all night. Mr Mercer was seen on the third floor at approximately 03:17. Enquiries should be directed to management. Please do not circulate speculation.\n\nOwen Keene\nWesthaven House",
+        factIds: [],
+        origin: "seed",
+      },
       {
         id: "seed-sysop",
         tick: 0,
@@ -216,7 +262,7 @@ export function seedWorld(mode: World["mode"] = "live"): World {
         tick: 0,
         actor: "system",
         channel: "system",
-        text: "Disk owner: Nora Vale. Case 14/1999 restored. Three resident accounts are responding.",
+        text: "Recovery drive mounted. Owner: Nora Vale. Local Messenger history, mail and photographs available. No network contacts connected.",
         factIds: [],
         origin: "system",
       },

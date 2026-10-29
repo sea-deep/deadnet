@@ -1,3 +1,5 @@
+> Current experience: [personal-computer rebuild verification](VERIFICATION-REVAMP.md). The report below documents earlier revisions; its file names, game requirements and story details are historical.
+
 # Verification record
 
 Measured on an Apple M5 / 16 GiB Mac on October 29, 2026. The fictional case dates are unrelated to real development dates. Current Room 317 evidence is distinguished from the earlier continuity/birthday prototype.

@@ -151,9 +151,9 @@ async function snapshot(engine: Engine, visitor: string) {
       e.locked && !caseProgress(world).unlocked
         ? {
             ...e,
-            body: "Open the door log and saved conversation, and play two of Nora’s games, to reconstruct the backup.",
+            body: "This item is not available.",
             fact: "",
-            excerpt: "File fragments incomplete. Two earlier records required.",
+            excerpt: "Item unavailable.",
           }
         : e,
     ),
@@ -181,6 +181,8 @@ const actionSchema = z.discriminatedUnion("type", [
     type: z.literal("resolve"),
     choice: z.enum(["exposed", "sealed"]),
     suspect: z.enum(["mara", "len", "sysop"]).optional(),
+    motive: z.enum(["inspections", "rent", "jealousy"]).optional(),
+    method: z.enum(["spare-key", "staff-key", "window"]).optional(),
   }),
   z.object({ type: z.literal("mode"), mode: z.enum(["live", "baseline"]) }),
   z.object({

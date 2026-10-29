@@ -1,0 +1,23 @@
+{
+  "results": {
+    "Grave Snake": {
+      "children": 21,
+      "gameReady": "[Paused]Press [space] to unpause.patorjk.com - source code - pat's youtubeLength: 1Highscore: 0patorjk.compat's youtubeGrave SnakeUse the arrow keys on your keyboard to play the game. Play Game\n      \n        Theme:\n        Light Theme by yokesharunMain Theme by patorjkDark Theme by KenyStevGreen Theme by CoffeeCatDEMatrix Theme by Geahad HaymorTheme by Senura RatnayakeSnake Head Theme by Rb64Black and purple Theme by LucassSantossNeon Theme by Daisy21000Clean Theme by CrashoutKing123Original Theme by DylanLCrockerGolden Theme By JosephVoboril29Cotton Candy Theme by KiwiNguyen29OG Theme by NevanJohnson\n      \n      \n        Mode:\n        \n          Easy\n          Medium\n          Hard\n          Impossible\n          Rush\n        \n      \n      \n        Full Screen\n      \n    Grave SnakeThe bones stopped moving.Play Again?Grave SnakeYou win! :DPlay Again?"
+    },
+    "Flappy Bat": {
+      "state": "playing",
+      "score": 0
+    },
+    "Crypt Blocks": {
+      "playing": true,
+      "canvases": 5
+    },
+    "2048: Séance": {
+      "tiles": 3
+    },
+    "Phantomicus": {
+      "canvases": 2
+    }
+  },
+  "errors": []
+}

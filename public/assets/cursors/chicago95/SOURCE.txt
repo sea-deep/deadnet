@@ -1,0 +1,4 @@
+Chicago95 White Cursor Pack — grassmunk / Chicago95 contributors.
+Source: https://github.com/grassmunk/Chicago95/tree/master/Cursors/Chicago95_Cursor_White/src
+Upstream declares GPL-3.0+/MIT; these separately packaged cursor images are distributed under GPL-3.0-or-later, with original sources/configs and notices preserved here. See COPYING.txt and UPSTREAM-README.md.
+Original 32x32 raster assets are unchanged. CSS mappings use the supplied hotspot coordinates. Same pack in desktop, windows and embedded games. No cursor images generated for DEADNET.

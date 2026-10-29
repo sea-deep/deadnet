@@ -4,8 +4,10 @@ import { PixelIcon } from "./icons";
 import { exhibition } from "./api";
 import { duckAmbient, tone } from "./sound";
 import { GAME_LIST, GameIcon, type GameId } from "./games";
-import { caseProgress, GAMES_TO_RECOVER } from "./rules";
+import { SaveItem } from "./CaseApps";
 export type AppId =
+  | "computer"
+  | "trash"
   | "readme"
   | "browser"
   | "mail"
@@ -29,15 +31,21 @@ export const APP_INFO: Record<
       | "monitor"
       | "notebook"
       | "games"
-      | "spirit";
+      | "spirit"
+      | "usb"
+      | "photos"
+      | "calendar"
+      | "computer";
   }
 > = {
-  readme: { title: "Read Me", icon: "notebook" },
-  browser: { title: "Chat Logs", icon: "browser" },
+  computer: { title: "My Computer", icon: "computer" },
+  trash: { title: "Trash Bin", icon: "recycle" },
+  readme: { title: "Casebook", icon: "usb" },
+  browser: { title: "Messenger", icon: "spirit" },
   spirit: { title: "Unknown Signal", icon: "spirit" },
-  mail: { title: "Inbox", icon: "mail" },
-  archive: { title: "File Explorer", icon: "archive" },
-  recycle: { title: "Trash Bin", icon: "recycle" },
+  mail: { title: "Mail", icon: "mail" },
+  archive: { title: "Photos", icon: "photos" },
+  recycle: { title: "Calendar", icon: "calendar" },
   people: { title: "Address Book", icon: "people" },
   monitor: { title: "System Monitor", icon: "monitor" },
   notebook: { title: "Notepad", icon: "notebook" },
@@ -78,297 +86,18 @@ function Provenance({ e }: { e: Event }) {
     <span className="provenance baseline">Scripted baseline</span>
   ) : null;
 }
-export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
-  const [tab, setTab] = useState<"feed" | "directory">("feed");
-  const [filter, setFilter] = useState("all");
-  const feed = data.world.events
-    .filter(
-      (e) => e.channel === "feed" && (filter === "all" || e.actor === filter),
-    )
-    .slice()
-    .reverse();
-  return (
-    <div className="browser-app">
-      <div className="menubar">
-        <button onClick={() => open("archive")}>File</button>
-        <button onClick={() => open("people")}>Directory</button>
-        <button onClick={() => open("monitor")}>Connection</button>
-        <button onClick={() => open("readme")}>Help</button>
-      </div>
-      <div className="browser-tools">
-        <button
-          onClick={() => {
-            setTab("feed");
-            setFilter("all");
-          }}
-          title="Home"
-        >
-          <PixelIcon name="browser" size={18} />
-          <span>Home</span>
-        </button>
-        <button aria-label="Mail" onClick={() => open("mail")}>
-          <PixelIcon name="mail" size={18} />
-          <span>Mail</span>
-        </button>
-        <button aria-label="Archive" onClick={() => open("archive")}>
-          <PixelIcon name="archive" size={18} />
-          <span>Archive</span>
-        </button>
-        <span className="tool-divider" />
-        <label htmlFor="address">Address</label>
-        <div id="address" className="address">
-          <span>http://</span>deadnet.local/
-          {tab === "feed" ? "neighborhood" : "directory"}
-        </div>
-        <span className="connection-mark">
-          d<span>n</span>
-        </span>
-      </div>
-      <div className="web-page">
-        <div className="web-date">
-          <span>Sunday, October 31, 1999</span>
-          <span>
-            <i className="led" />{" "}
-            {data.world.agents.filter((a) => a.id !== "nora").length} accounts
-            connected
-          </span>
-        </div>
-        <header className="web-masthead">
-          <div>
-            <p className="web-name">
-              DEADNET<span> directory</span>
-            </p>
-          </div>
-        </header>
-        <OfflineNotice data={data} perform={perform} busy={busy} open={open} />
-        <nav className="web-nav" aria-label="DeadBrowser">
-          <button
-            className={tab === "feed" ? "selected" : ""}
-            onClick={() => setTab("feed")}
-          >
-            Residents’ messages
-          </button>
-          <button
-            className={tab === "directory" ? "selected" : ""}
-            onClick={() => setTab("directory")}
-          >
-            Address book
-          </button>
-          <button onClick={() => open("archive")}>The archive</button>
-          <button onClick={() => open("notebook")}>Notepad</button>
-        </nav>
-        {tab === "feed" ? (
-          <>
-            <div className="web-columns">
-              <main className="feed-column">
-                <div className="section-title">
-                  <h1>Residents’ messages</h1>
-                  <label>
-                    Show{" "}
-                    <select
-                      aria-label="Filter feed"
-                      value={filter}
-                      onChange={(e) => setFilter(e.target.value)}
-                    >
-                      <option value="all">everyone</option>
-                      {data.world.agents
-                        .filter((a) => a.id !== "nora")
-                        .map((a) => (
-                          <option key={a.id} value={a.id}>
-                            {a.handle}
-                          </option>
-                        ))}
-                    </select>
-                  </label>
-                </div>
-                {feed.length ? (
-                  feed.map((e) => (
-                    <article className="post" key={e.id}>
-                      <Stamp id={e.actor} data={data} />
-                      <div className="post-main">
-                        <div className="post-header">
-                          <button
-                            className="web-link"
-                            onClick={() => {
-                              if (e.actor !== "visitor" && e.actor !== "system")
-                                setTarget(e.actor);
-                              open("people");
-                            }}
-                          >
-                            <Sender e={e} data={data} />
-                          </button>
-                          <time>
-                            {e.tick === 0
-                              ? e.archivedAt || "this morning"
-                              : `network turn ${e.tick}`}
-                          </time>
-                        </div>
-                        <p>{e.text}</p>
-                        <div className="post-meta">
-                          <Provenance e={e} />
-                          {e.factIds.length > 0 && (
-                            <button
-                              className="web-link"
-                              onClick={() => open("notebook")}
-                            >
-                              Attached record
-                            </button>
-                          )}
-                          {e.actor !== "visitor" && e.actor !== "system" && (
-                            <button
-                              className="web-link"
-                              onClick={() => {
-                                setTarget(e.actor as AgentId);
-                                open("mail");
-                              }}
-                            >
-                              Write privately
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </article>
-                  ))
-                ) : (
-                  <p className="empty">No messages from this account yet.</p>
-                )}
-                <div className="feed-end">End of messages</div>
-              </main>
-              <aside className="web-sidebar">
-                <div className="online-box">
-                  <h2>Online now</h2>
-                  {data.world.agents
-                    .filter((a) => a.id !== "nora")
-                    .map((a) => (
-                      <button
-                        className="online-person"
-                        key={a.id}
-                        onClick={() => {
-                          setTarget(a.id);
-                          open("people");
-                        }}
-                      >
-                        <Stamp id={a.id} data={data} />
-                        <span>
-                          <strong>{a.handle}</strong>
-                          <small>{a.role}</small>
-                        </span>
-                        <i className="led" />
-                      </button>
-                    ))}
-                </div>
-                <figure className="archive-photo">
-                  <img
-                    src={`${import.meta.env.BASE_URL}assets/earthrise.jpg`}
-                    alt="Earth rising above the lunar horizon, photographed during Apollo 8"
-                    width="180"
-                    height="180"
-                  />
-                  <figcaption>
-                    EARTH.JPG · cached 1968
-                    <br />
-                    <a
-                      href="https://science.nasa.gov/resource/image-earthrise/"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      NASA / William Anders
-                    </a>
-                  </figcaption>
-                </figure>
-                <button
-                  className="web-link archive-link"
-                  onClick={() => open("archive")}
-                >
-                  Browse recovered files
-                </button>
-                <div className="counter-box">
-                  <span>You are visitor</span>
-                  <strong>
-                    0 0{" "}
-                    {String(data.world.boots)
-                      .padStart(4, "0")
-                      .split("")
-                      .join(" ")}
-                  </strong>
-                </div>
-                <button
-                  className="network-step"
-                  disabled={
-                    busy || data.world.remainingTurns === 0 || isOffline(data)
-                  }
-                  onClick={() => void perform({ type: "tick" })}
-                >
-                  {busy ? "Someone is typing…" : "Listen to the network →"}
-                </button>
-                <p className="step-hint">
-                  Advance one social turn.
-                  <br />
-                  {data.world.remainingTurns} turns in this allowance.
-                </p>
-              </aside>
-            </div>
-          </>
-        ) : (
-          <div className="directory">
-            <h1>Address book</h1>
-            {data.world.agents
-              .filter((a) => a.id !== "nora")
-              .map((a) => (
-                <button
-                  key={a.id}
-                  className="directory-person"
-                  onClick={() => {
-                    setTarget(a.id);
-                    open("people");
-                  }}
-                >
-                  <Stamp id={a.id} data={data} />
-                  <span>
-                    <strong>{a.name}</strong>
-                    <small>
-                      @{a.handle} · {a.role}
-                    </small>
-                    <span>{a.bio}</span>
-                  </span>
-                  <span>View profile →</span>
-                </button>
-              ))}
-          </div>
-        )}
-        <footer className="web-footer">
-          <span>DEADNET COMMUNITY NETWORK</span>
-          <a
-            href="https://p.yusukekamiyamane.com/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Fugue Icons © Yusuke Kamiyamane
-          </a>
-        </footer>
-      </div>
-      <div className="window-status">
-        <span>
-          <i className="led" /> Connected to deadnet.local
-        </span>
-        <span>
-          {data.world.mode === "baseline" ? "Scripted baseline" : "Done"}
-        </span>
-      </div>
-    </div>
-  );
-}
-export function Mail({
-  data,
-  perform,
-  busy,
-  target,
-  setTarget,
-  mailDraft,
-  muted,
-  activeApp,
-  open,
-}: AppProps) {
+export function Mail(props: AppProps) {
+  const {
+    data,
+    perform,
+    busy,
+    target,
+    setTarget,
+    mailDraft,
+    muted,
+    activeApp,
+    open,
+  } = props;
   const [compose, setCompose] = useState(false);
   const [folder, setFolder] = useState<"inbox" | "sent">("inbox");
   const [selected, setSelected] = useState("seed-mail");
@@ -507,7 +236,9 @@ export function Mail({
                   <Sender e={e} data={data} />
                 </strong>
                 <span>{e.subject || "A quiet word"}</span>
-                <small>{e.tick === 0 ? "03:17" : `turn ${e.tick}`}</small>
+                <small>
+                  {e.archivedAt || (e.tick === 0 ? "31 Oct" : "2 Nov")}
+                </small>
               </button>
             ))}
           </aside>
@@ -609,16 +340,20 @@ export function Mail({
                   <p>
                     To:{" "}
                     {message.to === "visitor"
-                      ? message.id === "seed-mail"
+                      ? message.origin === "seed"
                         ? "Nora Vale"
                         : "You"
                       : data.world.agents.find((a) => a.id === message.to)
                           ?.name}
                   </p>
+                  <p>Received: {message.archivedAt || "2 November 1999"}</p>
                   <h1>{message.subject || "A quiet word"}</h1>
                   <Provenance e={message} />
                 </div>
                 <div className="letter-text">{message.text}</div>
+                {message.id === "personal-bus" && (
+                  <SaveItem {...props} id="carrier" />
+                )}
                 {message.audioTranscript && (
                   <details className="voicemail-transcript">
                     <summary>Read original voicemail transcript</summary>
@@ -766,281 +501,6 @@ export function Mail({
     </div>
   );
 }
-export function Archive(props: AppProps) {
-  return <Explorer {...props} bin={false} />;
-}
-/** Owen's account deleted Adam's case file; it waits in the Trash Bin. */
-export function RecycleBin(props: AppProps) {
-  return <Explorer {...props} bin />;
-}
-function Explorer({
-  data,
-  perform,
-  busy,
-  composeTo,
-  open,
-  muted,
-  bin,
-}: AppProps & { bin: boolean }) {
-  const [search, setSearch] = useState(""),
-    [selected, setSelected] = useState(bin ? "manifest" : "carrier"),
-    [sendMenu, setSendMenu] = useState(false),
-    [policy, setPolicy] = useState<"sealed" | "exposed">("sealed"),
-    [suspect, setSuspect] = useState<"" | "mara" | "len" | "sysop">(""),
-    [emptyNotice, setEmptyNotice] = useState(false);
-  const records = data.archive.filter(
-    (e) =>
-      // Adam's case file was deleted; it only exists in the Trash Bin.
-      (bin ? e.id === "manifest" : e.id !== "manifest") &&
-      `${e.filename} ${e.folder}`.toLowerCase().includes(search.toLowerCase()),
-  );
-  // Keep the selection coherent when a search hides the current file.
-  const visibleSelected = records.some((e) => e.id === selected)
-    ? selected
-    : records[0]?.id;
-  const record =
-    data.archive.find((e) => e.id === visibleSelected) ||
-    records[0] ||
-    data.archive[0];
-  const progress = caseProgress(data.world);
-  const readable =
-    Boolean(records.length) && (!record.locked || progress.unlocked);
-  useEffect(() => {
-    if (
-      visibleSelected &&
-      readable &&
-      !data.world.collected.includes(visibleSelected) &&
-      !busy
-    )
-      void perform({ type: "collect", evidenceId: visibleSelected });
-  }, [visibleSelected, readable, busy, data.world.collected.join(",")]);
-  function save() {
-    const url = URL.createObjectURL(
-      new Blob([record.body], { type: "text/plain" }),
-    );
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = record.filename;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-  return (
-    <div className="archive-app">
-      <div className="menubar">
-        <button onClick={save} disabled={!readable}>
-          Save As…
-        </button>
-        <button onClick={() => setSendMenu(!sendMenu)} disabled={!readable}>
-          Send To…
-        </button>
-        {bin && (
-          <button
-            onClick={() => {
-              setEmptyNotice(true);
-              tone("trash", Boolean(muted));
-            }}
-          >
-            Empty Trash Bin
-          </button>
-        )}
-        <label className="search-field">
-          Find{" "}
-          <input
-            aria-label="Search files"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
-      </div>
-      <div className="explorer-address">
-        Address <span>{bin ? "C:\\RECYCLED" : "C:\\WINDOWS\\Case 317"}</span>
-      </div>
-      <div className="archive-layout">
-        <aside className="file-list">
-          <p>{bin ? "Trash Bin" : "File Explorer"}</p>
-          {records.map((e) => (
-            <button
-              key={e.id}
-              className={visibleSelected === e.id ? "active" : ""}
-              onClick={() => {
-                setSelected(e.id);
-                setSendMenu(false);
-              }}
-            >
-              <PixelIcon
-                name={
-                  e.id === "birthday"
-                    ? "mail"
-                    : e.id === "manifest"
-                      ? bin
-                        ? "recycle"
-                        : "disk"
-                      : "notebook"
-                }
-                size={27}
-              />
-              <span>
-                <strong>{e.filename}</strong>
-                <small>
-                  {e.id === "manifest" && !readable
-                    ? "Damaged · 18 KB"
-                    : e.folder}
-                </small>
-              </span>
-            </button>
-          ))}
-          {!records.length && <p>No files found.</p>}
-        </aside>
-        {records.length ? (
-          <main className="file-reader">
-            <div className="file-heading">
-              <h1>{record.filename}</h1>
-              <span>
-                {bin
-                  ? "Deleted by: SYSOP · 02 NOV 1999 · 23:40 · Original location: C:\\Case 317\\CASE_14.BAK"
-                  : `Modified: ${record.date}`}
-              </span>
-            </div>
-            <pre>
-              {readable
-                ? record.body
-                : `Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data:\n  ${progress.files >= 2 ? "[x]" : "[ ]"} Open DOOR_0317.LOG and OCT31_CHAT.TXT (${progress.files}/2)\n  ${progress.games >= GAMES_TO_RECOVER ? "[x]" : "[ ]"} Play ${GAMES_TO_RECOVER} of Nora’s games to recover their saves (${progress.games}/${GAMES_TO_RECOVER})`}
-            </pre>
-            {!readable && progress.games < GAMES_TO_RECOVER && (
-              <button onClick={() => open("games")}>Open Nora’s games</button>
-            )}
-            {emptyNotice && (
-              <div className="empty-trash-notice" role="alert">
-                <span>
-                  Trash Bin emptied. Deleted sector fragments remain
-                  inspectable.
-                </span>
-                <button onClick={() => setEmptyNotice(false)}>OK</button>
-              </div>
-            )}
-            {sendMenu && (
-              <div className="file-send-menu" aria-label="Send file to">
-                {data.world.agents
-                  .filter((a) => a.id !== "nora")
-                  .map((a) => (
-                    <button
-                      key={a.id}
-                      disabled={busy}
-                      onClick={() => {
-                        composeTo(a.id, record.id);
-                        setSendMenu(false);
-                      }}
-                    >
-                      {a.name}
-                    </button>
-                  ))}
-                <button
-                  disabled={busy || data.world.ending === "sealed"}
-                  onClick={() => {
-                    void perform({ type: "publish", evidenceId: record.id });
-                    setSendMenu(false);
-                  }}
-                >
-                  Network mailing list
-                </button>
-              </div>
-            )}
-            {record.id === "manifest" && readable && (
-              <fieldset className="file-policy">
-                <legend>Case file</legend>
-                {data.world.ending === "open" ? (
-                  <>
-                    <p className="fine-print">
-                      Who opened room 317 at 03:17? Publish the evidence and
-                      name them, or keep the case private.
-                    </p>
-                    <label>
-                      <input
-                        type="radio"
-                        name="sharing"
-                        checked={policy === "sealed"}
-                        disabled={data.world.published.length > 0}
-                        onChange={() => setPolicy("sealed")}
-                      />{" "}
-                      Keep private
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="sharing"
-                        checked={policy === "exposed"}
-                        onChange={() => setPolicy("exposed")}
-                      />{" "}
-                      Publish case evidence
-                    </label>
-                    {policy === "exposed" && (
-                      <label>
-                        Suspect{" "}
-                        <select
-                          aria-label="Report suspect"
-                          value={suspect}
-                          onChange={(e) =>
-                            setSuspect(e.target.value as typeof suspect)
-                          }
-                        >
-                          <option value="">Choose a name</option>
-                          {data.world.agents
-                            .filter((a) => a.id !== "nora")
-                            .map((a) => (
-                              <option value={a.id} key={a.id}>
-                                {a.name}
-                              </option>
-                            ))}
-                        </select>
-                      </label>
-                    )}
-                    <button
-                      disabled={busy || (policy === "exposed" && !suspect)}
-                      onClick={() =>
-                        void perform({
-                          type: "resolve",
-                          choice: policy,
-                          suspect: suspect || undefined,
-                        })
-                      }
-                    >
-                      {policy === "exposed"
-                        ? "File report"
-                        : "Keep case private"}
-                    </button>
-                    <p className="fine-print">This choice is final.</p>
-                  </>
-                ) : (
-                  <p>
-                    {data.world.ending === "exposed"
-                      ? `Report filed. You named ${data.world.agents.find((a) => a.id === data.world.accused)?.name ?? "a suspect"}. Check Unknown Signal and Inbox for what happened next.`
-                      : "Case kept private. Check Unknown Signal and Inbox for what happened next."}
-                  </p>
-                )}
-              </fieldset>
-            )}
-          </main>
-        ) : (
-          <main className="file-reader empty">
-            <div className="file-heading">
-              <h1>No files found</h1>
-              <span>{bin ? "Trash Bin" : "C:\\WINDOWS\\Case 317"}</span>
-            </div>
-            <p className="empty">
-              Nothing here matches “{search}”. Clear the Find field to see every
-              recovered object.
-            </p>
-            <button onClick={() => setSearch("")}>Show all files</button>
-          </main>
-        )}
-      </div>
-      <div className="window-status">
-        <span>{records.length} object(s)</span>
-        <span>Local disk</span>
-      </div>
-    </div>
-  );
-}
 export function People({ data, target, setTarget, open, composeTo }: AppProps) {
   const people = data.world.agents.filter((p) => p.id !== "nora");
   const a =
@@ -1135,8 +595,8 @@ export function OfflineNotice({
         {data.status.available
           ? ", or come back tomorrow."
           : inReadMe
-            ? ", or connect a model (see Replies below)."
-            : ", or connect a model (see Read Me)."}
+            ? ", or connect a model in System Monitor."
+            : ", or check the connection in System Monitor."}
       </p>
       <div>
         <button
@@ -1148,103 +608,16 @@ export function OfflineNotice({
         </button>
         {!inReadMe && (
           <button type="button" onClick={() => open("readme")}>
-            Read Me
+            System Monitor
           </button>
         )}
       </div>
     </div>
   );
 }
-export function ReadMe(props: AppProps) {
-  const { data, open } = props;
-  const engine = exhibition
-    ? "This public edition uses scripted replies. Run it locally for live AI replies (see the GitHub README)."
-    : data.world.mode === "baseline"
-      ? "Replies are scripted (no AI). You can switch to a live model in System Monitor."
-      : data.status.available
-        ? `Replies are written live by an AI model (${data.status.model}). They can take a few seconds.`
-        : "No AI model is connected yet. Press Use scripted replies to play now, or add OPENROUTER_API_KEY to .env (or start Ollama) and restart the server. See README.md.";
-  return (
-    <div className="readme-app">
-      <article>
-        <h1>Room 317</h1>
-        <p>
-          Nora Vale was found dead in room 317 of Westhaven House at 03:17 on 31
-          October 1999. The police called it an accident. This is her computer,
-          and something on it is still answering.
-        </p>
-        <p className="readme-goal">
-          <strong>Your goal:</strong> work out who was in the room with Nora,
-          then file the case report.
-        </p>
-        <OfflineNotice {...props} inReadMe />
-        <h2>How to play</h2>
-        <ol>
-          <li>
-            <strong>Read.</strong> Check{" "}
-            <button className="link" onClick={() => open("mail")}>
-              Inbox
-            </button>{" "}
-            and{" "}
-            <button className="link" onClick={() => open("browser")}>
-              Chat Logs
-            </button>
-            . Mara is Nora’s neighbour, Len is the night porter, Owen is the
-            building manager.
-          </li>
-          <li>
-            <strong>Recover.</strong> Open{" "}
-            <button className="link" onClick={() => open("archive")}>
-              My Documents
-            </button>{" "}
-            and read the files. Someone deleted the case file,{" "}
-            <b>CASE_14.BAK</b>. It’s in the{" "}
-            <button className="link" onClick={() => open("recycle")}>
-              Trash Bin
-            </button>
-            , damaged. It shares its disk with Nora’s game saves: play any two
-            of her{" "}
-            <button className="link" onClick={() => open("games")}>
-              Games
-            </button>{" "}
-            for 20 seconds each, and the file repairs itself.
-          </li>
-          <li>
-            <strong>Ask.</strong>{" "}
-            <button className="link" onClick={() => open("spirit")}>
-              Unknown Signal
-            </button>{" "}
-            is Nora. Attach a file you have opened and ask what she remembers.
-            You can also write to the residents from Inbox or Address Book. Each
-            message uses one of 18 turns.
-          </li>
-          <li>
-            <strong>Decide.</strong> In CASE_14.BAK (Trash Bin), choose{" "}
-            <i>Publish case evidence</i>, name a suspect and press{" "}
-            <i>File report</i>, or keep the case private. This can’t be undone.
-          </li>
-        </ol>
-        <h2>Controls</h2>
-        <p>
-          Your case saves itself as you play. Start has Save game, Save to
-          floppy, Load game and Start over. Double-click an icon to open it (one
-          tap on a phone). Drag, resize, minimise and maximise windows. The
-          speaker in the tray mutes sound. Nora’s six games are part of the
-          case: their saves help repair her files.
-        </p>
-        <h2>Replies</h2>
-        <p>{engine}</p>
-      </article>
-      <div className="window-status">
-        <span>READ ME.TXT</span>
-        <span>Open again from the desktop or Start</span>
-      </div>
-    </div>
-  );
-}
 export function Notebook() {
   const initial =
-    "rent\nbatteries\nblue scarf at mara’s\n\nL. last bus, 02:58\ngreen lamp still on downstairs\n\nhe knocked twice. i thought it was her.\n\n03:17 —";
+    "rent\nbatteries\nblue scarf at mara’s\n\nask adam about the station flat\nget a spare cut this time\n\nsunday: bring bread, return bowls";
   const [text, setText] = useState(() => {
     try {
       return localStorage.getItem("deadnet-case-notes-v3") ?? initial;
@@ -1357,7 +730,7 @@ export function Games({
   // Keep elapsed time in a ref: state updaters must stay pure, and StrictMode
   // can invoke them twice, which would double-submit a recovered save.
   const elapsed = useRef(0);
-  // Playing a game for a while recovers its save, which CASE_14.BAK needs.
+  // Optional play history is recorded without affecting the investigation.
   useEffect(() => {
     elapsed.current = 0;
     setSeconds(0);
@@ -1378,7 +751,6 @@ export function Games({
     }, 1000);
     return () => clearInterval(t);
   }, [game, run, recovered, paused, activeApp]);
-  const progress = caseProgress(data.world);
   const syncSound = () => {
     const child = frame.current?.contentWindow;
     child?.postMessage(
@@ -1437,21 +809,19 @@ export function Games({
   const keys =
     game === "flappy"
       ? [" "]
-      : game === "hocus"
-        ? ["Tab", "Shift+Tab", "Enter"]
-        : game === "phantomicus"
-          ? ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight", " ", "Enter"]
-          : [
-              "ArrowLeft",
-              "ArrowUp",
-              "ArrowDown",
-              "ArrowRight",
-              "w",
-              "a",
-              "s",
-              "d",
-              ...(game === "tetris" || game === "snake" ? [" "] : []),
-            ];
+      : game === "phantomicus"
+        ? ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight", " ", "Enter"]
+        : [
+            "ArrowLeft",
+            "ArrowUp",
+            "ArrowDown",
+            "ArrowRight",
+            "w",
+            "a",
+            "s",
+            "d",
+            ...(game === "tetris" || game === "snake" ? [" "] : []),
+          ];
   // Keys pressed while the desktop (not the game frame) has focus still reach
   // the game, e.g. right after opening it from a desktop icon.
   useEffect(() => {
@@ -1459,7 +829,7 @@ export function Games({
     const forward = (down: boolean) => (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t?.closest("input, textarea, select, [contenteditable]")) return;
-      const backwards = game === "hocus" && e.key === "Tab" && e.shiftKey;
+      const backwards = false;
       if (!backwards && !keys.includes(e.key)) return;
       e.preventDefault();
       if (down && e.repeat) return;
@@ -1550,9 +920,7 @@ export function Games({
       ) : (
         <div className="game-folder-wrap">
           <p className="game-recovery-note">
-            Nora’s game saves sit on the same damaged sectors as CASE_14.BAK.
-            Play any {GAMES_TO_RECOVER} of her games for {PLAY_TO_RECOVER}{" "}
-            seconds each to recover them ({progress.games}/{GAMES_TO_RECOVER}).
+            Adam’s games, copied for Nora. She was supposed to be packing.
           </p>
           <div className="game-folder">
             {GAME_LIST.map((g) => (
@@ -1608,7 +976,7 @@ export function Games({
         </div>
       )}
       <footer className="game-credits">
-        {current ? (
+        {current?.id === "phantomicus" ? (
           <a
             href={"https://github.com/" + current.repo}
             target="_blank"
@@ -1617,13 +985,11 @@ export function Games({
             {current.name} © {current.author} · MIT
           </a>
         ) : (
-          <span>6 objects</span>
+          <span>{current ? current.name : `${GAME_LIST.length} games`}</span>
         )}
         {current && (
           <span className="game-recovery" role="status">
-            {recovered
-              ? "Nora’s save recovered ✓"
-              : `Recovering Nora’s save… ${Math.min(seconds, PLAY_TO_RECOVER)}/${PLAY_TO_RECOVER}s`}
+            {recovered ? "Played ✓" : "Nora’s game library"}
           </span>
         )}
       </footer>
@@ -1895,10 +1261,7 @@ export function Spirit({ data, perform, busy, open }: AppProps) {
           <div className="signal-message">
             <strong>unknown:</strong>
             <p>i can hear the keys. is somebody there?</p>
-            <p>
-              i can’t remember that night. i used to play my games when i
-              couldn’t sleep. maybe they kept something.
-            </p>
+            <p>adam? is that you? you’re late for soup.</p>
           </div>
         )}
         {messages.map((e) => (
@@ -1922,8 +1285,7 @@ export function Spirit({ data, perform, busy, open }: AppProps) {
       <OfflineNotice data={data} perform={perform} busy={busy} open={open} />
       {released ? (
         <p className="fine-print spirit-limit" role="status">
-          The signal closed after your report. The case file and recovered
-          records remain on this computer.
+          The signal closed after your report. Her messages remain.
         </p>
       ) : !data.world.remainingTurns ? (
         <p className="fine-print spirit-limit" role="status">
@@ -1984,8 +1346,8 @@ export function Spirit({ data, perform, busy, open }: AppProps) {
           <small className="spirit-count" aria-live="polite">
             {text.length}/1000
           </small>
-          <button type="button" onClick={() => open("archive")}>
-            My Documents
+          <button type="button" onClick={() => open("readme")}>
+            Casebook
           </button>
           <button
             type="submit"
@@ -2005,7 +1367,7 @@ export function Spirit({ data, perform, busy, open }: AppProps) {
         <span>
           {data.world.mode === "baseline"
             ? "Scripted baseline"
-            : "Connection open"}
+            : "Live AI · Connection open"}
         </span>
         <span>{data.world.remainingTurns} turns remain</span>
       </div>

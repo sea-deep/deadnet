@@ -23,3 +23,7 @@ No modern serif font remains in the UI. The earlier handmade SVG icons and promo
 ## Final atmosphere
 
 The current desktop uses Sebastian Unrau’s [actual forest photograph](https://unsplash.com/photos/trees-on-forest-with-sun-rays-sp-p7uuT0tw), under the Unsplash License. It is a cached raster wallpaper with a CSS tint, not an AI-generated asset. Plain teal remains selectable through Start. The shell adapts 98.css rather than drawing a synthetic approximation of an OS. The Inbox layout follows the inspected Netscape screenshot; Notepad is an ordinary editable document.
+
+## Personal-computer rebuild, October 29
+
+Inspected actual [Windows 98 desktop](https://guidebookgallery.org/pics/gui/desktop/full/win98.png) and [Outlook Express](https://guidebookgallery.org/pics/gui/applications/internet/mail/win98.png) captures from GUIdebook. Adopted normal desktop/file-manager affordances, split panes, persistent status bars and square controls. Research PNGs in revamp/. The messenger uses contacts, dated history, sender labels and an away message rather than a web feed or exported text file. The cursor implementation uses the complete Chicago95 White PNG pack, including supplied hotspot coordinates, across the host and embedded games. Cursor and photo provenance are in CREDITS.md.

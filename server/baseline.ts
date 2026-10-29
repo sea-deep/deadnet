@@ -10,18 +10,18 @@ export class BaselineModel implements ModelAdapter {
     const text =
       agent.id === "nora"
         ? evidence
-          ? "i remember the scrape of the key now. it wasn’t len’s. i couldn’t see his face from the floor."
-          : "there were two knocks. i thought it was mara. but the coat was wet, and she never went out that night."
+          ? "adam? you kept it. i remember the scrape of a key. i didn’t open the door myself. can you check the photograph?"
+          : "adam? there were two knocks. i thought it was mara. i promised her tea in the morning. did she wait?"
         : agent.id === "len"
           ? evidence
-            ? "That is my clock-out time. I told you I had gone home. Why is my name still in his statement?"
+            ? "I sent that when I got home. The driver still has his half of the ticket. I wasn’t upstairs, Adam."
             : "I keep looking for that bus ticket. It was raining. The ink had already run."
           : agent.id === "mara"
             ? evidence
               ? "i saved a copy. that isn’t what owen told the police. len should see this."
               : "her scarf is still on my chair. i don’t know what to do with it."
             : evidence
-              ? "That is an incomplete copy of a maintenance record. Send it to me before you circulate another accusation."
+              ? "Private correspondence is easily misunderstood. I suggest you leave this with Nora’s family."
               : "Management has already provided a statement. Nora’s family deserves privacy.";
     return {
       decision: {

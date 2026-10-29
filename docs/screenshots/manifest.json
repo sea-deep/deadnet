@@ -1,0 +1,190 @@
+{
+  "captureMode": "Actual running production exhibition with authored presentation checkpoints. No provider calls. Debug badges hidden for press images only; application modes unchanged.",
+  "viewport": {
+    "desktop": "1600x1000",
+    "mobile": "390x844"
+  },
+  "files": [
+    {
+      "file": "desktop/01-opening.png",
+      "scene": "Mara’s letter and the computer before the USB is inserted.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/02-usb-connected.png",
+      "scene": "Recovery drive mounted, ready to power on.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/03-boot.png",
+      "scene": "The actual BIOS startup.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/04-messenger.png",
+      "scene": "Nora and Adam’s ordinary conversation before the murder.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/05-desktop.png",
+      "scene": "The whole desktop, sourced wallpaper, restored system icons and five games.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/06-mara.png",
+      "scene": "The friendship: scarf, soup and an ordinary evening.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/07-last-conversation.png",
+      "scene": "The last exchange, including Adam’s unanswered messages.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/08-maras-mail.png",
+      "scene": "Mara still writes to her dead friend.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/09-lens-email.png",
+      "scene": "Len’s ordinary bus-home email and its timestamp.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/10-management-statement.png",
+      "scene": "Owen’s account of the night.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/11-last-call.png",
+      "scene": "The original authored call transcript; no voice request was made.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/12-photo-album.png",
+      "scene": "Nora’s Sunday out of town.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/13-spare-key.png",
+      "scene": "A sourced photograph and Nora’s personal caption.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/14-calendar.png",
+      "scene": "The night’s appointment and a dinner she never attended.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/15-deleted-letter.png",
+      "scene": "Nora’s unsent letter to her mother.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/16-my-computer.png",
+      "scene": "Nora’s disk and the recovery USB.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/17-usb-casebook.png",
+      "scene": "The investigation utility lives on the external drive.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/18-notepad.png",
+      "scene": "Ordinary unfinished personal notes.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/19-first-contact.png",
+      "scene": "Nora recognizes Adam.",
+      "stagedDialogue": true
+    },
+    {
+      "file": "desktop/19-noras-signal.png",
+      "scene": "Nora remembers the sound at her door.",
+      "stagedDialogue": true
+    },
+    {
+      "file": "desktop/20-casebook.png",
+      "scene": "Three saved personal items, ready to compare.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/21-reconstruction.png",
+      "scene": "The player connects person, motive and means. Contains solution spoilers.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/22-ending.png",
+      "scene": "The actual authored ending reached through the report action. Contains spoilers.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/23-game-snake.png",
+      "scene": "Grave Snake, captured from the running game after real controls.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/23-game-flappy.png",
+      "scene": "Flappy Bat, captured from the running game after real controls.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/23-game-tetris.png",
+      "scene": "Crypt Blocks, captured from the running game after real controls.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/23-game-2048.png",
+      "scene": "2048: Séance, captured from the running game after real controls.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "desktop/23-game-phantomicus.png",
+      "scene": "Phantomicus, captured from the running game after real controls.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "mobile/01-messenger.png",
+      "scene": "Phone layout: readable personal Messenger history.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "mobile/02-my-computer.png",
+      "scene": "Phone file manager.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "mobile/03-letter.png",
+      "scene": "Phone layout: the unsent letter.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "mobile/04-photo.png",
+      "scene": "Phone photo and caption.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "mobile/05-signal.png",
+      "scene": "First contact with Nora on a phone.",
+      "stagedDialogue": true
+    },
+    {
+      "file": "mobile/06-casebook.png",
+      "scene": "Phone casebook, all three items.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "mobile/07-opening.png",
+      "scene": "Phone opening before the USB gesture.",
+      "stagedDialogue": false
+    },
+    {
+      "file": "mobile/08-usb.png",
+      "scene": "Phone USB gesture brings the power control into view.",
+      "stagedDialogue": false
+    }
+  ],
+  "errors": []
+}

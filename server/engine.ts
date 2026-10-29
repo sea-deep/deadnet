@@ -3,7 +3,7 @@ import { disclosableFacts } from "./knowledge.ts";
 import { ARCHIVE, seedWorld, VOICEMAIL } from "./seed.ts";
 import { BaselineModel } from "./baseline.ts";
 import { DecisionSchema } from "./decision.ts";
-import { caseProgress, GAME_NAMES } from "../src/rules.ts";
+import { caseProgress, GAME_NAMES, readyToReport } from "../src/rules.ts";
 import type { ModelAdapter } from "./model.ts";
 export interface Persistence {
   load(): World;
@@ -65,9 +65,7 @@ export class Engine {
     const e = ARCHIVE.find((e) => e.id === id);
     if (!e) throw new RuleError("Unknown archive record.");
     if (e.locked && !caseProgress(w).unlocked)
-      throw new RuleError(
-        "Open the two earlier records and play two of Nora’s games to reconstruct this file.",
-      );
+      throw new RuleError("This item is not available.");
     return e;
   }
   private sourceFor(w: World, a: Agent): Event {
@@ -197,7 +195,7 @@ export class Engine {
           actor: "sysop",
           channel: "mail",
           to: "visitor",
-          text: "Adam. Leave Nora’s files alone. Her family has been through enough. If you have questions, ask me directly.",
+          text: "Adam. Mara tells me she gave you the computer. Please leave Nora’s things with her family. There is nothing to be gained by going through her messages.",
           subject: "A note about recovered files",
           origin: "system",
         });
@@ -272,7 +270,7 @@ export class Engine {
                 actor: "system",
                 channel: "mail",
                 to: "visitor",
-                subject: "NORA_0314.WAV / recovered attachment",
+                subject: "Your missed call · Nora",
                 text: "Recovered outgoing call: Nora Vale to Adam Moore. 31 October, 03:14. The last three seconds are missing.",
                 audioTranscript: VOICEMAIL,
                 origin: "system",
@@ -349,17 +347,48 @@ export class Engine {
               "This investigation already has an ending.",
               409,
             );
-          if (!w.collected.includes("manifest"))
+          if (!readyToReport(w))
             throw new RuleError(
-              "Recover Adam’s case backup before submitting a report.",
+              "Save the three items in the USB casebook and show Nora one of them before drawing a conclusion.",
             );
+          if (action.choice === "exposed") {
+            if (!action.suspect || !action.motive || !action.method)
+              throw new RuleError(
+                "Choose a person, a motive and a way into the room.",
+              );
+            if (
+              action.suspect !== "sysop" ||
+              action.motive !== "inspections" ||
+              action.method !== "spare-key"
+            ) {
+              this.event(w, {
+                actor: "nora",
+                channel: "mail",
+                to: "visitor",
+                subject: "The pieces don’t fit",
+                text:
+                  action.suspect !== "sysop"
+                    ? "that doesn’t fit what you found. who asked to come to my room? and who had already gone home?"
+                    : action.motive !== "inspections"
+                      ? "it wasn’t the rent. think about what i wanted to send in the morning."
+                      : "i didn’t open the door. the photograph... i wrote something under it. read it again?",
+                origin: "system",
+              });
+              this.event(w, {
+                actor: "system",
+                channel: "system",
+                text: "Theory incomplete. The case remains open; you can revise your conclusion.",
+                origin: "system",
+              });
+              break;
+            }
+          }
           if (action.choice === "sealed" && w.published.length)
             throw new RuleError(
               "Evidence already entered the public record. It cannot be taken back.",
             );
           w.ending = action.choice;
-          if (action.choice === "exposed")
-            w.accused = action.suspect || "sysop";
+          if (action.choice === "exposed") w.accused = action.suspect!;
           w.auto = false;
           if (action.choice === "exposed") {
             for (const e of ARCHIVE)
@@ -419,7 +448,7 @@ export class Engine {
             this.event(w, {
               actor: "system",
               channel: "system",
-              text: `Recovered Nora’s ${GAME_NAMES[action.game] ?? action.game} save from a damaged sector.`,
+              text: `Played ${GAME_NAMES[action.game] ?? action.game}.`,
               origin: "system",
             });
           }

@@ -11,8 +11,11 @@ await p.addInitScript(() => {
     return a;
   } as any;
 });
-await p.goto("http://127.0.0.1:3000");
-await p.getByRole("button", { name: "Power on", exact: true }).click();
+await p.goto(process.env.DEADNET_CHECK_URL || "http://127.0.0.1:3000");
+await p.getByRole("button", { name: "Insert USB drive", exact: true }).click();
+await p
+  .getByRole("button", { name: /^(Power on|Return to the computer)$/ })
+  .click();
 await p.getByRole("button", { name: "Skip startup" }).click();
 await expect
   .poll(() =>

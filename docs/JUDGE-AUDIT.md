@@ -1,30 +1,30 @@
-# Adversarial judge audit — Room 317
+# Judge walkthrough — Room 317
 
-Self-assessment, not independent judging or a prediction of winning.
+Start with the USB gesture and Mara’s letter. You are Adam Moore, using Nora’s computer after her funeral. The desktop is her personal space; your casebook lives on the removable drive.
 
-| Dimension | /10 | Evidence and limit |
-| --- | ---: | --- |
-| Theme | 9 | A murdered woman’s recovered PC and private spirit, old messages and a closing connection. Fictional people throughout. |
-| Technical depth | 8 | Scoped persistent entities, constrained proposals, evidence delivery, subjective beliefs/trust, transaction snapshots, privacy tests and provider budgets. Small single-user engine. |
-| Open-weight dependency | 9 | Actual current-case local Gemma and free hosted Dots responses; inspectable model identity, prompts and traces. Public edition explicitly scripted. |
-| Originality | 7 | Haunted desktops and agent towns have precedents. Private evidence routing and the victim’s uncertain memories supply the specific hook. |
-| Emergence | 7 | Resident accounts can pass private facts and change later recipients’ knowledge. Objective murder/ending remain authored. |
-| Narrative potential | 8 | Mara emails a dead friend, Len defends an ordinary alibi, Nora recalls one fragment. No invented audience reaction or emotional study. |
-| Visual quality | 8 | Actual period UI references, sourced raster art, readable pixel fonts, direct game shortcuts and consistent dark controls. Borrowed games retain some underlying visual differences. |
-| Demo clarity | 8 | Usable public exhibit, reproducible local API, actual case/voice evidence and screenshots. No video, at user request. |
-| Reliability | 7 | 34 unit/provider tests, 15 desktop/mobile scenarios, real game/audio checks. Free inference can be slow or unavailable; verified current reply took 13.820 s. |
-| Writing | 8 | Article uses actual debugging findings and distinguishes current checks from prototype benchmarks. Entrant review remains necessary. |
-| Partners | 8 | Meaningful Gemma dialogue and a verified ElevenLabs alibi artifact. Other categories unclaimed. |
-| Rules | 8 | New Oct 29 public MIT repo, demo, template/tags and evidence. Entry remains unpublished; entrant eligibility is not asserted on their behalf. |
+## A short route through the experience
 
-**Memorable among dozens?** Its strongest moment is showing a victim a record that contradicts the account still answering from the building office. A friend’s routine message does more work than a random screen glitch.
+1. Open **Messenger**. Read the earlier exchanges, then Adam’s conversation on **31 Oct**. Save it to the casebook.
+2. Open **Mail**. Compare **Home, somehow.** with **Statement for residents**. Nora’s missed call and its transcript are here too. Save Len’s email.
+3. Open **Photos** and look at **The spare key**. Read Nora’s caption and save the picture. **Calendar** supplies the context for that night; **Trash Bin** contains the plans she never finished. Restore a letter and find it in **My Computer → Documents**.
+4. Open **Unknown Signal**, show Nora one of the saved items, and ask what she remembers. Live play uses the configured open-weight model through OpenRouter; the server keeps private memories and evidence boundaries.
+5. Open the USB **Casebook → What happened?** Connect the person, motive and means of entry. Try a wrong theory: the case stays open and you can revise it. A supported report reaches the ending.
 
-**Strongest reason to win:** a portable, inspectable open-weight society supplies uncertain memories and private rumor paths inside a coherent fictional investigation. The machine remains usable, and the implementation exposes its limits.
+There is no game-time repair gate. The five desktop mini-games are optional. Hocus was removed. 2048 and Phantomicus use their original project artwork, and Phantomicus retains its on-screen creator link. Source license notices remain packaged with the borrowed code.
 
-**Strongest rejection case:** a judge could see an authored murder puzzle with AI dialogue around it. They can solve the files without consulting Nora. The public exhibit alone cannot prove live inference; actual transcripts and the local installation carry that evidence.
+## Presentation assets
 
-**Impressive but shallow:** window dragging comes from react-rnd. The six games are credited adaptations. Neither is novel AI research. The story’s objective murderer is not generated.
+[Browse the screenshots](screenshots/index.html) · [Scene manifest](screenshots/manifest.json).
 
-**Demo-destroying bugs addressed:** nested OS iframes; voice escaping mute; unsupported free-provider parameters; reasoning exhausting a tiny output budget; silent model substitution; premature protected facts; invented record IDs; lost private state; unbounded generation; repeated voice charges; hidden/mis-sized controls. Current-case gates and real captures check the repairs.
+The set includes the opening/USB/boot, personal conversations, correspondence, photo album, calendar, deleted letter, file manager, casebook, ghost contact, all five running games and the ending. Phone captures cover the same readable interface. Later images contain spoilers. Presentation checkpoints and capture methods are recorded separately in the asset folder; no provider measurements are inferred from screenshots.
 
-**Deliberate-testing limit:** model text can still speculate, confuse speakers or repeat. A schema is not a truth oracle. A visitor with developer tools can read authored game content; this is fiction, not anti-cheat secrecy. Free provider capacity is an external dependency, and daily allowance can run out. No independent audience study or victory claim is made.
+## Engineering to inspect
+
+- **Persistence:** atomic SQLite world/revision storage, per-visitor hosted worlds, save validation, autosave/export and error handling.
+- **AI:** actor-scoped witnessed evidence, bounded memories, schema-validated decisions, serialized requests and persistent free-account limits. Nora never runs unattended.
+- **Game rules:** three saved personal artifacts and Nora’s witnessed memory are needed for the final deduction. Incorrect answers do not publish evidence or end the game.
+- **Sound:** muted until a gesture, shared mute/background handling, cached short ElevenLabs call and custom playback controls.
+- **Controls:** keyboard/drag/resize/minimize/maximize, responsive windows, default CRT with an off switch and a complete classic cursor pack shared by game frames.
+- **Checks:** 35 unit tests, 38 desktop/mobile scenarios, five-game interaction checks and sound-state checks. The build tests do not require live provider calls.
+
+The story and physical evidence are authored. The open-weight model supplies the conversation during live play. Actual historical provider measurements are kept separately from the current release checks in [Verification](VERIFICATION-REVAMP.md).

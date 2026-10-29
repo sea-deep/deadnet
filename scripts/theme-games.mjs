@@ -67,10 +67,14 @@ export function themeGames(out) {
       "            bY = 150;\n            birdAngle = 0;",
       "            bY = 150;\n            vy = 0;\n            birdAngle = 0;",
     ],
-    ["    bY = 150;\n    birdAngle = 0;\n    score = 0;", "    bY = 150;\n    vy = 0;\n    birdAngle = 0;\n    score = 0;"],
+    [
+      "    bY = 150;\n    birdAngle = 0;\n    score = 0;",
+      "    bY = 150;\n    vy = 0;\n    birdAngle = 0;\n    score = 0;",
+    ],
   ];
   for (const [from, to] of physics) {
-    if (!flappy.includes(from)) throw new Error("Flappy physics patch missing: " + from);
+    if (!flappy.includes(from))
+      throw new Error("Flappy physics patch missing: " + from);
     flappy = flappy.replace(from, to);
   }
   flappy += fs.readFileSync("scripts/flappy-presentation.js", "utf8");
@@ -100,14 +104,7 @@ export function themeGames(out) {
       .replaceAll("You died :(", "The bones stopped moving.")
       .replaceAll("On Windows, press F11 to play in Full Screen mode.", ""),
   );
-  for (const name of [
-    "snake",
-    "flappy",
-    "tetris",
-    "2048",
-    "phantomicus",
-    "hocus",
-  ]) {
+  for (const name of ["snake", "flappy", "tetris", "2048", "phantomicus"]) {
     fs.copyFileSync("scripts/game-theme.css", out + "/" + name + "/theme.css");
     fs.copyFileSync("scripts/game-fit.js", out + "/" + name + "/game-fit.js");
     function walk(dir) {

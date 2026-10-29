@@ -1,5 +1,9 @@
 // Fugue Icons © Yusuke Kamiyamane, CC BY 3.0. See public/assets/icons/LICENSE.txt.
 export type IconName =
+  | "computer"
+  | "usb"
+  | "photos"
+  | "calendar"
   | "browser"
   | "mail"
   | "archive"

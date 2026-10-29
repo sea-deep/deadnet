@@ -76,25 +76,21 @@ test("memory: private secret is remembered by recipient and excluded from unrela
   assert(!JSON.stringify(promptFor(other)).includes("silver apricot"));
   store.close();
 });
-test("investigation: unlock requires two records; collected facts do not teleport to characters", async () => {
+test("personal items are independently readable, but a report needs evidence and Nora’s witnessed memory", async () => {
   const { engine, store } = setup();
-  await assert.rejects(
-    engine.dispatch({ type: "collect", evidenceId: "manifest" }),
-  );
-  await engine.dispatch({ type: "collect", evidenceId: "carrier" });
-  assert(!engine.world().agents[0].knownFacts.length);
-  await engine.dispatch({ type: "collect", evidenceId: "birthday" });
-  // Files alone are not enough: two of Nora's game saves must be recovered too.
-  await assert.rejects(
-    engine.dispatch({ type: "collect", evidenceId: "manifest" }),
-  );
-  await engine.dispatch({ type: "played", game: "flappy" });
-  await engine.dispatch({ type: "played", game: "flappy" });
-  await assert.rejects(
-    engine.dispatch({ type: "collect", evidenceId: "manifest" }),
-  );
-  await engine.dispatch({ type: "played", game: "snake" });
   await engine.dispatch({ type: "collect", evidenceId: "manifest" });
+  assert(!engine.world().agents[0].knownFacts.length);
+  await assert.rejects(engine.dispatch({ type: "resolve", choice: "sealed" }));
+  await engine.dispatch({ type: "collect", evidenceId: "carrier" });
+  await engine.dispatch({ type: "collect", evidenceId: "birthday" });
+  await assert.rejects(engine.dispatch({ type: "resolve", choice: "sealed" }));
+  await engine.dispatch({
+    type: "message",
+    target: "nora",
+    text: "Do you remember this?",
+    evidenceId: "birthday",
+  });
+  assert.equal(engine.world().played?.length || 0, 0);
   await engine.dispatch({ type: "resolve", choice: "sealed" });
   assert.equal(engine.world().ending, "sealed");
   await assert.rejects(
@@ -112,7 +108,19 @@ test("public evidence is learned only after an account reads it; publishing prev
   await engine.dispatch({ type: "publish", evidenceId: "carrier" });
   assert(!engine.world().agents[1].knownFacts.includes("carrier"));
   await assert.rejects(engine.dispatch({ type: "resolve", choice: "sealed" }));
-  await engine.dispatch({ type: "resolve", choice: "exposed" });
+  await engine.dispatch({
+    type: "message",
+    target: "nora",
+    text: "What do you remember?",
+    evidenceId: "manifest",
+  });
+  await engine.dispatch({
+    type: "resolve",
+    choice: "exposed",
+    suspect: "sysop",
+    motive: "inspections",
+    method: "spare-key",
+  });
   assert.equal(engine.world().published.length, 3);
   store.close();
 });
@@ -230,8 +238,8 @@ test("operator secrets are withheld from routine prompts and become available wh
   const hidden = JSON.stringify(
     promptFor({ agent: operator, source: routine, world: before }),
   );
-  assert(!hidden.includes("My master key opened Nora"));
-  assert(!hidden.includes("Adam’s case backup identifies MASTER-01"));
+  assert(!hidden.includes("I kept the brass spare"));
+  assert(!hidden.includes("Nora’s October 28 photo caption"));
   await engine.dispatch({ type: "played", game: "snake" });
   await engine.dispatch({ type: "played", game: "tetris" });
   for (const evidenceId of ["carrier", "birthday", "manifest"])
@@ -242,14 +250,14 @@ test("operator secrets are withheld from routine prompts and become available wh
     actor: "visitor" as const,
     channel: "mail" as const,
     to: "sysop" as const,
-    text: "I recovered this manifest.",
+    text: "Nora kept this photograph.",
     factIds: ["manifest"],
     origin: "visitor" as const,
   };
   const revealed = JSON.stringify(
     promptFor({ agent: operator, source, world: engine.world() }),
   );
-  assert(revealed.includes("Adam’s case backup identifies MASTER-01"));
+  assert(revealed.includes("Nora’s October 28 photo caption"));
   store.close();
 });
 test("a model cannot manufacture evidence IDs even when its JSON schema is valid", async () => {
@@ -319,9 +327,17 @@ test("a named case report persists and releases the private signal without anoth
   for (const evidenceId of ["carrier", "birthday", "manifest"])
     await engine.dispatch({ type: "collect", evidenceId });
   await engine.dispatch({
+    type: "message",
+    target: "nora",
+    text: "It’s your spare key.",
+    evidenceId: "manifest",
+  });
+  await engine.dispatch({
     type: "resolve",
     choice: "exposed",
     suspect: "sysop",
+    motive: "inspections",
+    method: "spare-key",
   });
   const w = engine.world();
   assert.equal(w.accused, "sysop");
@@ -338,5 +354,55 @@ test("a named case report persists and releases the private signal without anoth
     }),
   );
   assert.equal(engine.world().traces.length, w.traces.length);
+  store.close();
+});
+
+test("wrong theories remain reversible and never publish evidence or release Nora", async () => {
+  const { engine, store } = setup();
+  for (const evidenceId of ["carrier", "birthday", "manifest"])
+    await engine.dispatch({ type: "collect", evidenceId });
+  await engine.dispatch({
+    type: "message",
+    target: "nora",
+    text: "What do you remember?",
+    evidenceId: "birthday",
+  });
+  const turns = engine.world().remainingTurns;
+  for (const theory of [
+    {
+      suspect: "len" as const,
+      motive: "inspections" as const,
+      method: "spare-key" as const,
+    },
+    {
+      suspect: "sysop" as const,
+      motive: "rent" as const,
+      method: "spare-key" as const,
+    },
+    {
+      suspect: "sysop" as const,
+      motive: "inspections" as const,
+      method: "window" as const,
+    },
+  ]) {
+    await engine.dispatch({ type: "resolve", choice: "exposed", ...theory });
+    assert.equal(engine.world().ending, "open");
+    assert.equal(engine.world().published.length, 0);
+    assert.equal(
+      engine.world().remainingTurns,
+      turns,
+      "theory feedback never spends AI quota",
+    );
+  }
+  await assert.rejects(engine.dispatch({ type: "resolve", choice: "exposed" }));
+  await engine.dispatch({
+    type: "resolve",
+    choice: "exposed",
+    suspect: "sysop",
+    motive: "inspections",
+    method: "spare-key",
+  });
+  assert.equal(engine.world().ending, "exposed");
+  assert.equal(engine.world().played?.length || 0, 0);
   store.close();
 });

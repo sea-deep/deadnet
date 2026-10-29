@@ -1,0 +1,13 @@
+/* Chicago95 White cursor pack. Original PNGs and hotspots preserved. */
+html, body, body * { cursor: url('./Arrow.png') 0 0, default !important; }
+a, a *, button, button *, summary, summary *, select, [role="button"], [role="button"] *, input[type="checkbox"], input[type="radio"], input[type="range"] { cursor: url('./HandPointer.png') 5 0, pointer !important; }
+textarea, input:not([type]), input[type="text"], input[type="search"], input[type="email"], input[type="password"], [contenteditable="true"] { cursor: url('./IBeam.png') 8 8, text !important; }
+.title-drag:active, .title-drag:active *, [draggable="true"]:active, [style*="cursor: move"], [style*="cursor: grab"] { cursor: url('./Move.png') 0 0, move !important; }
+[style*="cursor: e-resize"], [style*="cursor: w-resize"], [style*="cursor: ew-resize"] { cursor: url('./HDoubleArrow.png') 16 15, ew-resize !important; }
+[style*="cursor: n-resize"], [style*="cursor: s-resize"], [style*="cursor: ns-resize"] { cursor: url('./VDoubleArrow.png') 15 15, ns-resize !important; }
+[style*="cursor: ne-resize"], [style*="cursor: sw-resize"], [style*="cursor: nesw-resize"] { cursor: url('./AngleNE.png') 15 15, nesw-resize !important; }
+[style*="cursor: nw-resize"], [style*="cursor: se-resize"], [style*="cursor: nwse-resize"] { cursor: url('./AngleNW.png') 15 15, nwse-resize !important; }
+button:disabled, select:disabled, input:disabled, textarea:disabled, [aria-disabled="true"] { cursor: url('./NO.png') 15 15, not-allowed !important; }
+.busy, .busy *, [aria-busy="true"], [aria-busy="true"] * { cursor: url('./AppStarting.png') 0 0, progress !important; }
+[style*="cursor: wait"] { cursor: url('./Wait.png') 13 14, wait !important; }
+[style*="cursor: crosshair"] { cursor: url('./Crosshair.png') 15 15, crosshair !important; }

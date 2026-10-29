@@ -1,0 +1,6 @@
+
+### Personal-computer rebuild
+
+Replaced the technical-file hunt with native Messenger history, personal Mail, a sourced photo album and a calendar. Added an outside-the-OS USB opening and an external casebook with supported person/motive/method deductions. Wrong theories remain reversible and spend no inference quota. Restored My Computer and Trash with actual browsing/restoration. Kept Claude’s save/polling/audio/server fixes. Removed Hocus source/runtime and Sass dependency. Preserved source licenses while removing classic-game on-screen credits; Phantomicus keeps its creator link. Used upstream logos for 2048 and Phantomicus. CRT is default, with a persistent off switch. Replaced the initial cursor experiment with a complete Chicago95 White pack shared by the host and game frames.
+
+No generation calls to OpenRouter or ElevenLabs were made. The local case had been set to baseline; switched it to live without generating a reply. Automated fixtures use a separate SQLite database. 35 Node tests passed; 34 desktop/mobile scenarios passed before the final full-pack regression checks. Asset research used actual Windows 98/Outlook captures, not generated mockups. Added a new spare-key photograph with explicit CC BY-SA provenance. Existing provider measurements remain historical; no benchmark invented for the new prompt.

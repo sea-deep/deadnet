@@ -1,0 +1,1200 @@
+/* Room 317: the game surrounds the desktop; personal software holds the story. */
+.desktop {
+  font-size: 17px;
+}
+.desktop .window-content {
+  min-height: 0;
+}
+.desktop .titlebar {
+  min-height: 30px;
+}
+.desktop .title-bar-text {
+  font-size: 17px;
+}
+.desktop .window-buttons button {
+  min-height: 22px;
+  width: 24px;
+}
+.desktop .desktop-icons {
+  padding: 22px 10px;
+  column-gap: 12px;
+}
+.desktop .desktop-icon {
+  width: 100px;
+  min-height: 84px;
+}
+.desktop .desktop-icon > span {
+  font-size: 17px;
+  line-height: 1.1;
+}
+.desktop .desktop-icon img {
+  image-rendering: pixelated;
+}
+.desktop .boot-screen {
+  padding: 0;
+  background: #101611;
+}
+.desktop .boot-screen::before {
+  display: none;
+}
+.game-entrance {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  color: #e6e4d7;
+  font-family: W95FA, sans-serif;
+  background:
+    linear-gradient(90deg, #080e0eef, #101a16a6),
+    url("/assets/forest.jpg") center/cover;
+  overflow-y: auto;
+  text-align: left;
+  padding: clamp(24px, 5vw, 80px) clamp(24px, 8vw, 130px) 25px;
+}
+.entrance-title {
+  padding-bottom: 45px;
+}
+.entrance-title h1 {
+  font:
+    400 clamp(60px, 7vw, 96px) / 0.9 W95FA,
+    sans-serif;
+  letter-spacing: -0.025em;
+  margin: 0;
+  color: #e6e4d7;
+}
+.entrance-title > p {
+  font-size: 26px;
+  margin: 10px 0 0;
+  color: #b9c8b8;
+}
+.entrance-scene {
+  display: grid;
+  grid-template-columns: minmax(280px, 490px) minmax(300px, 440px);
+  gap: clamp(40px, 9vw, 145px);
+  align-items: center;
+  flex: 1;
+  padding-bottom: 40px;
+}
+.maras-letter {
+  background: #e4ddc5;
+  color: #302e24;
+  padding: 32px 38px 25px;
+  border: 1px solid #a19c86;
+  box-shadow: 0 16px 38px #0006;
+  transform: rotate(-1.3deg);
+  max-width: 490px;
+}
+.maras-letter h2 {
+  font-size: 26px;
+  font-weight: 400;
+  margin: 0 0 24px;
+}
+.maras-letter p {
+  font-size: 23px;
+  line-height: 1.45;
+  margin: 0 0 20px;
+}
+.maras-letter .letter-signature {
+  text-align: right;
+  margin-bottom: 0;
+}
+.computer-start {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.entrance-computer {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #727f685c;
+}
+.entrance-computer h2 {
+  color: #e6e4d7;
+  font-size: 25px;
+  font-weight: 400;
+  margin: 0 0 8px;
+}
+.entrance-computer p {
+  font-size: 18px;
+  color: #bcc5b6;
+  margin: 0;
+}
+.power-led {
+  width: 7px;
+  height: 7px;
+  background: #5b6456;
+  margin-left: auto;
+}
+.power-led.on {
+  background: #b8d392;
+}
+.computer-start button {
+  font-family: W95FA, sans-serif;
+}
+.computer-start .usb-insert {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+  border: 1px solid #8e9d80;
+  color: #e6e4d7;
+  background: #1c281d;
+  box-shadow: none;
+  font-size: 20px;
+  padding: 15px 18px;
+  min-height: 64px;
+}
+.computer-start .usb-insert:hover {
+  background: #2b3b2b;
+}
+.computer-start .usb-insert.inserted {
+  cursor: default;
+  opacity: 1;
+  color: #b8d392;
+  border-color: #586c4b;
+}
+.computer-start .boot-connect {
+  width: 100%;
+  min-width: 0;
+  padding: 15px;
+  min-height: 54px;
+  font-size: 22px;
+  background: #d9dfc9;
+  color: #19251b;
+  box-shadow:
+    inset 1px 1px #fcffec,
+    inset -1px -1px #606c55;
+}
+.computer-start .boot-connect:disabled {
+  background: #303c30;
+  color: #a9b2a0;
+  box-shadow: none;
+  cursor: default;
+  opacity: 1;
+}
+.entrance-sound {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  font-size: 18px;
+}
+.entrance-sound input {
+  appearance: auto;
+  position: static !important;
+  opacity: 1 !important;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #a7bc8b;
+}
+.entrance-disclosure {
+  font-size: 16px;
+  color: #c1cab6;
+  line-height: 1.4;
+  margin: 0;
+}
+.entrance-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 16px;
+  color: #b2bdab;
+  margin-top: 30px;
+}
+.entrance-footer a {
+  color: #d3d7c9;
+}
+.personal-messenger,
+.photos-app,
+.casebook-app,
+.calendar-app {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  color: #232823;
+  background: #c0c0c0;
+  font-family: W95FA, sans-serif;
+  font-size: 18px;
+}
+.personal-menubar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 5px 12px;
+  border-bottom: 1px solid #818181;
+  font-size: 16px;
+}
+.personal-menubar button {
+  padding: 5px 8px;
+  background: transparent;
+  box-shadow: none;
+  font-size: 16px;
+}
+.personal-menubar button:hover {
+  background: #d9d9d9;
+}
+.messenger-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.buddy-list {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 12px;
+  border-right: 1px solid #818181;
+  background: #deded4;
+}
+.signed-in {
+  display: flex;
+  gap: 12px;
+  padding: 5px 0 20px;
+}
+.signed-in strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 400;
+}
+.signed-in span {
+  display: block;
+  font-size: 15px;
+  margin-top: 4px;
+  color: #55594d;
+}
+.buddy-list h2 {
+  font-size: 17px;
+  font-weight: 400;
+  margin: 0 0 8px;
+  border-bottom: 1px solid #aaa;
+  padding-bottom: 6px;
+}
+.buddy-list > button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  gap: 10px;
+  box-shadow: none;
+  background: transparent;
+  padding: 11px 7px;
+}
+.buddy-list > button[aria-pressed="true"] {
+  color: #fff;
+  background: #000080;
+}
+.buddy-list strong {
+  font-size: 18px;
+  font-weight: 400;
+}
+.buddy-list small {
+  display: block;
+  font-size: 15px;
+  margin-top: 3px;
+}
+.buddy-offline,
+.buddy-online {
+  width: 8px;
+  height: 8px;
+  background: #858780;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.buddy-online {
+  background: #456f25;
+}
+.buddy-list .signal-buddy {
+  margin-top: 20px;
+  border-top: 1px solid #aaa;
+  padding-top: 18px;
+}
+.away-message {
+  font-size: 16px;
+  color: #5f6258;
+  line-height: 1.4;
+  margin: 25px 7px 0;
+}
+.conversation-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+.conversation-pane > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 14px 20px;
+  background: #efefe8;
+  border-bottom: 1px solid #a4a79b;
+}
+.conversation-pane h1 {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 3px;
+}
+.conversation-pane header span {
+  font-size: 16px;
+  color: #5c6055;
+}
+.conversation-pane label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+}
+.conversation-pane select {
+  font-size: 17px;
+  min-height: 32px;
+  height: auto;
+  padding: 4px 24px 4px 7px;
+}
+.latest-conversation {
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid #bdbfaf;
+  box-shadow: none;
+  text-align: left;
+  background: #e0e5d2;
+  color: #2b422d;
+  font-size: 17px;
+  padding: 10px 20px;
+}
+.personal-chat {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: #fffef6;
+  padding: 18px 24px;
+}
+.conversation-date {
+  text-align: center;
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: #66695f;
+}
+.chat-line {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0 0 15px;
+}
+.chat-line time {
+  font-size: 15px;
+  color: #646b62;
+  width: 40px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.chat-line strong {
+  color: #6c3535;
+  font-weight: 400;
+  font-size: 17px;
+}
+.chat-line.noras-line strong {
+  color: #274f75;
+}
+.chat-line p {
+  margin: 3px 0 0;
+  line-height: 1.35;
+  font-size: 19px;
+  max-width: 65ch;
+  white-space: pre-wrap;
+}
+.unanswered {
+  color: #7a5348;
+  font-size: 17px;
+  padding-left: 54px;
+}
+.save-item {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #dedfd4;
+  border-top: 1px solid #a4a899;
+}
+.save-item button {
+  font-size: 17px;
+  min-height: 33px;
+}
+.save-item button:disabled {
+  cursor: default;
+  opacity: 1;
+  color: #475d3d;
+  background: #d5ddc9;
+}
+.missed-call {
+  padding: 10px 15px;
+  text-align: left;
+  font-size: 17px;
+  background: #e9dfc4;
+  box-shadow: none;
+  border-top: 1px solid #aaa18c;
+}
+.personal-messenger .window-status,
+.casebook-app .window-status,
+.photos-app .window-status,
+.calendar-app .window-status {
+  font-size: 15px;
+  min-height: 28px;
+  flex-shrink: 0;
+}
+.photo-film {
+  display: flex;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #85857c;
+}
+.photo-film button {
+  padding: 5px;
+  width: 128px;
+  background: #deded4;
+}
+.photo-film button[aria-pressed="true"] {
+  background: #000080;
+  color: #fff;
+}
+.photo-film img {
+  display: block;
+  width: 100%;
+  height: 60px;
+  object-fit: cover;
+}
+.photo-film span {
+  display: block;
+  padding: 4px 0 0;
+  font-size: 16px;
+}
+.photo-viewer {
+  background: #242a26;
+  flex: 1;
+  min-height: 100px;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo-viewer img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+.photo-viewer.zoomed {
+  display: block;
+}
+.photo-viewer.zoomed img {
+  width: 150%;
+  height: auto;
+  max-width: none;
+}
+.photo-caption {
+  background: #f1eee0;
+  padding: 14px 20px;
+}
+.photo-caption h1 {
+  font-size: 23px;
+  margin: 0 0 4px;
+  font-weight: 400;
+  display: inline;
+}
+.photo-caption time {
+  font-size: 16px;
+  color: #626356;
+  margin-left: 18px;
+}
+.photo-caption p {
+  font-size: 19px;
+  line-height: 1.4;
+  margin: 10px 0 0;
+}
+.casebook-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px;
+  background: #313c30;
+  color: #e6e6d8;
+}
+.casebook-header h1 {
+  font-size: 30px;
+  font-weight: 400;
+  margin: 0 0 3px;
+}
+.casebook-header span {
+  font-size: 17px;
+}
+.casebook-state {
+  margin-left: auto;
+}
+.casebook-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 12px 20px 0;
+  background: #deddd1;
+  border-bottom: 1px solid #8b8d80;
+}
+.casebook-tabs button {
+  font-size: 18px;
+  padding: 9px 16px;
+}
+.casebook-tabs button[aria-pressed="true"] {
+  background: #f6f2e4;
+  box-shadow:
+    inset 1px 1px #fff,
+    inset -1px 0 #81816f;
+}
+.casebook-app > main {
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+  padding: 24px;
+  background: #f6f2e4;
+}
+.casebook-app h2 {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 10px;
+}
+.casebook-app p {
+  font-size: 19px;
+  line-height: 1.4;
+  max-width: 65ch;
+  margin: 0 0 20px;
+}
+.casebook-note {
+  color: #515747;
+  border-bottom: 1px solid #c2c2af;
+  padding-bottom: 20px;
+}
+.casebook-empty {
+  padding: 36px 0;
+}
+.saved-artifact {
+  display: flex;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid #c2c2af;
+}
+.saved-artifact h2 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+.saved-artifact time {
+  display: block;
+  font-size: 16px;
+  color: #626653;
+  margin-bottom: 10px;
+}
+.saved-artifact button {
+  font-size: 17px;
+}
+.casebook-footer {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+}
+.casebook-footer button {
+  min-height: 37px;
+  font-size: 18px;
+}
+.theory-form > label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 22px 0;
+  font-size: 20px;
+}
+.theory-form select {
+  width: 100%;
+  padding: 8px 26px 8px 10px;
+  min-height: 40px;
+  height: auto;
+  font-size: 18px;
+}
+.casebook-app .casebook-needs {
+  padding: 12px;
+  font-size: 17px;
+  background: #e6e2cf;
+}
+.calendar-app {
+  overflow: auto;
+  background: #eeeade;
+  padding: 20px 24px 0;
+}
+.calendar-app > h1 {
+  font-size: 32px;
+  font-weight: 400;
+  margin: 0 0 20px;
+}
+.calendar-week,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.calendar-week {
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 16px;
+}
+.calendar-grid > button {
+  min-height: 46px;
+  text-align: left;
+  background: #faf8ef;
+  font-size: 19px;
+  box-shadow: inset 0 0 0 1px #bebdb0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.calendar-grid > button[aria-pressed="true"] {
+  background: #000080;
+  color: #fff;
+}
+.calendar-grid i {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: currentColor;
+}
+.calendar-agenda {
+  flex: 1;
+  padding: 22px 0;
+}
+.calendar-agenda h2 {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0 0 18px;
+}
+.calendar-agenda article {
+  display: flex;
+  gap: 20px;
+  border-top: 1px solid #bdbcae;
+  padding: 16px 0;
+}
+.calendar-agenda h3 {
+  font-size: 21px;
+  font-weight: 400;
+  margin: 0 0 5px;
+}
+.calendar-agenda p {
+  font-size: 18px;
+  line-height: 1.35;
+  margin: 0;
+}
+.calendar-app > .window-status {
+  margin: 0 -24px;
+}
+.case-ending {
+  position: fixed;
+  inset: 0;
+  z-index: 25000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #101812f5;
+  color: #e0e4d4;
+  padding: 32px;
+  overflow: auto;
+}
+.case-ending > div {
+  width: min(620px, 100%);
+}
+.case-ending h1 {
+  font-size: 48px;
+  font-weight: 400;
+  margin: 25px 0;
+}
+.case-ending p {
+  font-size: 21px;
+  line-height: 1.5;
+  margin: 0 0 25px;
+}
+.case-ending .ending-nora {
+  color: #b2c79b;
+  font-size: 24px;
+}
+.case-ending button {
+  font-size: 20px;
+  color: #222e20;
+  margin-top: 15px;
+  padding: 12px 20px;
+}
+.fullscreen-control {
+  font-size: 15px;
+}
+.mail-app .letter-text {
+  font-size: 19px;
+  line-height: 1.45;
+}
+.spirit-app .spirit-log {
+  font-size: 20px;
+  background: #1f2822;
+}
+.spirit-app .signal-message p {
+  font-size: 20px;
+  line-height: 1.45;
+}
+.spirit-app .signal-system {
+  font-size: 16px;
+}
+.spirit-app .spirit-toolbar span {
+  font-size: 16px;
+}
+.spirit-app .spirit-compose textarea {
+  font-size: 19px;
+  min-height: 78px;
+}
+.spirit-app .spirit-compose select {
+  max-width: 100%;
+}
+@media (max-width: 739px) {
+  .game-entrance {
+    padding: 32px 24px 20px;
+  }
+  .entrance-title {
+    padding-bottom: 30px;
+  }
+  .entrance-title h1 {
+    font-size: 64px;
+  }
+  .entrance-title > p {
+    font-size: 23px;
+  }
+  .entrance-scene {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: stretch;
+    padding-bottom: 10px;
+  }
+  .maras-letter {
+    padding: 23px 26px;
+    transform: none;
+  }
+  .maras-letter h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+  .maras-letter p {
+    font-size: 20px;
+    margin-bottom: 14px;
+  }
+  .computer-start {
+    gap: 15px;
+  }
+  .entrance-computer {
+    gap: 14px;
+    padding-bottom: 15px;
+  }
+  .entrance-computer img {
+    width: 44px;
+    height: 44px;
+  }
+  .entrance-computer h2 {
+    font-size: 22px;
+  }
+  .entrance-footer {
+    font-size: 15px;
+    line-height: 1.3;
+  }
+  .desktop .desktop-icons {
+    padding: 15px 4px;
+    column-gap: 3px;
+  }
+  .desktop .desktop-icon {
+    width: 85px;
+  }
+  .desktop .desktop-icon > span {
+    font-size: 16px;
+  }
+  .buddy-list {
+    width: 126px;
+    padding: 7px;
+  }
+  .signed-in {
+    display: block;
+    padding: 2px 0 14px;
+  }
+  .signed-in img,
+  .away-message {
+    display: none;
+  }
+  .signed-in strong {
+    font-size: 20px;
+  }
+  .signed-in span {
+    font-size: 14px;
+  }
+  .buddy-list > button {
+    padding: 10px 3px;
+    gap: 6px;
+  }
+  .buddy-list strong {
+    font-size: 16px;
+  }
+  .buddy-list small {
+    font-size: 14px;
+  }
+  .conversation-pane > header {
+    padding: 12px 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .conversation-pane h1 {
+    font-size: 21px;
+  }
+  .conversation-pane header span {
+    font-size: 15px;
+  }
+  .conversation-pane label {
+    font-size: 15px;
+  }
+  .personal-menubar {
+    gap: 6px;
+    padding: 4px 7px;
+  }
+  .personal-menubar > span {
+    display: none;
+  }
+  .personal-chat {
+    padding: 14px 11px;
+  }
+  .chat-line {
+    gap: 8px;
+    display: block;
+    margin-bottom: 18px;
+  }
+  .chat-line time {
+    float: right;
+    font-size: 14px;
+    width: auto;
+  }
+  .chat-line p {
+    font-size: 18px;
+  }
+  .chat-line strong {
+    font-size: 16px;
+  }
+  .conversation-date {
+    font-size: 15px;
+  }
+  .latest-conversation {
+    font-size: 16px;
+    padding: 9px 10px;
+  }
+  .save-item {
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .save-item > img {
+    display: none;
+  }
+  .save-item button {
+    padding: 5px 8px;
+    font-size: 16px;
+  }
+  .missed-call {
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+  .photo-film {
+    gap: 7px;
+    padding: 8px;
+  }
+  .photo-film button {
+    flex: 1;
+    min-width: 0;
+  }
+  .photo-film img {
+    height: 44px;
+  }
+  .photo-film span {
+    font-size: 15px;
+  }
+  .photo-caption {
+    padding: 12px;
+  }
+  .photo-caption h1 {
+    font-size: 21px;
+    display: block;
+  }
+  .photo-caption time {
+    margin: 0;
+    font-size: 15px;
+  }
+  .photo-caption p {
+    font-size: 18px;
+  }
+  .casebook-header {
+    padding: 15px;
+    gap: 10px;
+  }
+  .casebook-header h1 {
+    font-size: 26px;
+  }
+  .casebook-header span {
+    font-size: 15px;
+  }
+  .casebook-state {
+    display: none;
+  }
+  .casebook-tabs {
+    padding: 10px 10px 0;
+  }
+  .casebook-tabs button {
+    font-size: 16px;
+    padding: 10px;
+  }
+  .casebook-app > main {
+    padding: 18px 15px;
+  }
+  .casebook-app p {
+    font-size: 18px;
+  }
+  .saved-artifact h2 {
+    font-size: 20px;
+  }
+  .theory-form select {
+    font-size: 17px;
+  }
+  .calendar-app {
+    padding: 16px 14px 0;
+  }
+  .calendar-grid > button {
+    padding: 8px;
+    min-height: 43px;
+  }
+  .calendar-agenda article {
+    gap: 12px;
+  }
+  .calendar-app > .window-status {
+    margin: 0 -14px;
+  }
+  .personal-messenger .window-status,
+  .photos-app .window-status,
+  .casebook-app .window-status {
+    font-size: 14px;
+    gap: 8px;
+    flex-wrap: wrap;
+    height: auto;
+  }
+  .fullscreen-control {
+    display: none;
+  }
+  .case-ending {
+    padding: 26px;
+  }
+  .case-ending h1 {
+    font-size: 38px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .maras-letter {
+    transform: none;
+  }
+}
+.personal-files {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: #c0c0c0;
+  font-family: W95FA, sans-serif;
+  font-size: 18px;
+  color: #252a23;
+}
+.file-manager-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 9px;
+  border-bottom: 1px solid #858585;
+}
+.file-manager-toolbar button {
+  font-size: 17px;
+  min-height: 32px;
+}
+.file-address {
+  flex: 1;
+  min-width: 140px;
+  box-shadow: var(--inset);
+  background: #fff;
+  padding: 6px 10px;
+  font-size: 17px;
+}
+.file-manager-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.file-tree {
+  width: 225px;
+  background: #e4e3d9;
+  padding: 14px 9px;
+  border-right: 1px solid #999c8f;
+  overflow: auto;
+  flex-shrink: 0;
+}
+.file-tree h2 {
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0 7px 18px;
+}
+.file-tree button {
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  font-size: 17px;
+  padding: 11px 8px;
+}
+.file-tree button:hover {
+  background: #d3d5c6;
+}
+.file-tree button[aria-pressed="true"] {
+  background: #000080;
+  color: #fff;
+}
+.file-entries {
+  flex: 1;
+  min-width: 0;
+  background: #fffef8;
+  overflow: auto;
+}
+.file-table-heading {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+  padding: 9px 16px;
+  background: #dfdfd6;
+  font-size: 17px;
+  border-bottom: 1px solid #a4a89a;
+}
+.file-entries > button {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  box-shadow: none;
+  padding: 14px 16px;
+  font-size: 18px;
+}
+.file-entries > button > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.file-entries > button > span:last-child {
+  color: #666c5b;
+  font-size: 16px;
+}
+.file-entries > button[aria-pressed="true"] {
+  background: #000080;
+  color: #fff;
+}
+.file-entries > button[aria-pressed="true"] > span:last-child {
+  color: #e5e5ef;
+}
+.personal-document {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  background: #fffef6;
+  padding: 25px 30px;
+}
+.personal-document h1 {
+  font-size: 28px;
+  font-weight: 400;
+  margin: 0 0 8px;
+}
+.document-meta {
+  font-size: 16px;
+  color: #666b5a;
+  margin: 0 0 26px;
+}
+.document-copy {
+  white-space: pre-wrap;
+  font-size: 20px;
+  line-height: 1.5;
+  max-width: 65ch;
+  margin: 0;
+}
+.personal-files .window-status {
+  font-size: 15px;
+}
+@media (max-width: 739px) {
+  .file-tree {
+    width: 130px;
+    padding: 12px 5px;
+  }
+  .file-tree button {
+    font-size: 16px;
+    padding: 12px 3px;
+    gap: 7px;
+  }
+  .file-tree button img {
+    width: 18px;
+    height: 18px;
+  }
+  .file-manager-toolbar {
+    gap: 7px;
+    padding: 7px;
+  }
+  .file-manager-toolbar .file-address {
+    flex-basis: 100%;
+  }
+  .file-entries > button,
+  .file-table-heading {
+    display: block;
+    padding: 12px;
+  }
+  .file-entries > button > span:last-child {
+    display: block;
+    padding: 5px 0 0 37px;
+    font-size: 15px;
+  }
+  .file-table-heading > span:last-child {
+    display: none;
+  }
+  .personal-document {
+    padding: 18px 14px;
+  }
+  .personal-document h1 {
+    font-size: 24px;
+  }
+  .document-copy {
+    font-size: 18px;
+  }
+  .document-meta {
+    font-size: 15px;
+  }
+}
+
+.crt-overlay {
+  position: fixed;
+  opacity: 0.42;
+  background: repeating-linear-gradient(
+    0deg,
+    #0005 0,
+    #0005 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}

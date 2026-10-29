@@ -1,4 +1,5 @@
 import type { Action, Snapshot, World } from "./types";
+import { STORY_ID } from "./story";
 import { isSavedWorld } from "./saved-world";
 export { isSavedWorld };
 export const exhibition = import.meta.env.MODE === "exhibition";
@@ -63,7 +64,9 @@ export function readSave(): World | undefined {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return undefined;
     const parsed: unknown = JSON.parse(raw);
-    return isSavedWorld(parsed) ? parsed : undefined;
+    return isSavedWorld(parsed) && parsed.storyId === STORY_ID
+      ? parsed
+      : undefined;
   } catch {
     return undefined;
   }

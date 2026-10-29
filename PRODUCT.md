@@ -36,3 +36,7 @@ Empty workspace at start. GitHub CLI authenticated as sea-deep. No model runner 
 
 ## Accessibility & Inclusion
 Sound only after an explicit power gesture, persisted mute, reduced motion, keyboard controls, readable text, mobile single-window mode. Fictional horror without impersonation.
+
+## Personal-computer rebuild
+
+The player is Adam Moore, returning to a friend’s computer after her funeral. The USB opening supplies an external casebook while Nora’s actual desktop contains normal applications: Messenger history, Mail, Photos, Calendar, My Computer, Documents, Trash and Notepad. Evidence lives in its original application. Three collected items plus a witnessed Nora memory support a three-part, reversible deduction; correct reasoning produces the release and aftermath. Mini-games are optional and never unlock story evidence. Hocus is removed; five games remain. Classic-game on-screen credits are removed while legal source notices persist. Phantomicus alone retains an on-screen creator link. CRT defaults on with an off switch, and the complete sourced Chicago95 White cursor pack spans the shell and game frames. No new AI or voice generation calls are authorized for build verification. Main local play remains live AI; fixtures use a separate test database.

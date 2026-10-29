@@ -5,17 +5,20 @@ await p.goto("http://127.0.0.1:3000");
 await p.request.post("http://127.0.0.1:3000/api/action", {
   data: { type: "collect", evidenceId: "birthday" },
 });
-await p.getByRole("button", { name: "Power on", exact: true }).click();
+await p.getByRole("button", { name: "Insert USB drive", exact: true }).click();
+await p
+  .getByRole("button", { name: /^(Power on|Return to the computer)$/ })
+  .click();
 await p.getByRole("button", { name: "Skip startup" }).click();
 await p.getByRole("button", { name: "Start", exact: true }).click();
 await p
   .getByRole("navigation", { name: "Start menu" })
-  .getByRole("button", { name: "Inbox", exact: true })
+  .getByRole("button", { name: "Mail", exact: true })
   .click();
-const inbox = p.getByRole("region", { name: "Inbox" });
+const inbox = p.getByRole("region", { name: "Mail" });
 await inbox
   .locator(".mail-list button")
-  .filter({ hasText: "NORA_0314.WAV" })
+  .filter({ hasText: "Your missed call" })
   .click();
 await inbox.getByRole("button", { name: "Play recording" }).click();
 const audio = inbox.locator("audio");

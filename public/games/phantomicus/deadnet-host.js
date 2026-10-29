@@ -58,17 +58,7 @@
     document.activeElement.dispatchEvent(keyEvent2);
    }
    window.dispatchEvent(keyEvent);
-   // Synthetic keyboard events do not run the browser's focus/activation
-   // default, so Hocus's keyboard-only game needs it performed explicitly.
-   if(event.data.down&&!keyEvent.defaultPrevented&&game==='hocus'){
-    if(event.data.key==='Tab'){
-     var focusable=Array.prototype.slice.call(document.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select')).filter(function(el){return el.offsetWidth>0&&el.offsetHeight>0&&el.getAttribute('tabindex')!=='-1';});
-     if(focusable.length){var at=focusable.indexOf(document.activeElement),step=event.data.shiftKey?-1:1;focusable[at===-1?(step>0?0:focusable.length-1):(at+step+focusable.length)%focusable.length].focus();}
-    }
-    if(event.data.key==='Enter'&&document.activeElement&&document.activeElement.tagName==='BUTTON'){
-     document.activeElement.dispatchEvent(new KeyboardEvent('keypress',{key:'Enter',keyCode:13,which:13,bubbles:true,cancelable:true}));
-    }
-   }
+
   }
  });document.addEventListener('visibilitychange',syncPause);
 })();

@@ -20,9 +20,9 @@ services:
         value: openrouter/free
       # Stay under OpenRouter's free-tier daily allowance.
       - key: DEADNET_GLOBAL_PER_DAY
-        value: "45"
+        value: "30"
       - key: DEADNET_VISITOR_PER_DAY
-        value: "10"
+        value: "8"
       - key: OPENROUTER_API_KEY
         sync: false
       - key: ELEVENLABS_API_KEY
