@@ -42,14 +42,22 @@
   if(event.source!==parent||event.origin!==location.origin||!event.data)return;
   if(event.data.type==='deadnet-pause'){paused=Boolean(event.data.paused);syncPause();}
   if(event.data.type==='deadnet-key'&&!paused){
-   var game=document.body.getAttribute('data-game');
-   if(game==='snake'&&typeof mySnakeBoard!=='undefined'){if(event.data.down)mySnakeBoard.simulateKeyPress(event.data.keyCode);return;}
-   var keyEvent=new KeyboardEvent(event.data.down?'keydown':'keyup',{key:event.data.key,code:event.data.code,keyCode:event.data.keyCode,which:event.data.keyCode,bubbles:true,cancelable:true});
+   var game=document.body?document.body.getAttribute('data-game'):'';
+   var board=window.mySnakeBoard||(typeof mySnakeBoard!=='undefined'?mySnakeBoard:null);
+   if(game==='snake'&&board){if(event.data.down)board.simulateKeyPress(event.data.keyCode);return;}
+   var etype=event.data.down?'keydown':'keyup';
+   var init={key:event.data.key,code:event.data.code,bubbles:true,cancelable:true};
+   var keyEvent=new KeyboardEvent(etype,init);
+   try{Object.defineProperty(keyEvent,'keyCode',{get:function(){return event.data.keyCode;}});}catch(e){}
+   try{Object.defineProperty(keyEvent,'which',{get:function(){return event.data.keyCode;}});}catch(e){}
    document.dispatchEvent(keyEvent);
-   if(event.data.down&&!keyEvent.defaultPrevented&&game==='hocus'){
-    if(event.data.key==='Tab'){var buttons=Array.prototype.slice.call(document.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),select')).filter(function(el){return el.offsetWidth>0&&el.offsetHeight>0&&el.getAttribute('tabindex')!=='-1';});var index=buttons.indexOf(document.activeElement);if(buttons.length)buttons[(index+1)%buttons.length].focus();}
-    if(event.data.key==='Enter'&&document.activeElement&&document.activeElement.tagName==='BUTTON')document.activeElement.dispatchEvent(new KeyboardEvent('keypress',{key:'Enter',keyCode:13,which:13,bubbles:true,cancelable:true}));
+   if(document.activeElement&&document.activeElement!==document.body){
+    var keyEvent2=new KeyboardEvent(etype,init);
+    try{Object.defineProperty(keyEvent2,'keyCode',{get:function(){return event.data.keyCode;}});}catch(e){}
+    try{Object.defineProperty(keyEvent2,'which',{get:function(){return event.data.keyCode;}});}catch(e){}
+    document.activeElement.dispatchEvent(keyEvent2);
    }
+   window.dispatchEvent(keyEvent);
   }
  });document.addEventListener('visibilitychange',syncPause);
 })();

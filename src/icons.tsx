@@ -3,6 +3,7 @@ export type IconName =
   | "browser"
   | "mail"
   | "archive"
+  | "recycle"
   | "people"
   | "monitor"
   | "notebook"

@@ -15,6 +15,7 @@ import type { Action, AgentId, Snapshot } from "./types";
 import {
   APP_INFO,
   Archive,
+  RecycleBin,
   Browser,
   Games,
   Spirit,
@@ -27,7 +28,7 @@ import {
   type AppProps,
 } from "./Apps";
 import { PixelIcon } from "./icons";
-import { tone, setAmbient } from "./sound";
+import { tone, setAmbient, duckAmbient } from "./sound";
 import { GAME_LIST, GameIcon, type GameId } from "./games";
 type WindowState = {
   id: AppId;
@@ -44,6 +45,7 @@ const components = {
   browser: Browser,
   mail: Mail,
   archive: Archive,
+  recycle: RecycleBin,
   people: People,
   monitor: Monitor,
   notebook: Notebook,
@@ -55,6 +57,7 @@ const defaults: Record<AppId, { width: number; height: number }> = {
   browser: { width: 970, height: 740 },
   mail: { width: 790, height: 560 },
   archive: { width: 800, height: 610 },
+  recycle: { width: 800, height: 610 },
   people: { width: 660, height: 590 },
   monitor: { width: 790, height: 580 },
   notebook: { width: 650, height: 500 },
@@ -96,6 +99,17 @@ export default function App() {
   const [size, setSize] = useState({ width: innerWidth, height: innerHeight });
   const [notice, setNotice] = useState(true);
   const [noticeId, setNoticeId] = useState("seed-mail");
+  const [crtFilter, setCrtFilter] = useState(() => {
+    try {
+      return localStorage.getItem("deadnet-crt") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [stickyOpen, setStickyOpen] = useState(true);
+  const [propertiesOpen, setPropertiesOpen] = useState(false);
   const received = useRef<Set<string> | null>(null);
   const incomingMail =
     data?.world.events.filter(
@@ -181,15 +195,51 @@ export default function App() {
       clearInterval(id);
     };
   }, []);
+  const refreshDesktop = useCallback(async () => {
+    tone("refresh", muted);
+    setIsRefreshing(true);
+    setSelectedIcon(undefined);
+    setContextMenu(null);
+    try {
+      const snap = await readState();
+      setData(snap);
+    } catch {}
+    setTimeout(() => setIsRefreshing(false), 450);
+  }, [muted]);
+
   useEffect(() => {
-    const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setStart(false);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "F5") {
+        e.preventDefault();
+        void refreshDesktop();
+      }
+      if (e.key === "Escape") {
+        setStart(false);
+        setContextMenu(null);
+      }
     };
-    window.addEventListener("keydown", key);
-    return () => window.removeEventListener("keydown", key);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [refreshDesktop]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (!target?.closest(".context-menu")) {
+        setContextMenu(null);
+      }
+      if (!target?.closest(".start-menu") && !target?.closest(".start-button")) {
+        setStart(false);
+      }
+    };
+    window.addEventListener("mousedown", handleClickOutside);
+    return () => window.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
   const open = useCallback((id: AppId) => {
     setStart(false);
+    setContextMenu(null);
+    tone("window_open", muted);
     if (id === "mail") setNotice(false);
     setWindows((old) => {
       const existing = old.find((w) => w.id === id);
@@ -218,7 +268,7 @@ export default function App() {
         },
       ];
     });
-  }, []);
+  }, [muted]);
   function launchGame(id: GameId) {
     setGameRequest({ id, nonce: Date.now() });
     open("games");
@@ -295,10 +345,10 @@ export default function App() {
     .sort((a, b) => b.z - a.z)[0]?.id;
   const mobile = size.width < 740;
   useEffect(() => {
-    const updateAudio = () =>
-      setAmbient(
-        connected && !muted && !document.hidden && focused !== "games",
-      );
+    const updateAudio = () => {
+      setAmbient(connected && !muted && !document.hidden);
+      duckAmbient(focused === "games");
+    };
     updateAudio();
     document.addEventListener("visibilitychange", updateAudio);
     return () => {
@@ -326,18 +376,40 @@ export default function App() {
         gameRequest,
       } satisfies AppProps)
     : undefined;
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setContextMenu({
+      x: Math.min(e.clientX, size.width - 200),
+      y: Math.min(e.clientY, size.height - 280),
+    });
+    setStart(false);
+    tone("click", muted);
+  };
   return (
     <div
       ref={root}
       tabIndex={-1}
-      className={`desktop wallpaper-${wallpaper} ${reduce ? "reduced-motion" : ""} ${exhibition ? "exhibition" : ""} ${busy ? "busy" : ""}`}
+      className={`desktop wallpaper-${wallpaper} ${isRefreshing ? "refreshing" : ""} ${reduce ? "reduced-motion" : ""} ${exhibition ? "exhibition" : ""} ${busy ? "busy" : ""}`}
       data-ui
+      onContextMenu={handleContextMenu}
+      onClick={() => {
+        setSelectedIcon(undefined);
+        setContextMenu(null);
+      }}
       style={
         wallpaper === "forest"
           ? {
               backgroundImage: `url(${import.meta.env.BASE_URL}assets/forest.jpg)`,
             }
-          : undefined
+          : wallpaper === "halloween"
+            ? {
+                backgroundImage: `url(${import.meta.env.BASE_URL}assets/halloween-sun.jpg)`,
+              }
+            : wallpaper === "earthrise"
+              ? {
+                  backgroundImage: `url(${import.meta.env.BASE_URL}assets/earthrise.jpg)`,
+                }
+              : undefined
       }
     >
       {exhibition && (
@@ -366,9 +438,16 @@ export default function App() {
         {(Object.keys(APP_INFO) as AppId[]).map((id) => (
           <button
             key={id}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setSelectedIcon(id);
+              tone("click", muted);
               if (mobile) open(id);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              setSelectedIcon(id);
+              handleContextMenu(e);
             }}
             onDoubleClick={() => open(id)}
             onKeyDown={(e) => {
@@ -398,9 +477,16 @@ export default function App() {
           <button
             key={game.id}
             className={`desktop-icon ${selectedIcon === game.id ? "chosen" : ""}`}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               setSelectedIcon(game.id);
+              tone("click", muted);
               if (mobile) launchGame(game.id);
+            }}
+            onContextMenu={(e) => {
+              e.stopPropagation();
+              setSelectedIcon(game.id);
+              handleContextMenu(e);
             }}
             onDoubleClick={() => launchGame(game.id)}
             onKeyDown={(e) => {
@@ -503,15 +589,19 @@ export default function App() {
                     <div className="window-buttons title-bar-controls">
                       <button
                         aria-label={`Minimize ${APP_INFO[w.id].title}`}
-                        onClick={() => update(w.id, { minimized: true })}
+                        onClick={() => {
+                          tone("click", muted);
+                          update(w.id, { minimized: true });
+                        }}
                       >
                         <span className="minimize-icon" />
                       </button>
                       <button
                         aria-label={`Maximize ${APP_INFO[w.id].title}`}
-                        onClick={() =>
-                          update(w.id, { maximized: !w.maximized })
-                        }
+                        onClick={() => {
+                          tone("click", muted);
+                          update(w.id, { maximized: !w.maximized });
+                        }}
                       >
                         <span
                           className={
@@ -521,9 +611,10 @@ export default function App() {
                       </button>
                       <button
                         aria-label={`Close ${APP_INFO[w.id].title}`}
-                        onClick={() =>
-                          setWindows((old) => old.filter((x) => x.id !== w.id))
-                        }
+                        onClick={() => {
+                          tone("window_close", muted);
+                          setWindows((old) => old.filter((x) => x.id !== w.id));
+                        }}
                       >
                         <span className="close-icon" />
                       </button>
@@ -737,6 +828,176 @@ export default function App() {
           </div>
         </div>
       )}
+      {connected && stickyOpen && (
+        <aside className="sticky-note" aria-label="Nora's sticky note">
+          <div className="sticky-header">
+            <strong>ROOM 317 — DO NOT REMOVE</strong>
+            <button
+              aria-label="Dismiss note"
+              onClick={() => {
+                tone("click", muted);
+                setStickyOpen(false);
+              }}
+            >
+              ×
+            </button>
+          </div>
+          <div className="sticky-body">
+            <p>• Owen asked for inspection keys.</p>
+            <p>• DO NOT give STAFF-04 until Adam checks signatures.</p>
+            <p>• Len left at 02:58.</p>
+            <p>• Tape is under Adam's keyboard.</p>
+            <p>• Door locked from inside.</p>
+            <small>OCT 31 · 03:17:00</small>
+          </div>
+        </aside>
+      )}
+      {contextMenu && (
+        <nav
+          className="context-menu"
+          style={{ left: contextMenu.x, top: contextMenu.y }}
+          aria-label="Desktop Context Menu"
+        >
+          <button
+            onClick={() => {
+              void refreshDesktop();
+            }}
+          >
+            <PixelIcon name="monitor" size={16} />
+            <span>Refresh</span>
+            <kbd>F5</kbd>
+          </button>
+          <hr />
+          <button
+            onClick={() => {
+              setContextMenu(null);
+              setSelectedIcon(undefined);
+              tone("click", muted);
+            }}
+          >
+            <span>Arrange Icons</span>
+          </button>
+          <button
+            onClick={() => {
+              setContextMenu(null);
+              setSelectedIcon(undefined);
+              tone("click", muted);
+            }}
+          >
+            <span>Line Up Icons</span>
+          </button>
+          <hr />
+          <button
+            onClick={() => {
+              setContextMenu(null);
+              open("notebook");
+            }}
+          >
+            <PixelIcon name="notebook" size={16} />
+            <span>New Text Document</span>
+          </button>
+          <button
+            onClick={() => {
+              setContextMenu(null);
+              setStickyOpen(true);
+              tone("click", muted);
+            }}
+          >
+            <span>Show Nora’s Note</span>
+          </button>
+          <hr />
+          <button
+            onClick={() => {
+              setContextMenu(null);
+              const next = !crtFilter;
+              setCrtFilter(next);
+              try {
+                localStorage.setItem("deadnet-crt", String(next));
+              } catch {}
+              tone("click", muted);
+            }}
+          >
+            <span>{crtFilter ? "✓ CRT Scanlines" : "  CRT Scanlines"}</span>
+          </button>
+          <button
+            onClick={() => {
+              setContextMenu(null);
+              const wallpapers = ["forest", "halloween", "earthrise", "plain"];
+              const curIndex = wallpapers.indexOf(wallpaper);
+              const next = wallpapers[(curIndex + 1) % wallpapers.length];
+              setWallpaper(next);
+              try {
+                localStorage.setItem("deadnet-wallpaper", next);
+              } catch {}
+              tone("click", muted);
+            }}
+          >
+            <span>Change Wallpaper ({wallpaper})</span>
+          </button>
+          <hr />
+          <button
+            onClick={() => {
+              setContextMenu(null);
+              setPropertiesOpen(true);
+              tone("click", muted);
+            }}
+          >
+            <span>System Properties</span>
+          </button>
+        </nav>
+      )}
+      {propertiesOpen && (
+        <div className="dialog-backdrop">
+          <div
+            className="window retro-dialog properties-dialog"
+            role="dialog"
+            aria-labelledby="props-title"
+          >
+            <div className="title-bar">
+              <div className="title-bar-text" id="props-title">
+                System Properties
+              </div>
+              <div className="title-bar-controls">
+                <button
+                  aria-label="Close"
+                  onClick={() => {
+                    tone("click", muted);
+                    setPropertiesOpen(false);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="window-body properties-body">
+              <div className="props-tab-header">
+                <span>General</span>
+              </div>
+              <div className="props-content">
+                <PixelIcon name="monitor" size={48} />
+                <div className="props-details">
+                  <strong>System:</strong>
+                  <p>DEADNET 95 OSR2<br />Version 4.03.1214</p>
+                  <strong>Registered to:</strong>
+                  <p>Nora Vale<br />Westhaven House · Room 317<br />Node ID: 884-317-09</p>
+                  <strong>Computer:</strong>
+                  <p>Intel Pentium II Processor<br />32.0 MB RAM · DN-1200 HD (1.2 GB)</p>
+                </div>
+              </div>
+            </div>
+            <div className="retro-dialog-buttons">
+              <button
+                autoFocus
+                onClick={() => {
+                  tone("click", muted);
+                  setPropertiesOpen(false);
+                }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {crtFilter && <div className="crt-overlay" aria-hidden="true" />}
       {info && (
         <div role="status" className="error-toast info-toast">
           <PixelIcon name="disk" size={26} />
@@ -749,7 +1010,10 @@ export default function App() {
       <footer inert={!connected} className="taskbar">
         <button
           className={`start-button ${start ? "pressed" : ""}`}
-          onClick={() => setStart(!start)}
+          onClick={() => {
+            tone("click", muted);
+            setStart(!start);
+          }}
           aria-expanded={start}
         >
           <PixelIcon name="disk" size={23} />
@@ -764,6 +1028,7 @@ export default function App() {
                 focused === w.id && !w.minimized ? "pressed active" : ""
               }
               onClick={() => {
+                tone("click", muted);
                 if (focused === w.id && !w.minimized)
                   update(w.id, { minimized: true });
                 else update(w.id, { minimized: false, z: ++z.current });
@@ -777,7 +1042,10 @@ export default function App() {
         <div className="task-status">
           <button
             aria-label={muted ? "Enable sound" : "Mute sound"}
-            onClick={() => setMuted(!muted)}
+            onClick={() => {
+              tone("click", !muted);
+              setMuted(!muted);
+            }}
             className={muted ? "muted" : ""}
           >
             <PixelIcon name="speaker" size={19} />
@@ -798,7 +1066,7 @@ export default function App() {
                   : "Disconnected"}
             </span>
           </button>
-          <time>03:17 AM</time>
+          <time title="31 OCT 1999 03:17:00 AM — Westhaven House Room 317">03:17 AM</time>
         </div>
       </footer>
       {!connected && (

@@ -23,7 +23,8 @@ for (const [name, file] of [
   ["Inbox", "mail"],
   ["Notepad", "notepad"],
   ["Games", "games"],
-  ["My Documents", "archive"],
+  ["File Explorer", "archive"],
+  ["Trash Bin", "recycle"],
   ["System Monitor", "monitor"],
 ]) {
   await app(name);
@@ -32,7 +33,7 @@ for (const [name, file] of [
 await page.setViewportSize({ width: 390, height: 844 });
 await app("Chat Logs");
 await page.screenshot({ path: "docs/evidence/mobile.png" });
-await app("My Documents");
+await app("File Explorer");
 await page.screenshot({ path: "docs/evidence/mobile-archive.png" });
 await browser.close();
 console.log("Captured nine actual desktop/mobile states.");

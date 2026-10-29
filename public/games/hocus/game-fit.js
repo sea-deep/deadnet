@@ -1,2 +1,0 @@
-(function(){if(document.body.getAttribute('data-game')!=='2048')return;var container=document.querySelector('.container');function fit(){container.style.zoom='1';container.style.zoom=String(Math.min(1,(innerHeight-40)/container.scrollHeight,(innerWidth-16)/container.offsetWidth));}window.addEventListener('resize',fit);window.addEventListener('load',fit);fit();})();
-if(document.body.getAttribute('data-game')==='tetris'&&window.deadnetGameTime)window.timestamp=function(){return performance.timeOrigin+window.deadnetGameTime();};

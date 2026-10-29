@@ -33,8 +33,8 @@ test("a file shared privately changes another account and persists across a relo
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
   await boot(page);
-  await openApp(page, "My Documents");
-  let files = page.getByRole("region", { name: "My Documents" });
+  await openApp(page, "File Explorer");
+  let files = page.getByRole("region", { name: "File Explorer" });
   await expect(files.getByText("MASTER-01", { exact: false })).toBeVisible();
   await files.getByRole("button", { name: "Send To…" }).click();
   await files.getByRole("button", { name: "Mara Voss", exact: true }).click();
@@ -52,8 +52,8 @@ test("a file shared privately changes another account and persists across a relo
     state.world.agents.find((a: { id: string }) => a.id === "len").knownFacts,
   ).toContain("carrier");
   await boot(page);
-  await openApp(page, "My Documents");
-  files = page.getByRole("region", { name: "My Documents" });
+  await openApp(page, "File Explorer");
+  files = page.getByRole("region", { name: "File Explorer" });
   await files
     .getByRole("button", { name: "OCT31_CHAT.TXT", exact: false })
     .click();

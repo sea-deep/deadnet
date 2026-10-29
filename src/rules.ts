@@ -17,5 +17,4 @@ export const GAME_NAMES: Record<string, string> = {
   tetris: "Crypt Blocks",
   "2048": "2048: Séance",
   phantomicus: "Phantomicus",
-  hocus: "Hocus :focus",
 };

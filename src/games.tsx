@@ -35,13 +35,6 @@ export const GAME_LIST = [
     author: "Cody Ebberson",
     repo: "codyebberson/js13k-phantomicus",
   },
-  {
-    id: "hocus",
-    name: "Hocus :focus",
-    keys: "Tab · Enter",
-    author: "HTeuMeuLeu",
-    repo: "hteumeuleu/hocus-focus",
-  },
 ] as const;
 export type GameId = (typeof GAME_LIST)[number]["id"];
 export function GameIcon({ id }: { id: GameId }) {
@@ -50,7 +43,6 @@ export function GameIcon({ id }: { id: GameId }) {
     tetris: "crypt-blocks",
     "2048": "seance",
     phantomicus: "phantomicus",
-    hocus: "hocus",
   };
   if (id === "flappy")
     return (

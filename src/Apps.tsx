@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Action, AgentId, Event, Snapshot } from "./types";
 import { PixelIcon } from "./icons";
 import { exhibition } from "./api";
-import { duckAmbient } from "./sound";
+import { duckAmbient, tone } from "./sound";
 import { GAME_LIST, GameIcon, type GameId } from "./games";
 import { caseProgress, GAMES_TO_RECOVER } from "./rules";
 export type AppId =
@@ -10,6 +10,7 @@ export type AppId =
   | "browser"
   | "mail"
   | "archive"
+  | "recycle"
   | "people"
   | "monitor"
   | "notebook"
@@ -23,6 +24,7 @@ export const APP_INFO: Record<
       | "browser"
       | "mail"
       | "archive"
+      | "recycle"
       | "people"
       | "monitor"
       | "notebook"
@@ -34,7 +36,8 @@ export const APP_INFO: Record<
   browser: { title: "Chat Logs", icon: "browser" },
   spirit: { title: "Unknown Signal", icon: "spirit" },
   mail: { title: "Inbox", icon: "mail" },
-  archive: { title: "My Documents", icon: "archive" },
+  archive: { title: "File Explorer", icon: "archive" },
+  recycle: { title: "Trash Bin", icon: "recycle" },
   people: { title: "Address Book", icon: "people" },
   monitor: { title: "System Monitor", icon: "monitor" },
   notebook: { title: "Notepad", icon: "notebook" },
@@ -744,16 +747,34 @@ export function Mail({
     </div>
   );
 }
-export function Archive({ data, perform, busy, composeTo, open }: AppProps) {
+export function Archive(props: AppProps) {
+  return <Explorer {...props} bin={false} />;
+}
+/** Owen's account deleted Adam's case file; it waits in the Recycle Bin. */
+export function RecycleBin(props: AppProps) {
+  return <Explorer {...props} bin />;
+}
+function Explorer({
+  data,
+  perform,
+  busy,
+  composeTo,
+  open,
+  muted,
+  bin,
+}: AppProps & { bin: boolean }) {
   const [search, setSearch] = useState(""),
-    [selected, setSelected] = useState("carrier"),
+    [selected, setSelected] = useState(bin ? "manifest" : "carrier"),
     [sendMenu, setSendMenu] = useState(false),
     [policy, setPolicy] = useState<"sealed" | "exposed">("sealed"),
-    [suspect, setSuspect] = useState<"" | "mara" | "len" | "sysop">("");
-  const records = data.archive.filter((e) =>
-    `${e.filename} ${e.folder}`.toLowerCase().includes(search.toLowerCase()),
+    [suspect, setSuspect] = useState<"" | "mara" | "len" | "sysop">(""),
+    [emptyNotice, setEmptyNotice] = useState(false);
+  const records = data.archive.filter(
+    (e) =>
+      (bin ? e.id === "manifest" : true) &&
+      `${e.filename} ${e.folder}`.toLowerCase().includes(search.toLowerCase()),
   );
-  const record = data.archive.find((e) => e.id === selected)!;
+  const record = data.archive.find((e) => e.id === selected) || records[0] || data.archive[0];
   const progress = caseProgress(data.world);
   const readable = !record.locked || progress.unlocked;
   useEffect(() => {
@@ -779,6 +800,16 @@ export function Archive({ data, perform, busy, composeTo, open }: AppProps) {
         <button onClick={() => setSendMenu(!sendMenu)} disabled={!readable}>
           Send To…
         </button>
+        {bin && (
+          <button
+            onClick={() => {
+              setEmptyNotice(true);
+              tone("trash", Boolean(muted));
+            }}
+          >
+            Empty Trash Bin
+          </button>
+        )}
         <label className="search-field">
           Find{" "}
           <input
@@ -789,11 +820,14 @@ export function Archive({ data, perform, busy, composeTo, open }: AppProps) {
         </label>
       </div>
       <div className="explorer-address">
-        Address <span>C:\WINDOWS\Desktop\My Documents</span>
+        Address{" "}
+        <span>
+          {bin ? "C:\\RECYCLED" : "C:\\WINDOWS\\Case 317"}
+        </span>
       </div>
       <div className="archive-layout">
         <aside className="file-list">
-          <p>My Documents</p>
+          <p>{bin ? "Trash Bin" : "File Explorer"}</p>
           {records.map((e) => (
             <button
               key={e.id}
@@ -808,14 +842,14 @@ export function Archive({ data, perform, busy, composeTo, open }: AppProps) {
                   e.id === "birthday"
                     ? "mail"
                     : e.id === "manifest"
-                      ? "disk"
+                      ? (bin ? "recycle" : "disk")
                       : "notebook"
                 }
                 size={27}
               />
               <span>
                 <strong>{e.filename}</strong>
-                <small>{e.folder}</small>
+                <small>{e.id === "manifest" && !readable ? "Damaged · 18 KB" : e.folder}</small>
               </span>
             </button>
           ))}
@@ -824,15 +858,25 @@ export function Archive({ data, perform, busy, composeTo, open }: AppProps) {
         <main className="file-reader">
           <div className="file-heading">
             <h1>{record.filename}</h1>
-            <span>Modified: {record.date}</span>
+            <span>
+              {bin
+                ? "Deleted by: SYSOP · 02 NOV 1999 · 23:40 · Original location: C:\\Case 317\\CASE_14.BAK"
+                : `Modified: ${record.date}`}
+            </span>
           </div>
           <pre>
             {readable
               ? record.body
-              : `Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data:\n  ${progress.files >= 2 ? "[x]" : "[ ]"} Open the other files in this folder (${progress.files}/2)\n  ${progress.games >= GAMES_TO_RECOVER ? "[x]" : "[ ]"} Play ${GAMES_TO_RECOVER} of Nora’s games to recover their saves (${progress.games}/${GAMES_TO_RECOVER})`}
+              : `Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data:\n  ${progress.files >= 2 ? "[x]" : "[ ]"} Open DOOR_0317.LOG and OCT31_CHAT.TXT (${progress.files}/2)\n  ${progress.games >= GAMES_TO_RECOVER ? "[x]" : "[ ]"} Play ${GAMES_TO_RECOVER} of Nora’s games to recover their saves (${progress.games}/${GAMES_TO_RECOVER})`}
           </pre>
           {!readable && progress.games < GAMES_TO_RECOVER && (
             <button onClick={() => open("games")}>Open Nora’s games</button>
+          )}
+          {emptyNotice && (
+            <div className="empty-trash-notice" role="alert">
+              <span>Recycle Bin emptied. Deleted sector fragments remain inspectable.</span>
+              <button onClick={() => setEmptyNotice(false)}>OK</button>
+            </div>
           )}
           {sendMenu && (
             <div className="file-send-menu" aria-label="Send file to">
@@ -1242,7 +1286,9 @@ export function Games({
     );
   };
   useEffect(syncSound, [muted, activeApp, game, run, paused, soundOff]);
-  function key(key: string, down: boolean) {
+  function key(k: string, down: boolean) {
+    const wasd: Record<string, string> = { w: "ArrowUp", a: "ArrowLeft", s: "ArrowDown", d: "ArrowRight" };
+    const mapped = wasd[k] || k;
     const codes: Record<string, number> = {
       ArrowLeft: 37,
       ArrowUp: 38,
@@ -1250,14 +1296,13 @@ export function Games({
       ArrowDown: 40,
       " ": 32,
       Enter: 13,
-      Tab: 9,
     };
     frame.current?.contentWindow?.postMessage(
       {
         type: "deadnet-key",
-        key,
-        code: key === " " ? "Space" : key,
-        keyCode: codes[key],
+        key: mapped,
+        code: mapped === " " ? "Space" : mapped,
+        keyCode: codes[mapped],
         down,
       },
       location.origin,
@@ -1266,17 +1311,16 @@ export function Games({
   const keys =
     game === "flappy"
       ? [" "]
-      : game === "hocus"
-        ? ["Tab", "Enter"]
-        : game === "phantomicus"
-          ? ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight", " ", "Enter"]
-          : [
-              "ArrowLeft",
-              "ArrowUp",
-              "ArrowDown",
-              "ArrowRight",
-              ...(game === "tetris" || game === "snake" ? [" "] : []),
-            ];
+      : game === "phantomicus"
+        ? ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight", " ", "Enter"]
+        : [
+            "ArrowLeft",
+            "ArrowUp",
+            "ArrowDown",
+            "ArrowRight",
+            "w", "a", "s", "d",
+            ...(game === "tetris" || game === "snake" ? [" "] : []),
+          ];
   // Keys pressed while the desktop (not the game frame) has focus still reach
   // the game, e.g. right after opening it from a desktop icon.
   useEffect(() => {

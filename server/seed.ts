@@ -27,7 +27,7 @@ export const ARCHIVE: Evidence[] = [
     id: "manifest",
     title: "Adam’s recovered case file",
     filename: "CASE_14.BAK",
-    folder: "Recovered backup",
+    folder: "Deleted by SYSOP",
     date: "02 NOV 1999 · 23:40",
     excerpt: "The person who owned MASTER-01.",
     fact: "Adam’s case backup identifies MASTER-01 as Owen Keene’s key. Nora was found dead in room 317 after meeting Owen about falsified fire inspections. Owen enabled the CCTV loop, then blamed Len. The surviving accounts are reconstructions from Adam’s 1999 backup, not living witnesses.",

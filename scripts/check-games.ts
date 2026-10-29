@@ -23,7 +23,6 @@ for (const name of [
   "Crypt Blocks",
   "2048: Séance",
   "Phantomicus",
-  "Hocus :focus",
 ]) {
   await games.getByRole("button", { name, exact: false }).click();
   const f = p.frameLocator('iframe[title="' + name + '"]');
@@ -78,16 +77,7 @@ for (const name of [
     await p.screenshot({ path: "docs/evidence/phantomicus.png" });
     results[name] = { canvases: 2 };
   }
-  if (name === "Hocus :focus") {
-    await expect(
-      f.getByRole("heading", { name: "HOCUS :FOCUS" }),
-    ).toBeVisible();
-    await f.getByRole("button", { name: "pumpkin Finish" }).focus();
-    await games.getByRole("button", { name: "Enter", exact: true }).click();
-    await expect(f.getByText("Level 2", { exact: true })).toBeVisible();
-    results[name] = { level2: true };
-    await p.screenshot({ path: "docs/evidence/hocus-level2.png" });
-  }
+
   await games.getByRole("button", { name: "Games", exact: true }).click();
 }
 console.log(JSON.stringify({ results, errors }, null, 2));
