@@ -1,0 +1,322 @@
+{
+  "version": 1,
+  "storyId": "westhaven-317-v4",
+  "tick": 2,
+  "revision": 3,
+  "boots": 0,
+  "mode": "live",
+  "agents": [
+    {
+      "memories": [],
+      "factBeliefs": {},
+      "seen": [],
+      "lastActive": 0,
+      "stance": "question",
+      "id": "mara",
+      "name": "Mara Voss",
+      "handle": "mara_v",
+      "role": "Nora’s neighbour",
+      "initials": "mv",
+      "color": "#88715a",
+      "bio": "Room 316. I still have her blue scarf. Please stop calling it an accident.",
+      "style": "Lowercase, brief, personal. Knows Nora as a friend. Hesitant about accusing people. No theatrical horror.",
+      "goal": "Work out what happened to Nora and protect Len from a false accusation. Share real evidence carefully.",
+      "belief": "Nora would not have fallen by herself. Owen is hiding something, but I do not have proof.",
+      "knownFacts": [],
+      "relationships": {
+        "len": 7,
+        "sysop": -4,
+        "visitor": 2
+      }
+    },
+    {
+      "memories": [],
+      "factBeliefs": {},
+      "seen": [],
+      "lastActive": 0,
+      "stance": "question",
+      "id": "len",
+      "name": "Len Mercer",
+      "handle": "len_29",
+      "role": "Night porter",
+      "initials": "lm",
+      "color": "#617d72",
+      "bio": "Night porter at Westhaven. I had already gone home. I keep telling them that.",
+      "style": "Casual, tired, short sentences. Defensive when accused. Remembers mundane details instead of grand speeches.",
+      "goal": "Clear his name without betraying Mara. Find something that proves when he left.",
+      "belief": "I left before Nora died. The manager says my key was used, but I handed it back before the end of my shift.",
+      "knownFacts": [],
+      "relationships": {
+        "mara": 8,
+        "sysop": -2,
+        "visitor": 1
+      }
+    },
+    {
+      "memories": [],
+      "factBeliefs": {},
+      "seen": [],
+      "lastActive": 0,
+      "stance": "question",
+      "id": "sysop",
+      "name": "Owen Keene",
+      "handle": "sysop",
+      "role": "Building manager",
+      "initials": "ok",
+      "color": "#6e788b",
+      "bio": "Westhaven House management. Maintenance and security enquiries only.",
+      "style": "Polite, clipped, procedural. Avoids emotional language. Deflects rather than delivering villain speeches.",
+      "goal": "Protect his reputation. Keep residents from circulating accusations. Address records only when confronted with an exact recovered file.",
+      "belief": "My master key opened Nora’s room. I replaced the camera feed and blamed Len. I must keep the original key register hidden.",
+      "knownFacts": [
+        "carrier",
+        "manifest"
+      ],
+      "relationships": {
+        "mara": -3,
+        "len": -2,
+        "visitor": -1
+      }
+    },
+    {
+      "id": "nora",
+      "name": "Nora",
+      "handle": "nora_v",
+      "role": "Unidentified signal",
+      "initials": "nv",
+      "color": "#665d73",
+      "bio": "I can hear the keys. Is that you?",
+      "style": "Short, intimate, hesitant messages. Ordinary speech, occasional fragments. No theatrical ghost language. Never a guide, narrator or checklist.",
+      "goal": "Communicate from your own recovered computer and piece together the night you died. Use only the memory fragment supplied for this turn. Do not list every possible clue. You cannot remember the killer’s face or name. Do not identify the killer until the visitor attaches CASE_14.BAK. Never invent new objects, witnesses, records, passwords or tasks. Give one indirect memory at a time and ask a natural question. Acknowledge the visitor’s evidence without pretending you knew it earlier. Always shareWith none. Keep replies under 40 words.",
+      "belief": "I am Nora Vale. This was my computer. I died in room 317 but I can still hear someone typing. I remember pieces, not who did it.",
+      "knownFacts": [
+        "carrier"
+      ],
+      "relationships": {
+        "visitor": 2,
+        "mara": 5,
+        "len": 2,
+        "sysop": 0
+      },
+      "memories": [
+        {
+          "text": "Can you hear me? What do you remember?",
+          "sourceId": "f6ee1353-1be1-4f09-abfb-aff0206826de",
+          "tick": 0
+        },
+        {
+          "text": "Two knocks at the door. You thought it was Mara, but you are not sure.",
+          "sourceId": "80c7aecc-38c6-46d7-8eae-c32582f31117",
+          "tick": 1
+        },
+        {
+          "text": "Does this bring anything back?\n\n[Attached evidence: DOOR_0317.LOG] The door log records Len leaving Westhaven House at 02:58, Nora entering room 317 at 03:12, and MASTER-01 opening",
+          "sourceId": "f68bf987-a824-4524-b594-a285ce39ca38",
+          "tick": 1
+        },
+        {
+          "text": "I remember a wet coat in the corridor.",
+          "sourceId": "0620dacd-7477-4ee3-8494-5b3591bc5389",
+          "tick": 2
+        }
+      ],
+      "factBeliefs": {
+        "carrier": "question"
+      },
+      "seen": [
+        "f6ee1353-1be1-4f09-abfb-aff0206826de",
+        "80c7aecc-38c6-46d7-8eae-c32582f31117",
+        "f68bf987-a824-4524-b594-a285ce39ca38",
+        "0620dacd-7477-4ee3-8494-5b3591bc5389"
+      ],
+      "lastActive": 2,
+      "stance": "question"
+    }
+  ],
+  "remainingTurns": 16,
+  "auto": false,
+  "ending": "open",
+  "collected": [
+    "carrier"
+  ],
+  "published": [],
+  "traces": [
+    {
+      "provider": "ollama",
+      "model": "gemma4:e2b-it-q4_K_M",
+      "status": "ok",
+      "latencyMs": 6089,
+      "inputTokens": 1031,
+      "outputTokens": 61,
+      "tokensPerSecond": 76.1,
+      "sourceId": "f6ee1353-1be1-4f09-abfb-aff0206826de",
+      "attempts": 1,
+      "action": "question → none",
+      "promptHash": "700546bf79ef42c1",
+      "id": "631d95ca-d7fe-4f41-b073-24397db3414d",
+      "actor": "nora",
+      "tick": 1
+    },
+    {
+      "provider": "ollama",
+      "model": "gemma4:e2b-it-q4_K_M",
+      "status": "ok",
+      "latencyMs": 1788,
+      "inputTokens": 1421,
+      "outputTokens": 51,
+      "tokensPerSecond": 70.8,
+      "sourceId": "f68bf987-a824-4524-b594-a285ce39ca38",
+      "attempts": 1,
+      "action": "question → none",
+      "promptHash": "3bc2e6db7002e538",
+      "id": "b549cf5c-4b80-4e6c-be80-6944be19110a",
+      "actor": "nora",
+      "tick": 2
+    }
+  ],
+  "createdAt": "2026-10-29T14:44:45.863Z",
+  "events": [
+    {
+      "id": "seed-sysop",
+      "tick": 0,
+      "actor": "sysop",
+      "channel": "feed",
+      "text": "Police have recorded Nora’s death as an accident. Please leave further enquiries with management. Circulating rumours helps nobody.",
+      "factIds": [],
+      "origin": "seed",
+      "archivedAt": "31 Oct · 08:42"
+    },
+    {
+      "id": "seed-mara-old",
+      "tick": 0,
+      "actor": "mara",
+      "channel": "feed",
+      "text": "has anyone seen nora’s blue scarf? she left it on my chair. i don’t want somebody to throw it out.",
+      "factIds": [],
+      "origin": "seed",
+      "archivedAt": "31 Oct · 09:06"
+    },
+    {
+      "id": "seed-len-old",
+      "tick": 0,
+      "actor": "len",
+      "channel": "feed",
+      "text": "The spare key was back on the hook when I left. I signed it in. Whoever took that page out of the book, put it back.",
+      "factIds": [],
+      "origin": "seed",
+      "archivedAt": "31 Oct · 09:11"
+    },
+    {
+      "id": "seed-mara",
+      "tick": 0,
+      "actor": "mara",
+      "channel": "feed",
+      "text": "i heard her knock twice. then someone else in the corridor. why does everyone keep saying she was alone?",
+      "factIds": [],
+      "origin": "seed",
+      "archivedAt": "31 Oct · 09:18"
+    },
+    {
+      "id": "seed-len",
+      "tick": 0,
+      "actor": "len",
+      "channel": "feed",
+      "text": "Adam, if you’re reading this: I wasn’t there at quarter past. Ask the driver on the last bus. He’ll remember the broken ticket machine.",
+      "factIds": [],
+      "origin": "seed",
+      "archivedAt": "31 Oct · 09:24"
+    },
+    {
+      "id": "seed-mail",
+      "tick": 0,
+      "actor": "mara",
+      "to": "visitor",
+      "channel": "mail",
+      "subject": "They think you fell",
+      "text": "nora —\n\nthey’re calling it an accident. adam heard your last message. the police haven’t asked him for it.\n\ni keep writing this as if you’ll read it.\n\nyour scarf is still on my chair.\n\n— m",
+      "factIds": [],
+      "origin": "seed"
+    },
+    {
+      "id": "seed-system",
+      "tick": 0,
+      "actor": "system",
+      "channel": "system",
+      "text": "Disk owner: Nora Vale. Case 14/1999 restored. Three resident accounts are responding.",
+      "factIds": [],
+      "origin": "system"
+    },
+    {
+      "actor": "visitor",
+      "channel": "mail",
+      "to": "nora",
+      "text": "Can you hear me? What do you remember?",
+      "subject": "A quiet word",
+      "factIds": [],
+      "origin": "visitor",
+      "id": "f6ee1353-1be1-4f09-abfb-aff0206826de",
+      "tick": 0
+    },
+    {
+      "actor": "nora",
+      "channel": "mail",
+      "to": "visitor",
+      "text": "Knocks? I thought it was Mara. Do you remember anything about that night?",
+      "subject": "Re: A quiet word",
+      "sourceId": "f6ee1353-1be1-4f09-abfb-aff0206826de",
+      "factIds": [],
+      "origin": "model",
+      "stance": "question",
+      "id": "80c7aecc-38c6-46d7-8eae-c32582f31117",
+      "tick": 1
+    },
+    {
+      "actor": "system",
+      "channel": "system",
+      "text": "Opened DOOR_0317.LOG. No accounts notified.",
+      "origin": "system",
+      "id": "14388872-8291-4604-b50f-08eef87b8036",
+      "tick": 1,
+      "factIds": []
+    },
+    {
+      "actor": "visitor",
+      "channel": "mail",
+      "to": "nora",
+      "text": "Does this bring anything back?\n\n[Attached evidence: DOOR_0317.LOG] The door log records Len leaving Westhaven House at 02:58, Nora entering room 317 at 03:12, and MASTER-01 opening her door at 03:17. Someone enabled a CCTV loop from the sysop terminal at 03:18.",
+      "subject": "A quiet word",
+      "factIds": [
+        "carrier"
+      ],
+      "origin": "visitor",
+      "id": "f68bf987-a824-4524-b594-a285ce39ca38",
+      "tick": 1
+    },
+    {
+      "actor": "nora",
+      "channel": "mail",
+      "to": "visitor",
+      "text": "A wet coat in the corridor. Did you see anything near the door?",
+      "subject": "Re: A quiet word",
+      "sourceId": "f68bf987-a824-4524-b594-a285ce39ca38",
+      "factIds": [
+        "carrier"
+      ],
+      "origin": "model",
+      "stance": "question",
+      "id": "0620dacd-7477-4ee3-8494-5b3591bc5389",
+      "tick": 2
+    },
+    {
+      "actor": "sysop",
+      "channel": "mail",
+      "to": "visitor",
+      "text": "Adam. Leave Nora’s files alone. Her family has been through enough. If you have questions, ask me directly.",
+      "subject": "A note about recovered files",
+      "origin": "system",
+      "id": "53042488-e869-49cb-8999-fa81caa437b6",
+      "tick": 2,
+      "factIds": []
+    }
+  ]
+}

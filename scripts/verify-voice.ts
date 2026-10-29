@@ -43,7 +43,7 @@ const report = {
   measuredAt: new Date().toISOString(),
   provider: "ElevenLabs",
   model: process.env.ELEVENLABS_MODEL || "eleven_flash_v2_5",
-  voice: "Daniel — Steady Broadcaster (premade licensed library voice)",
+  voice: "Lily — Velvety Actress (premade library voice)",
   voiceId: process.env.ELEVENLABS_VOICE_ID,
   transcript: event.audioTranscript,
   characters: event.audioTranscript!.length,
@@ -60,9 +60,12 @@ const report = {
     "Billing counter delta is observed account-wide usage, not a dollar invoice. Concurrent use can affect it.",
     "The second playback uses SQLite audio cache. No second generation is sent.",
     "Generated MP3 remains in ignored .data; not redistributed as a standalone asset.",
-    "Narrative: a recovered operator voicemail contradicts the routine written status report. The complete transcript is accessible without paid voice.",
+    "Narrative: Nora’s last call contradicts the accusation against Len. Hushed/rushed delivery, speed 1.14; transcript accessible without speech.",
   ],
 };
-writeFileSync("docs/evidence/elevenlabs.json", JSON.stringify(report, null, 2));
+writeFileSync(
+  "docs/evidence/elevenlabs-case.json",
+  JSON.stringify(report, null, 2),
+);
 store.close();
 console.log(JSON.stringify(report, null, 2));

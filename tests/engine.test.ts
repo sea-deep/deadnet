@@ -123,7 +123,7 @@ test("invalid model decisions cannot mutate relationships or create fictional ev
   }
   const { engine, store } = setup(new Malformed());
   await engine.dispatch({ type: "message", target: "len", text: "hello" });
-  assert.equal(engine.world().agents[1].relationships.visitor, 2);
+  assert.equal(engine.world().agents[1].relationships.visitor, 1);
   assert.equal(engine.world().traces.at(-1)?.status, "error");
   assert.equal(engine.world().agents[1].memories.length, 0);
   store.close();
@@ -192,8 +192,8 @@ test("operator secrets are withheld from routine prompts and become available wh
   const hidden = JSON.stringify(
     promptFor({ agent: operator, source: routine, world: before }),
   );
-  assert(!hidden.includes("reconstructions from the same"));
-  assert(!hidden.includes("The continuity manifest identifies"));
+  assert(!hidden.includes("My master key opened Nora"));
+  assert(!hidden.includes("Adam’s case backup identifies MASTER-01"));
   for (const evidenceId of ["carrier", "birthday", "manifest"])
     await engine.dispatch({ type: "collect", evidenceId });
   const source = {
@@ -209,7 +209,7 @@ test("operator secrets are withheld from routine prompts and become available wh
   const revealed = JSON.stringify(
     promptFor({ agent: operator, source, world: engine.world() }),
   );
-  assert(revealed.includes("The continuity manifest identifies"));
+  assert(revealed.includes("Adam’s case backup identifies MASTER-01"));
   store.close();
 });
 test("a model cannot manufacture evidence IDs even when its JSON schema is valid", async () => {
@@ -233,5 +233,68 @@ test("a model cannot manufacture evidence IDs even when its JSON schema is valid
   assert(
     !w.events.some((e) => e.actor === "mara" && e.factIds.includes("manifest")),
   );
+  store.close();
+});
+test("Nora is a private signal, knows only shown files, and is excluded from unattended turns", async () => {
+  const observer = new Observer(),
+    { engine, store } = setup(observer);
+  await engine.dispatch({ type: "collect", evidenceId: "carrier" });
+  await engine.dispatch({
+    type: "message",
+    target: "nora",
+    text: "What do you remember?",
+  });
+  let input = observer.inputs.at(-1)!;
+  assert.equal(input.agent.id, "nora");
+  assert.deepEqual(input.agent.knownFacts, []);
+  assert(!JSON.stringify(promptFor(input)).includes("MASTER-01 as Owen"));
+  const previous = engine
+    .world()
+    .agents.find((a) => a.id === "nora")!.lastActive;
+  await engine.dispatch({ type: "tick" });
+  assert.equal(
+    engine.world().agents.find((a) => a.id === "nora")!.lastActive,
+    previous,
+  );
+  await engine.dispatch({
+    type: "message",
+    target: "nora",
+    text: "Do you recognise this?",
+    evidenceId: "carrier",
+  });
+  input = observer.inputs.at(-1)!;
+  assert(input.agent.knownFacts.includes("carrier"));
+  const reply = engine
+    .world()
+    .events.filter((e) => e.actor === "nora")
+    .at(-1)!;
+  assert.equal(reply.channel, "mail");
+  assert.equal(reply.to, "visitor");
+  store.close();
+});
+test("a named case report persists and releases the private signal without another generation", async () => {
+  const { engine, store } = setup();
+  for (const evidenceId of ["carrier", "birthday", "manifest"])
+    await engine.dispatch({ type: "collect", evidenceId });
+  await engine.dispatch({
+    type: "resolve",
+    choice: "exposed",
+    suspect: "sysop",
+  });
+  const w = engine.world();
+  assert.equal(w.accused, "sysop");
+  assert(
+    w.events.some(
+      (e) => e.actor === "nora" && e.text.includes("green lamp went out"),
+    ),
+  );
+  await assert.rejects(
+    engine.dispatch({
+      type: "message",
+      target: "nora",
+      text: "Are you there?",
+    }),
+  );
+  assert.equal(engine.world().traces.length, w.traces.length);
   store.close();
 });

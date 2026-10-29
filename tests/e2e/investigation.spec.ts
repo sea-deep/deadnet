@@ -6,6 +6,12 @@ async function boot(page: Page) {
   await page
     .getByRole("dialog", { name: "Computer startup" })
     .waitFor({ state: "hidden" });
+  // The Read Me explains the case on the first visit only.
+  const readme = page.getByRole("region", { name: "Read Me" });
+  if (await readme.isVisible()) {
+    await expect(readme).toContainText("Your goal");
+    await page.getByRole("button", { name: "Close Read Me" }).click();
+  }
 }
 async function openApp(page: Page, name: string) {
   await page.getByRole("button", { name: "Start", exact: true }).click();
@@ -29,9 +35,7 @@ test("a file shared privately changes another account and persists across a relo
   await boot(page);
   await openApp(page, "My Documents");
   let files = page.getByRole("region", { name: "My Documents" });
-  await expect(
-    files.getByText("External clients: 0", { exact: false }),
-  ).toBeVisible();
+  await expect(files.getByText("MASTER-01", { exact: false })).toBeVisible();
   await files.getByRole("button", { name: "Send To…" }).click();
   await files.getByRole("button", { name: "Mara Voss", exact: true }).click();
   let inbox = page.getByRole("region", { name: "Inbox" });
@@ -51,10 +55,10 @@ test("a file shared privately changes another account and persists across a relo
   await openApp(page, "My Documents");
   files = page.getByRole("region", { name: "My Documents" });
   await files
-    .getByRole("button", { name: "HAPPY_BIRTHDAY.EML", exact: false })
+    .getByRole("button", { name: "OCT31_CHAT.TXT", exact: false })
     .click();
   await expect(
-    files.getByText("Delivery count: 50", { exact: false }),
+    files.getByText("No further messages", { exact: false }),
   ).toBeVisible();
   await expect
     .poll(async () => {
@@ -63,10 +67,10 @@ test("a file shared privately changes another account and persists across a relo
     })
     .toContain("birthday");
   await files
-    .getByRole("button", { name: "CONTINUITY.INI", exact: false })
+    .getByRole("button", { name: "CASE_14.BAK", exact: false })
     .click();
   await expect(
-    files.getByText("Purpose=Preserve the conversation", { exact: false }),
+    files.getByText("MASTER-01 = OWEN KEENE", { exact: false }),
   ).toBeVisible();
   await expect
     .poll(async () => {
@@ -74,9 +78,14 @@ test("a file shared privately changes another account and persists across a relo
       return x.world.collected;
     })
     .toContain("manifest");
-  await files.getByRole("radio", { name: "Everyone on the network" }).check();
-  await files.getByRole("button", { name: "Apply", exact: true }).click();
-  await expect(files.getByText("Permissions saved: public.")).toBeVisible();
+  await files.getByRole("radio", { name: "Publish case evidence" }).check();
+  await files
+    .getByRole("combobox", { name: "Report suspect" })
+    .selectOption("sysop");
+  await files.getByRole("button", { name: "File report", exact: true }).click();
+  await expect(
+    files.getByText("Report filed. You named Owen Keene.", { exact: false }),
+  ).toBeVisible();
   state = await (await request.get("/api/state")).json();
   expect(state.world.ending).toBe("exposed");
   expect(errors).toEqual([]);
@@ -91,17 +100,17 @@ test("desktop controls, saved notes, wallpaper, mute and service validation", as
   request,
 }, testInfo) => {
   await boot(page);
-  await openApp(page, "Internet");
-  const browser = page.getByRole("region", { name: "Internet" });
-  await browser.getByRole("button", { name: "Minimize Internet" }).click();
+  await openApp(page, "Chat Logs");
+  const browser = page.getByRole("region", { name: "Chat Logs" });
+  await browser.getByRole("button", { name: "Minimize Chat Logs" }).click();
   await expect(browser).toBeHidden();
   await page
     .locator(".task-buttons")
-    .getByRole("button", { name: "Internet", exact: true })
+    .getByRole("button", { name: "Chat Logs", exact: true })
     .click();
   await expect(browser).toBeVisible();
   if (testInfo.project.name === "desktop") {
-    const title = browser.getByLabel("Internet title bar.", { exact: false });
+    const title = browser.getByLabel("Chat Logs title bar.", { exact: false });
     await title.focus();
     await title.press("ArrowRight");
   }
@@ -135,4 +144,46 @@ test("desktop controls, saved notes, wallpaper, mute and service validation", as
       })
     ).status(),
   ).toBe(403);
+});
+
+test("the desktop opens a selected game directly and the private signal accepts an attached clue", async ({
+  page,
+  request,
+}) => {
+  await boot(page);
+  const desktop = page.getByRole("navigation", {
+    name: "Desktop applications",
+  });
+  await expect(
+    desktop.getByRole("button", { name: "Flappy Bat", exact: true }),
+  ).toBeVisible();
+  if (await page.evaluate(() => innerWidth < 740))
+    await desktop
+      .getByRole("button", { name: "Flappy Bat", exact: true })
+      .click();
+  else
+    await desktop
+      .getByRole("button", { name: "Flappy Bat", exact: true })
+      .dblclick();
+  await expect(
+    page.frameLocator('iframe[title="Flappy Bat"]').locator("canvas"),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Space", exact: true }).click();
+  await page.getByRole("button", { name: "Pause", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Resume", exact: true }),
+  ).toBeVisible();
+  await openApp(page, "Unknown Signal");
+  const signal = page.getByRole("region", { name: "Unknown Signal" });
+  await signal
+    .getByRole("textbox", { name: "Message Nora" })
+    .fill("Can you hear me?");
+  await signal.getByRole("button", { name: "Send", exact: true }).click();
+  await expect(signal.getByRole("log")).toContainText("two knocks");
+  const state = await (await request.get("/api/state")).json();
+  expect(
+    state.world.events
+      .filter((e: { actor: string }) => e.actor === "nora")
+      .at(-1).to,
+  ).toBe("visitor");
 });

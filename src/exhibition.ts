@@ -2,7 +2,7 @@ import { Engine } from "../server/engine";
 import { BaselineModel } from "../server/baseline";
 import { ARCHIVE, seedWorld } from "../server/seed";
 import type { Action, World } from "./types";
-const key = "deadnet-exhibition-v1";
+const key = "deadnet-case-westhaven-v4";
 let memory: World = seedWorld("baseline");
 try {
   const saved = localStorage.getItem(key);

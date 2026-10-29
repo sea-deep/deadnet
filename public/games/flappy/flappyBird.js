@@ -10,7 +10,8 @@ var pipeNorth = new Image();
 var pipeSouth = new Image();
 
 bird.src = "images/bird.png";
-bg.src = "images/bg.png";
+bg.src = "../../assets/forest.jpg";
+var batSheet=new Image();batSheet.src="../../assets/horror/bat.png";
 fg.src = "images/fg.png";
 pipeNorth.src = "images/pipeNorth.png";
 pipeSouth.src = "images/pipeSouth.png";
@@ -39,7 +40,7 @@ var state = "welcome";
 var countdownT = 3;
 var welcomeT = 0;
 
-var FONT = "'Press Start 2P', monospace";
+var FONT = "W95FA, monospace";
 
 function loadBest(){
     try{
@@ -68,9 +69,9 @@ var gameOverSound = new Audio();
 
 fly.src = "sounds/fly.mp3";
 scoreSound.src = "sounds/score.mp3";
-bgm.src = "sounds/bgm.wav";
+bgm.src = "../../assets/audio/ambient-horror.ogg";
 bgm.loop = true;
-bgm.volume = 0.45;
+bgm.volume = 0.12;
 gameOverSound.src = "sounds/gameover.wav";
 
 // settings
@@ -239,7 +240,7 @@ function drawScorePill(){
 }
 
 function drawStartHint(){
-    ctx.font = "10px " + FONT;
+    ctx.font = "16px " + FONT;
     ctx.textAlign = "center";
     ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
     ctx.fillText("TAP / SPACE TO FLAP", cvs.width / 2, 320);
@@ -255,25 +256,25 @@ function drawWelcome(){
     var cx = (cvs.width - cw) / 2;
     var cy = 146;
 
-    ctx.fillStyle = "rgba(248, 201, 72, 0.85)";
+    ctx.fillStyle = "rgba(112,82,127,.9)";
     roundRect(cx - 4, cy - 4, cw + 8, ch + 8, 20);
     ctx.fillStyle = "rgba(22, 30, 28, 0.97)";
     roundRect(cx, cy, cw, ch, 16);
 
     ctx.textAlign = "center";
     ctx.font = "18px " + FONT;
-    ctx.fillStyle = "#f8c948";
-    ctx.fillText("FLAPPY BIRD", cvs.width / 2, cy + 52);
+    ctx.fillStyle = "#dbb6dc";
+    ctx.fillText("FLAPPY BAT", cvs.width / 2, cy + 52);
 
-    ctx.font = "10px " + FONT;
+    ctx.font = "16px " + FONT;
     ctx.fillStyle = "#ffffff";
     ctx.fillText("PRESS SPACE / ↑", cvs.width / 2, cy + 100);
     ctx.fillStyle = "#93a89d";
     ctx.fillText("OR TAP TO START", cvs.width / 2, cy + 124);
 
-    ctx.font = "8px " + FONT;
+    ctx.font = "14px " + FONT;
     ctx.fillStyle = "rgba(255, 255, 255, 0.55)";
-    ctx.fillText("DODGE THE PIPES", cvs.width / 2, cy + ch - 22);
+    ctx.fillText("KEEP OUT OF THE LIGHT", cvs.width / 2, cy + ch - 22);
 
     ctx.textAlign = "left";
 }
@@ -301,7 +302,7 @@ function drawGameOver(){
     var cx = (cvs.width - cw) / 2;
     var cy = 138;
 
-    ctx.fillStyle = "rgba(248, 201, 72, 0.85)";
+    ctx.fillStyle = "rgba(112,82,127,.9)";
     roundRect(cx - 4, cy - 4, cw + 8, ch + 8, 20);
     ctx.fillStyle = "rgba(22, 30, 28, 0.97)";
     roundRect(cx, cy, cw, ch, 16);
@@ -309,12 +310,12 @@ function drawGameOver(){
     ctx.textAlign = "center";
     ctx.font = "18px " + FONT;
     ctx.fillStyle = "#ff5f52";
-    ctx.fillText("GAME OVER", cvs.width / 2, cy + 46);
+    ctx.fillText("LOST IN THE WOODS", cvs.width / 2, cy + 46);
 
     ctx.fillStyle = "rgba(255, 255, 255, 0.16)";
     ctx.fillRect(cx + 26, cy + 64, cw - 52, 2);
 
-    ctx.font = "10px " + FONT;
+    ctx.font = "16px " + FONT;
     ctx.fillStyle = "#93a89d";
     ctx.textAlign = "left";
     ctx.fillText("SCORE", cx + 26, cy + 100);
@@ -326,7 +327,7 @@ function drawGameOver(){
     ctx.textAlign = "left";
     ctx.fillText("BEST", cx + 26, cy + 128);
     ctx.textAlign = "right";
-    ctx.fillStyle = "#f8c948";
+    ctx.fillStyle = "#dbb6dc";
     ctx.fillText(String(bestScore), cx + cw - 26, cy + 128);
 
     ctx.textAlign = "center";
@@ -349,9 +350,9 @@ function draw(time){
     if(!imagesReady()){
         ctx.fillStyle = "#0c1915";
         ctx.fillRect(0, 0, cvs.width, cvs.height);
-        ctx.font = "10px " + FONT;
+        ctx.font = "16px " + FONT;
         ctx.textAlign = "center";
-        ctx.fillStyle = "#f8c948";
+        ctx.fillStyle = "#dbb6dc";
         ctx.fillText("LOADING", cvs.width / 2, cvs.height / 2);
         ctx.textAlign = "left";
         loopPending = true;
@@ -359,13 +360,13 @@ function draw(time){
         return;
     }
 
-    ctx.drawImage(bg,0,0);
+    ctx.drawImage(bg,bg.width*.26,0,bg.width*.48,bg.height,0,0,cvs.width,cvs.height);ctx.fillStyle="rgba(16,8,25,.58)";ctx.fillRect(0,0,cvs.width,cvs.height);ctx.imageSmoothingEnabled=false;
 
     for(var i = 0; i < pipe.length; i++){
 
         var constant = pipeNorth.height + gap;
-        ctx.drawImage(pipeNorth,pipe[i].x,pipe[i].y);
-        ctx.drawImage(pipeSouth,pipe[i].x,pipe[i].y + constant);
+        drawGate(pipe[i].x,pipe[i].y,pipeNorth.width,pipeNorth.height);
+        drawGate(pipe[i].x,pipe[i].y+constant,pipeSouth.width,pipeSouth.height);
 
         if(gameOver || state !== "playing") continue;
 
@@ -412,12 +413,12 @@ function draw(time){
         }
     }
 
-    ctx.drawImage(fg,0,cvs.height - fg.height);
+    ctx.fillStyle="#201a26";ctx.fillRect(0,cvs.height-fg.height,cvs.width,fg.height);ctx.fillStyle="#635367";ctx.fillRect(0,cvs.height-fg.height,cvs.width,2);
 
     ctx.save();
     ctx.translate(bX + bird.width / 2, bY + bird.height / 2);
     ctx.rotate(birdAngle);
-    ctx.drawImage(bird, -bird.width / 2, -bird.height / 2);
+    if(batSheet.complete&&batSheet.width){ctx.filter='brightness(2.2)';ctx.drawImage(batSheet,(Math.floor(time/100)%4)*24,0,24,24,-bird.width/2,-bird.height/2,bird.width,bird.height);}
     ctx.restore();
 
     if(gameOver){
@@ -514,3 +515,10 @@ sfxToggle.addEventListener("change", function(){
 document.addEventListener("keydown", function(e){
     if(e.key === "Escape") closeSettings();
 });
+
+function drawGate(x,y,w,h){ctx.fillStyle="#514256";ctx.fillRect(x,y,w,h);ctx.fillStyle="#8b758b";ctx.fillRect(x+3,y,3,h);ctx.fillStyle="#261e30";ctx.fillRect(x+w-7,y,5,h);ctx.fillStyle="#322737";for(var n=0;n<h;n+=24){ctx.fillRect(x,y+n,w,2);}ctx.fillStyle="#a28b9e";ctx.fillRect(x-3,y+h-8,w+6,8);}
+drawWelcome = function(){ctx.fillStyle="rgba(15,9,23,.65)";ctx.fillRect(0,0,cvs.width,cvs.height);ctx.textAlign="center";ctx.font="32px "+FONT;ctx.fillStyle="#eadbc3";ctx.fillText("FLAPPY BAT",144,155);if(batSheet.complete&&batSheet.width)ctx.drawImage(batSheet,(Math.floor(welcomeT*8)%4)*24,0,24,24,96,205,96,96);ctx.font="18px "+FONT;ctx.fillStyle="#cbb6d4";ctx.fillText("SPACE OR CLICK",144,345);ctx.textAlign="left";}
+drawGameOver = function(){ctx.fillStyle="rgba(15,9,23,.87)";ctx.fillRect(0,0,cvs.width,cvs.height);ctx.textAlign="center";ctx.font="32px "+FONT;ctx.fillStyle="#dcc8bc";ctx.fillText("LOST",144,180);ctx.font="22px "+FONT;ctx.fillText("GATES  "+score,144,250);ctx.fillStyle="#b7a0c5";ctx.fillText("BEST  "+bestScore,144,285);ctx.font="18px "+FONT;ctx.fillStyle=gameOverT>=GAME_OVER_DELAY?"#eed4ac":"#5e5069";ctx.fillText("SPACE TO TRY AGAIN",144,355);ctx.textAlign="left";}
+drawScorePill = function(){ctx.fillStyle="rgba(16,10,25,.8)";ctx.fillRect(114,8,60,35);ctx.textAlign="center";ctx.font="24px "+FONT;ctx.fillStyle="#eadcc6";ctx.fillText(String(score),144,34);ctx.textAlign="left";}
+drawCountdown = function(){ctx.textAlign="center";ctx.font="64px "+FONT;ctx.fillStyle="#f0dfc0";ctx.fillText(String(Math.ceil(countdownT)),144,250);ctx.textAlign="left";}
+fg.onload=function(){fg.height=48;};

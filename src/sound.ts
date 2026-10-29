@@ -68,6 +68,9 @@ export function tone(
 }
 
 let ambient: HTMLAudioElement | undefined;
+export function duckAmbient(duck: boolean) {
+  if (ambient) ambient.volume = duck ? 0.02 : 0.075;
+}
 export function setAmbient(enabled: boolean) {
   if (!ambient) {
     ambient = new Audio(

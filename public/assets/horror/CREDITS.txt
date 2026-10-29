@@ -1,0 +1,4 @@
+Bat animations by Vander96, CC0. https://opengameart.org/content/bat-animations
+Bat PNG: https://opengameart.org/sites/default/files/battt.png
+Skull sprite sheet: Halloween characters by Armando Rodarte, CC0; modified from 0x72 Dungeon Tileset II. https://opengameart.org/content/halloween-characters https://0x72.itch.io/dungeontileset-ii
+Original raster files are preserved; sprite frames are selected at runtime.

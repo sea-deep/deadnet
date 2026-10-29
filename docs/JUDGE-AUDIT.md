@@ -1,32 +1,30 @@
-# Adversarial judge audit
+# Adversarial judge audit — Room 317
 
-Self-assessment, not independent judging. Scores describe this submission revision and deliberately expose its weaknesses.
+Self-assessment, not independent judging or a prediction of winning.
 
 | Dimension | /10 | Evidence and limit |
 | --- | ---: | --- |
-| Theme relevance | 9 | The network consists of remembered identities that keep ordinary routines after outside input stops. Records and voicemail carry the theme. |
-| Technical depth | 8 | Persistent scoped entities, actor-specific decoding schemas, evidence propagation, belief/trust state, transactional snapshots, budgets, error traces. Small single-user system. |
-| Genuine open-weight dependency | 9 | Actual local Gemma decisions determine words, stance, trust and recipients; saved real transcripts and timing. Public exhibition is explicitly scripted. |
-| Originality | 7 | Selective evidence routing and irreversible public correction are the specific hook. Haunted desktops and agent towns have clear precedents, all credited. |
-| Emergent behavior | 7 | Mara can publish or whisper a known record, affecting later recipients. Bounded three-character interactions; objective mystery/ending remain authored. |
-| Narrative impact | 7 | A repeated birthday and an operator keeping an unanswered line open. Strong potential; small-model repetition and speaker confusion weaken some turns. No invented audience reaction. |
-| Visual quality | 8 | Actual archived-interface references, sourced PNGs, readable W95FA/VT323, credited forest wallpaper and sourced horror ambience, usable windows/mobile composition. Some controls retain deliberate OS-era density. |
-| Demo clarity | 8 | Working boot, record sharing, model traces and cached voice, documented with actual screenshots and transcripts. Public exhibition clearly discloses scripted behavior. |
-| Reliability | 8 | Sixteen unit/audio/quota/provider gates, four desktop/mobile browser scenarios, eight successful final live society turns, cached audio. No broad browser/OS/human study. |
-| Writing quality | 8 | Publication draft ties actual debugging findings, constraints and measurements to the visitor’s experience. Final entrant review still matters most. |
-| Partner credibility | 8 | Gemma is core. ElevenLabs renders one meaningful recovered artifact with measured cache behavior. Other categories deliberately unclaimed. |
-| Rule compliance | 8 | New Oct 29 Git history, public MIT repo, demo, template sections/tags, measured claims. Contest article is unpublished awaiting entrant approval; account/age/territorial eligibility is not asserted on their behalf. |
+| Theme | 9 | A murdered woman’s recovered PC and private spirit, old messages and a closing connection. Fictional people throughout. |
+| Technical depth | 8 | Scoped persistent entities, constrained proposals, evidence delivery, subjective beliefs/trust, transaction snapshots, privacy tests and provider budgets. Small single-user engine. |
+| Open-weight dependency | 9 | Actual current-case local Gemma and free hosted Dots responses; inspectable model identity, prompts and traces. Public edition explicitly scripted. |
+| Originality | 7 | Haunted desktops and agent towns have precedents. Private evidence routing and the victim’s uncertain memories supply the specific hook. |
+| Emergence | 7 | Resident accounts can pass private facts and change later recipients’ knowledge. Objective murder/ending remain authored. |
+| Narrative potential | 8 | Mara emails a dead friend, Len defends an ordinary alibi, Nora recalls one fragment. No invented audience reaction or emotional study. |
+| Visual quality | 8 | Actual period UI references, sourced raster art, readable pixel fonts, direct game shortcuts and consistent dark controls. Borrowed games retain some underlying visual differences. |
+| Demo clarity | 8 | Usable public exhibit, reproducible local API, actual case/voice evidence and screenshots. No video, at user request. |
+| Reliability | 7 | 18 unit/provider tests, 6 desktop/mobile scenarios, real game/audio checks. Free inference can be slow or unavailable; verified current reply took 13.820 s. |
+| Writing | 8 | Article uses actual debugging findings and distinguishes current checks from prototype benchmarks. Entrant review remains necessary. |
+| Partners | 8 | Meaningful Gemma dialogue and a verified ElevenLabs alibi artifact. Other categories unclaimed. |
+| Rules | 8 | New Oct 29 public MIT repo, demo, template/tags and evidence. Entry remains unpublished; entrant eligibility is not asserted on their behalf. |
 
-**Memorable among dozens?** Its best chance is the moment a private discovery becomes a public rumor and the next account refuses to accept what it says. The interface is a route into that conflict, not the project’s technical claim.
+**Memorable among dozens?** Its strongest moment is showing a victim a record that contradicts the account still answering from the building office. A friend’s routine message does more work than a random screen glitch.
 
-**Strongest reason to win:** open weights enable a portable fictional society whose memories and private information remain on the visitor’s machine, and its causal state can be inspected.
+**Strongest reason to win:** a portable, inspectable open-weight society supplies uncertain memories and private rumor paths inside a coherent fictional investigation. The machine remains usable, and the implementation exposes its limits.
 
-**Strongest reason for rejection:** a judge may see an authored archive wrapped around a small LLM and find its emergence too limited. The public exhibition alone cannot prove live inference; the saved real local transcripts and reproducible installation must carry that proof. A thin article or missing final publication would invalidate an otherwise working build.
+**Strongest rejection case:** a judge could see an authored murder puzzle with AI dialogue around it. They can solve the files without consulting Nora. The public exhibit alone cannot prove live inference; actual transcripts and the local installation carry that evidence.
 
-**Impressive but shallow feature:** window dragging. It uses react-rnd; it is presentation craft, not novel AI research. Sourced photography and sound supply atmosphere, not simulation depth.
+**Impressive but shallow:** window dragging comes from react-rnd. The six games are credited adaptations. Neither is novel AI research. The story’s objective murderer is not generated.
 
-**Demo-destroying bugs addressed:** missing model causing silent fake output (no substitution); unbounded generation (finite allowances); lost state on restart (SQLite gates); private knowledge appearing globally (scoped prompt tests); premature operator spoiler (protected prompt); unknown record IDs (actor-specific schema); overlapping windows blocking navigation (Start menu); duplicated voice bills (cache and in-flight deduplication).
+**Demo-destroying bugs addressed:** nested OS iframes; voice escaping mute; unsupported free-provider parameters; reasoning exhausting a tiny output budget; silent model substitution; premature protected facts; invented record IDs; lost private state; unbounded generation; repeated voice charges; hidden/mis-sized controls. Current-case gates and real captures check the repairs.
 
-**Still vulnerable to deliberate testing:** the model may repeat, infer a wrong interpretation, or recall who said something incorrectly. The engine validates state changes, not every sentence’s truth. It exposes these limits instead of inventing a perfect society. Inspectable state intentionally contains spoilers, and technically inclined visitors can read the client bundle’s authored archive. This is an investigation game, not a secrecy boundary against its owner.
-
-**Final free-provider risk:** valid OpenRouter credentials do not ensure free-model capacity. The upstream Gemma shared pool returned 429. Local Gemma is independently verified; the public exhibit cannot demonstrate generation. This reduces remote demo reliability and is the most material remaining product limit. No victory or independent judging claim is made.
+**Deliberate-testing limit:** model text can still speculate, confuse speakers or repeat. A schema is not a truth oracle. A visitor with developer tools can read authored game content; this is fiction, not anti-cheat secrecy. Free provider capacity is an external dependency, and daily allowance can run out. No independent audience study or victory claim is made.

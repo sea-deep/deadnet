@@ -1,4 +1,4 @@
-export type AgentId = "mara" | "len" | "sysop";
+export type AgentId = "mara" | "len" | "sysop" | "nora";
 export type Mode = "live" | "baseline";
 export type Stance = "accept" | "deny" | "question" | "deflect";
 export interface Memory {
@@ -34,6 +34,7 @@ export interface Event {
   text: string;
   subject?: string;
   audioTranscript?: string;
+  archivedAt?: string;
   sourceId?: string;
   factIds: string[];
   origin: "seed" | "model" | "visitor" | "baseline" | "system";
@@ -70,6 +71,7 @@ export interface Trace {
 }
 export interface World {
   version: 1;
+  storyId?: string;
   tick: number;
   revision: number;
   boots: number;
@@ -79,6 +81,7 @@ export interface World {
   collected: string[];
   published: string[];
   ending: "open" | "exposed" | "sealed";
+  accused?: Exclude<AgentId, "nora">;
   remainingTurns: number;
   auto: boolean;
   traces: Trace[];
@@ -108,7 +111,11 @@ export type Action =
   | { type: "collect"; evidenceId: string }
   | { type: "message"; target: AgentId; text: string; evidenceId?: string }
   | { type: "publish"; evidenceId: string }
-  | { type: "resolve"; choice: "exposed" | "sealed" }
+  | {
+      type: "resolve";
+      choice: "exposed" | "sealed";
+      suspect?: Exclude<AgentId, "nora">;
+    }
   | { type: "mode"; mode: Mode }
   | { type: "auto"; enabled: boolean }
   | { type: "renew" }

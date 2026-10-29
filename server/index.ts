@@ -1,29 +1,86 @@
 import "dotenv/config";
+import { writeFileSync, mkdirSync } from "node:fs";
 import express from "express";
 import { createServer as viteServer } from "vite";
 import { z } from "zod";
-import { Store } from "./store.ts";
+import { randomUUID } from "node:crypto";
+import { Store, VisitorStore } from "./store.ts";
 import { LocalModel } from "./model.ts";
 import { Quota } from "./quota.ts";
 import { OpenRouterModel } from "./openrouter.ts";
 import { Engine, RuleError } from "./engine.ts";
 import { AudioService } from "./audio.ts";
-import { ARCHIVE } from "./seed.ts";
+import { ARCHIVE, STORY_ID, seedWorld } from "./seed.ts";
 const port = Number(process.env.PORT) || 3000;
+/** Public hosting: every browser gets its own private world; no autonomous turns. */
+const hosted = process.env.DEADNET_PUBLIC === "1";
+const useOpenRouter =
+  process.env.MODEL_PROVIDER === "openrouter" ||
+  Boolean(
+    process.env.OPENROUTER_API_KEY && process.env.MODEL_PROVIDER !== "ollama",
+  );
 const store = new Store(),
   quota = new Quota(store),
-  model =
-    process.env.MODEL_PROVIDER === "openrouter" ||
-    (process.env.OPENROUTER_API_KEY && process.env.MODEL_PROVIDER !== "ollama")
+  modelFor = (visitor: string) =>
+    useOpenRouter
       ? new OpenRouterModel(
           undefined,
           undefined,
-          () => quota.consume("local"),
+          () => quota.consume(visitor),
           (seconds) => quota.cooldown(seconds),
         )
       : new LocalModel(),
+  model = modelFor("local"),
   engine = new Engine(store, model),
   audio = new AudioService(store);
+const visitors = new Map<string, Engine>();
+function visitorEngine(id: string) {
+  let e = visitors.get(id);
+  if (!e) {
+    e = new Engine(new VisitorStore(store, id), modelFor(id));
+    if (e.world().storyId !== STORY_ID) e.store.reset(seedWorld());
+    visitors.set(id, e);
+    // Keep memory bounded; worlds stay in SQLite.
+    if (visitors.size > 500) {
+      const oldest = visitors.keys().next().value!;
+      if (!visitors.get(oldest)!.busy) visitors.delete(oldest);
+    }
+  }
+  return e;
+}
+const VISITOR_COOKIE = "dn_visitor";
+function visitorId(req: express.Request, res: express.Response) {
+  const found = /(?:^|;\s*)dn_visitor=([0-9a-f-]{36})/.exec(
+    req.get("cookie") || "",
+  )?.[1];
+  if (found) return found;
+  const id = randomUUID();
+  res.cookie(VISITOR_COOKIE, id, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: req.secure,
+    maxAge: 30 * 86400000,
+  });
+  return id;
+}
+/** The world and quota bucket this request belongs to. */
+function context(req: express.Request, res: express.Response) {
+  if (!hosted) return { engine, visitor: "local" };
+  const visitor = visitorId(req, res);
+  return { engine: visitorEngine(visitor), visitor };
+}
+if (hosted) {
+  VisitorStore.prune(store);
+  setInterval(() => VisitorStore.prune(store), 3600000).unref();
+}
+if (engine.world().storyId !== STORY_ID) {
+  mkdirSync(".data", { recursive: true });
+  writeFileSync(
+    `.data/pre-case-${Date.now()}.json`,
+    JSON.stringify(engine.world(), null, 2),
+  );
+  store.reset(seedWorld(engine.world().mode));
+}
 engine.boot();
 // Every process start pauses autonomous work. No unattended inference after a restart.
 const startup = engine.world();
@@ -32,18 +89,23 @@ startup.revision++;
 store.save(startup, "startup-pause");
 const app = express();
 app.disable("x-powered-by");
+if (hosted) app.set("trust proxy", 1);
+// Health checks must not create visitor worlds.
+app.get("/healthz", (_req, res) => {
+  res.json({ ok: true });
+});
 app.use((req, res, next) => {
   const host = req.hostname;
-  if (!["localhost", "127.0.0.1", "[::1]"].includes(host)) {
+  if (!hosted && !["localhost", "127.0.0.1", "[::1]"].includes(host)) {
     res.status(403).json({ error: "Local access only." });
     return;
   }
   if (req.method !== "GET" && req.method !== "HEAD") {
     const origin = req.get("origin");
-    if (
-      origin &&
-      !["http://localhost:" + port, "http://127.0.0.1:" + port].includes(origin)
-    ) {
+    const allowed = hosted
+      ? [`${req.protocol}://${req.get("host")}`]
+      : ["http://localhost:" + port, "http://127.0.0.1:" + port];
+    if (origin && !allowed.includes(origin)) {
       res.status(403).json({ error: "Cross-origin writes are not allowed." });
       return;
     }
@@ -55,7 +117,7 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: "8kb" }));
 let lastClient = 0;
 let statusCache: { at: number; available: boolean } | undefined;
-async function status() {
+async function status(engine: Engine, visitor: string) {
   if (!statusCache || Date.now() - statusCache.at > 10000)
     statusCache = { at: Date.now(), available: await model.available() };
   return {
@@ -63,16 +125,16 @@ async function status() {
     provider: model.name,
     model: model.model,
     voice: audio.configured(),
-    quota: model.name === "openrouter" ? quota.state("local") : undefined,
+    quota: model.name === "openrouter" ? quota.state(visitor) : undefined,
     busy: engine.busy,
     message: statusCache.available
       ? model.name === "openrouter"
-        ? "Free OpenRouter route configured. Availability depends on the shared provider pool."
+        ? "Free AI route configured. Availability depends on the shared free pool."
         : "Local model connected."
       : "Local model unavailable. Start Ollama and install the configured model, or explicitly select the deterministic baseline.",
   };
 }
-async function snapshot() {
+async function snapshot(engine: Engine, visitor: string) {
   const world = engine.world();
   return {
     world,
@@ -80,21 +142,22 @@ async function snapshot() {
       e.locked && world.collected.filter((id) => id !== "manifest").length < 2
         ? {
             ...e,
-            body: "Recover CARRIER.LOG and HAPPY_BIRTHDAY.EML to reconstruct this record.",
+            body: "Read the original door log and saved conversation to reconstruct the backup.",
             fact: "",
             excerpt: "File fragments incomplete. Two earlier records required.",
           }
         : e,
     ),
-    status: await status(),
+    status: await status(engine, visitor),
   };
 }
-app.get("/api/state", async (_req, res) => {
+app.get("/api/state", async (req, res) => {
   lastClient = Date.now();
+  const { engine, visitor } = context(req, res);
   res.setHeader("Cache-Control", "no-store");
-  res.json(await snapshot());
+  res.json(await snapshot(engine, visitor));
 });
-const agent = z.enum(["mara", "len", "sysop"]);
+const agent = z.enum(["mara", "len", "sysop", "nora"]);
 const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("tick") }),
   z.object({ type: z.literal("collect"), evidenceId: z.string().max(30) }),
@@ -108,6 +171,7 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("resolve"),
     choice: z.enum(["exposed", "sealed"]),
+    suspect: z.enum(["mara", "len", "sysop"]).optional(),
   }),
   z.object({ type: z.literal("mode"), mode: z.enum(["live", "baseline"]) }),
   z.object({ type: z.literal("auto"), enabled: z.boolean() }),
@@ -117,14 +181,19 @@ const actionSchema = z.discriminatedUnion("type", [
 app.post("/api/action", async (req, res, next) => {
   try {
     const action = actionSchema.parse(req.body);
+    const { engine, visitor } = context(req, res);
+    // Hosted copies never run unattended turns.
+    if (hosted && action.type === "auto")
+      throw new RuleError("Autonomous turns are off on the hosted copy.", 403);
     await engine.dispatch(action);
-    res.json(await snapshot());
+    res.json(await snapshot(engine, visitor));
   } catch (e) {
     next(e);
   }
 });
 app.post("/api/audio/:id", async (req, res, next) => {
   try {
+    const { engine } = context(req, res);
     const event = engine.world().events.find((e) => e.id === req.params.id);
     if (!event) throw new RuleError("Message not found.", 404);
     const data = await audio.speech(event);
@@ -135,7 +204,8 @@ app.post("/api/audio/:id", async (req, res, next) => {
     next(e);
   }
 });
-app.get("/api/export", (_req, res) => {
+app.get("/api/export", (req, res) => {
+  const { engine } = context(req, res);
   res.setHeader(
     "Content-Disposition",
     'attachment; filename="deadnet-investigation.json"',
@@ -192,11 +262,16 @@ else
       })
     ).middlewares,
   );
-const server = app.listen(port, "127.0.0.1", () =>
-  console.log(`DEADNET is listening at http://127.0.0.1:${port}`),
+const server = app.listen(port, hosted ? "0.0.0.0" : "127.0.0.1", () =>
+  console.log(
+    hosted
+      ? `DEADNET (public, one private world per visitor) is listening on port ${port}`
+      : `DEADNET is listening at http://127.0.0.1:${port}`,
+  ),
 );
 // At most one generation every 35 seconds, and only while a client is polling.
 const timer = setInterval(async () => {
+  if (hosted) return;
   const w = engine.world();
   if (
     !w.auto ||

@@ -157,3 +157,5 @@ for (const name of [
   }
   visit(out + "/" + name);
 }
+const { themeGames } = await import('./theme-games.mjs');
+themeGames(out);

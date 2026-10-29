@@ -15,13 +15,13 @@ export class OpenRouterModel implements ModelAdapter {
   private key: string;
   constructor(
     key = process.env.OPENROUTER_API_KEY || "",
-    model = process.env.OPENROUTER_MODEL || "google/gemma-4-31b-it:free",
+    model = process.env.OPENROUTER_MODEL || "openrouter/free",
     private rateGate: () => void | Promise<void> = () => {},
     private onThrottle: (seconds: number) => void | Promise<void> = () => {},
   ) {
     this.key = key;
     this.model = model;
-    if (!model.endsWith(":free"))
+    if (!model.endsWith(":free") && model !== "openrouter/free")
       throw new Error("Only explicitly free OpenRouter routes are enabled.");
   }
   async available() {
@@ -61,7 +61,10 @@ export class OpenRouterModel implements ModelAdapter {
             model: this.model,
             messages,
             temperature: 0.85,
-            max_tokens: 320,
+            ...(/^google\/gemma/.test(this.model)
+              ? { reasoning: { enabled: false } }
+              : { reasoning: { max_tokens: 1024, exclude: true } }),
+            max_tokens: /^google\/gemma/.test(this.model) ? 320 : 4096,
             response_format: { type: "json_object" },
             provider: { require_parameters: true },
           }),

@@ -29,7 +29,7 @@ await p
   .getByRole("button", { name: "Games", exact: true })
   .click();
 const games = p.getByRole("region", { name: "Games" });
-await games.getByRole("button", { name: "Flappy Bird", exact: false }).click();
+await games.getByRole("button", { name: "Flappy Bat", exact: false }).click();
 await expect
   .poll(() =>
     p.evaluate(() =>
@@ -39,7 +39,7 @@ await expect
     ),
   )
   .toBe(true);
-const f = p.frameLocator('iframe[title="Flappy Bird"]');
+const f = p.frameLocator('iframe[title="Flappy Bat"]');
 await f.locator("canvas").click();
 await p.waitForTimeout(800);
 await expect

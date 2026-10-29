@@ -18,10 +18,10 @@ await p
 const games = p.getByRole("region", { name: "Games" });
 await p.screenshot({ path: "docs/evidence/games.png" });
 for (const name of [
-  "Snake",
-  "Flappy Bird",
-  "Tetris",
-  "2048",
+  "Grave Snake",
+  "Flappy Bat",
+  "Crypt Blocks",
+  "2048: Séance",
   "Phantomicus",
   "Hocus :focus",
 ]) {
@@ -31,7 +31,7 @@ for (const name of [
   await expect(
     f.getByRole("button", { name: "Power on", exact: true }),
   ).toHaveCount(0);
-  if (name === "Snake") {
+  if (name === "Grave Snake") {
     await expect(f.locator("#game-area")).toBeVisible();
     await f.getByText("Play Game", { exact: true }).click();
     await p.keyboard.press("ArrowRight");
@@ -41,7 +41,7 @@ for (const name of [
       gameReady: e.textContent,
     }));
   }
-  if (name === "Flappy Bird") {
+  if (name === "Flappy Bat") {
     await expect(f.locator("canvas")).toBeVisible();
     await f.locator("canvas").click();
     await p.waitForTimeout(3500);
@@ -51,7 +51,7 @@ for (const name of [
       score: (window as any).score,
     }));
   }
-  if (name === "Tetris") {
+  if (name === "Crypt Blocks") {
     await f.locator("#canvas").click();
     await p.keyboard.press("Space");
     await p.waitForTimeout(500);
@@ -60,7 +60,7 @@ for (const name of [
       canvases: document.querySelectorAll("canvas").length,
     }));
   }
-  if (name === "2048") {
+  if (name === "2048: Séance") {
     await expect(f.locator(".tile")).toHaveCount(2);
     await f.locator("body").click();
     await p.keyboard.press("ArrowDown");
@@ -83,7 +83,7 @@ for (const name of [
       f.getByRole("heading", { name: "HOCUS :FOCUS" }),
     ).toBeVisible();
     await f.getByRole("button", { name: "pumpkin Finish" }).focus();
-    await p.keyboard.press("Enter");
+    await games.getByRole("button", { name: "Enter", exact: true }).click();
     await expect(f.getByText("Level 2", { exact: true })).toBeVisible();
     results[name] = { level2: true };
     await p.screenshot({ path: "docs/evidence/hocus-level2.png" });

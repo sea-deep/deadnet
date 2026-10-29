@@ -1,0 +1,33 @@
+# Public DEADNET: one private world per visitor, free OpenRouter models only.
+services:
+  - type: web
+    name: deadnet
+    runtime: node
+    plan: free
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: DEADNET_PUBLIC
+        value: "1"
+      - key: MODEL_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_MODEL
+        value: openrouter/free
+      # Stay under OpenRouter's free-tier daily allowance.
+      - key: DEADNET_GLOBAL_PER_DAY
+        value: "45"
+      - key: DEADNET_VISITOR_PER_DAY
+        value: "10"
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      - key: ELEVENLABS_MODEL
+        value: eleven_v3_conversational

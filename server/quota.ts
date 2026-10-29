@@ -6,6 +6,15 @@ export interface QuotaState {
   visitorUsed: number;
   visitorLimit: number;
 }
+const limit = (name: string, fallback: number) =>
+  Math.max(1, Number(process.env[name]) || fallback);
+/** Request caps, configurable so a hosted copy stays under the provider's free allowance. */
+export const LIMITS = {
+  globalMinute: limit("DEADNET_GLOBAL_PER_MINUTE", 5),
+  globalDay: limit("DEADNET_GLOBAL_PER_DAY", 30),
+  visitorMinute: limit("DEADNET_VISITOR_PER_MINUTE", 2),
+  visitorDay: limit("DEADNET_VISITOR_PER_DAY", 8),
+};
 export class Quota {
   constructor(private store: Store) {
     store.db.exec(
@@ -44,25 +53,25 @@ export class Quota {
       {
         scope: "global-minute",
         bucket: String(minute),
-        limit: 5,
+        limit: LIMITS.globalMinute,
         until: (minute + 1) * 60000,
       },
       {
         scope: "global-day",
         bucket: String(day),
-        limit: 30,
+        limit: LIMITS.globalDay,
         until: (day + 1) * 86400000,
       },
       {
         scope: "visitor-minute:" + visitor,
         bucket: String(minute),
-        limit: 2,
+        limit: LIMITS.visitorMinute,
         until: (minute + 1) * 60000,
       },
       {
         scope: "visitor-day:" + visitor,
         bucket: String(day),
-        limit: 8,
+        limit: LIMITS.visitorDay,
         until: (day + 1) * 86400000,
       },
     ];
@@ -108,9 +117,9 @@ export class Quota {
       )?.used || 0;
     return {
       globalUsed: used("global-day"),
-      globalLimit: 30,
+      globalLimit: LIMITS.globalDay,
       visitorUsed: used("visitor-day:" + visitor),
-      visitorLimit: 8,
+      visitorLimit: LIMITS.visitorDay,
     };
   }
 }

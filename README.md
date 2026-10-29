@@ -1,12 +1,14 @@
-# DEADNET
+# DEADNET — Room 317
 
-Three accounts still use a network that lost its last outside connection fifty years ago. Read their mail, open old files, and decide who should learn what happened. A character can pass your private discovery to somebody else.
+Nora Vale was found dead in room 317. The police called it an accident. Her computer is still answering.
 
-![DEADNET desktop](docs/evidence/desktop-new.png)
+Explore Nora’s recovered PC: read the residents’ messages, inspect a door log, listen to her last call, and show evidence to the unknown contact in Messenger. Her memory comes back in fragments. The person responsible is still using the same network.
 
-[Play the exhibition](https://sea-deep.github.io/deadnet/) · [Submission article](docs/SUBMISSION.md) · [Measurements](docs/VERIFICATION.md) · [Credits](docs/CREDITS.md)
+![Nora’s recovered computer](docs/evidence/desktop-new.png)
 
-**The public exhibition is explicitly scripted.** The full Node application supports hosted open-weight Gemma through OpenRouter, or Gemma running locally through Ollama. Failed live requests never become scripted dialogue automatically.
+[Public exhibition](https://sea-deep.github.io/deadnet/) · [Submission article](docs/SUBMISSION.md) · [Verification](docs/VERIFICATION.md) · [Credits](docs/CREDITS.md)
+
+**The public exhibition is clearly scripted.** The full Node app uses your server-side OpenRouter key for live open-weight replies, or Gemma running locally through Ollama. Failed live requests never become scripted dialogue automatically.
 
 ## Run
 
@@ -20,72 +22,62 @@ cp .env.example .env
 npm run dev
 ```
 
-Open http://127.0.0.1:3000 and press **Power on**. Start → System Monitor lets you select the clearly labeled deterministic baseline without a key.
+Open http://127.0.0.1:3000 and press **Power on**. A **Read Me** window explains the case and how to play on the first visit (it stays on the desktop afterwards).
 
-For hosted inference, set `MODEL_PROVIDER=openrouter`, `OPENROUTER_API_KEY`, and `OPENROUTER_MODEL=google/gemma-4-31b-it:free` in `.env`. Keep the key server-side. The adapter rejects model IDs without `:free`, with **no paid fallback**. Free-provider capacity can be unavailable even with valid credentials; a provider 429 pauses requests for at least a minute. On October 29, the Gemma free pool was returning upstream capacity limits. This is documented rather than presented as a successful free inference run.
+**No key? It still works.** With no `OPENROUTER_API_KEY` and no Ollama running, the app says no AI model is connected and offers **Use scripted replies**. One click and the whole case is playable with authored responses, clearly labelled as scripted.
 
-For fully local inference:
+For live AI replies, add `OPENROUTER_API_KEY` to `.env` for hosted inference. `MODEL_PROVIDER=auto` selects it when present. The default `OPENROUTER_MODEL=openrouter/free` uses [OpenRouter’s free-only router](https://openrouter.ai/docs/guides/routing/routers/free-router); the actual selected model is recorded in each trace. A real current-case response used `dots-studio/dots-3-note-preview:free`, took 13.820 s, and reported $0. No paid model IDs or paid fallback are enabled. Free capacity and latency can vary.
 
-```sh
-ollama serve
-# In another terminal:
-ollama pull gemma4:e2b-it-q4_K_M
-```
+For local Gemma, run `ollama serve`, pull `gemma4:e2b-it-q4_K_M`, and set `MODEL_PROVIDER=ollama`. The explicitly measured Q4_K_M package is about 4.6 GB; no weights ship in Git. A local compatible adapter is also implemented but not independently benchmarked.
 
-Set `MODEL_PROVIDER=ollama` and `OLLAMA_MODEL=gemma4:e2b-it-q4_K_M` in `.env`. This explicit 4.6 GB Q4_K_M package was measured, unlike the generic tag that can select another distribution. No weights ship in Git. A local OpenAI-compatible server adapter is also implemented (`MODEL_PROVIDER=local`, `LOCAL_MODEL_URL`, `LOCAL_MODEL`), but it has not been independently benchmarked.
-
-The development server reloads backend code and `.env`. For production locally: `npm run build && npm start`.
+You can also switch between live and scripted replies at any time in System Monitor (**Deterministic baseline (scripted)**). The dev server reloads backend code and `.env`. For production locally: `npm run build && npm start`.
 
 ## The computer
 
-- Internet: an early-web neighborhood feed and directory.
-- Inbox: private correspondence, attachments, and an ElevenLabs voicemail with a readable transcript.
-- My Documents: three recovered files, ordinary Send To controls, and lasting sharing permissions.
-- Address Book: the three people who still answer.
-- Notepad: editable, persistent scraps left by a previous visitor. No investigation checklist.
-- Games: **Snake, Flappy Bird, Tetris, 2048, Phantomicus, and Hocus :focus**, adapted from credited MIT projects. They open directly inside this desktop.
-- System Monitor: live model identity, request allowance, actual inference traces, export/reset and bounded autonomy.
+**Unknown Signal** is Nora’s private messenger window. Ask what she remembers; attach a file you have opened. The model gets only her memory fragment and records she has actually been shown. She cannot contact the other accounts or broadcast. Ordinary autonomous turns exclude her. After the right case report, the signal closes.
 
-The BIOS/startup animation, frozen 03:17 clock, dark forest photograph, quiet sourced horror ambience, disk/line sounds, and recovered notes carry the atmosphere. Sound starts after the power-button gesture; disable it before boot or use the tray mute. Mute persists. Hidden tabs pause ambience, and games take over the soundscape while focused. Reduced motion is available in Start. No flashing overlays.
+**Chat Logs**, **Inbox**, **My Documents**, **Address Book** and **Notepad** contain the other side of the investigation: Mara’s grief, Len’s disputed alibi, Owen’s management statements, Adam Moore’s recovered case notes and Nora’s unfinished scraps. The report records the suspect you choose; a wrong accusation has a different final signal. These are fictional characters, not replicas of real deceased people.
 
-Windows drag, resize, maximize, minimize and close. Title-bar arrow keys move a window; Enter maximizes it. Small screens use one maximized window and single-tap shortcuts. Games retain their original input requirements; Snake and Flappy support touch, while some games work best with a keyboard.
+All six games have direct desktop shortcuts: **Grave Snake**, **Flappy Bat**, **Crypt Blocks**, **2048: Séance**, **Phantomicus**, and **Hocus :focus**. They adapt existing MIT projects, with visible author credits, shared dark controls, restart/pause/sound options, and keyboard buttons. Flappy uses a sourced animated bat and forest photograph rather than the bright bird/pipe skin. Games pause when another app takes focus. They are supporting games, not claimed original AI work.
 
-## Simulation
+The BIOS startup, frozen 03:17 clock, forest wallpaper, quiet CC0 ambience, disk/line sounds and recovered call carry the atmosphere. Sound begins after the power gesture; tray mute persists and reaches game/voice audio. Hidden tabs pause ambience. Reduced motion lives in Start. Windows drag, resize, minimize and maximize; small screens use single-tap shortcuts and one maximized window. No flashing overlays.
 
-One shared model serves three independently scoped accounts. SQLite commits the world and revision atomically. The engine controls scheduling, record access, delivery, budgets and endings. The model proposes words, stance, a bounded trust change, a subjective memory, disclosed known records and a recipient. Validated output becomes another account’s input.
+## Voice
 
-A file you open does not inform every character. Only addressed mail or a public post can carry it. Twelve memories are retained per character; eight recent memories and three exact private visitor notes enter a bounded prompt. Objective facts and subjective beliefs remain distinct. The operator’s protected records stay out of ordinary prompts until witnessed evidence introduces them.
+Set `ELEVENLABS_API_KEY`, a licensed `ELEVENLABS_VOICE_ID`, and `ELEVENLABS_MODEL` in `.env`. The verified revision uses the premade **Lily — Velvety Actress** voice and `eleven_v3_conversational`, hushed/rushed delivery, speed 1.14 and stability 0.5. This replaces the earlier broadcaster monologue.
 
-One request runs at a time. Local requests use 4096 context / 320 output tokens and a 45-second timeout. Live output gets at most two attempts. Eighteen story turns require explicit renewal; autonomous turns run at most once every 35 seconds while a visitor is connected. Hosted requests additionally have persistent caps: **2/minute and 8/day for the local visitor; 5/minute and 30/day account-wide**, counted per provider attempt. Resetting the world does not reset provider quotas or cooldowns. Days reset at 00:00 UTC. These are installation-level limits, not a multi-tenant identity system.
+Opening **OCT31_CHAT.TXT** restores **NORA_0314.WAV**. Play it in Inbox or read the transcript. It is a 150-character authored outgoing call, not dynamically invented testimony. One actual render took 1.927 s; the clip is 11.84 s. Cached replay returned identical bytes without another generation. Perceived naturalness has not been independently rated. [Actual evidence](docs/evidence/elevenlabs-case.json).
 
-The model has no shell, filesystem, browser or external messaging tools. Server validation rejects unknown evidence IDs and invalid recipients. Text may still hallucinate, repeat, or confuse speakers; validation is not a truth oracle.
+The cache key includes transcript, voice, model and delivery settings. Ten fresh renders maximum per installation, 900 characters per request; failures preserve text access. No credential or generated voice recording is committed.
 
-## ElevenLabs
+## Engine and limits
 
-Set `ELEVENLABS_API_KEY`, a licensed `ELEVENLABS_VOICE_ID`, and optionally `ELEVENLABS_MODEL=eleven_flash_v2_5` in `.env`. The verified configuration uses the premade Daniel voice. Opening HAPPY_BIRTHDAY.EML restores the attachment. Then open **Inbox → LINE03.WAV → Listen as voicemail**. Its transcript is always accessible.
+SQLite atomically stores the world and revision. Three resident accounts can interpret evidence, remember, change bounded trust and pass known facts onward. Nora has a fourth, private state. Twelve memories per account are stored, eight enter context, and three exact visitor disclosures support recall. Objective evidence stays separate from subjective beliefs.
 
-The recording is authored fiction, rendered by ElevenLabs, not live voice chat. Cache keys include transcript/voice/model. Concurrent duplicates share a request; cached playback makes no further provider call. Ten fresh renders per installation, 900 characters maximum each. Real evidence: [one 192-character render, 1.062s, cached identical replay](docs/evidence/elevenlabs.json). The immediate billing counter was unchanged; that is not proof of a zero charge. No generated recording or credential is in the public repository.
+One generation runs at a time. Local Gemma uses 4096 context / 320 output tokens. Hosted thinking routes have a bounded 4096 total output-token allowance with a requested 1024 reasoning budget; Gemma routes request thinking off and 320 output tokens. Text remains schema-limited. Requests have a 45-second timeout and at most two attempts. Eighteen story turns require explicit renewal; optional autonomous turns run once per 35 seconds while a visitor is connected. No unattended catch-up.
 
-## Verify and rebuild
+Persistent hosted caps: **2 requests/minute and 8/day per local visitor; 5/minute and 30/day shared**, counted per HTTP attempt. Provider 429s persist a cooldown of at least 60 seconds. World reset and story migration do not reset these limits. Days reset at 00:00 UTC. These are installation limits, not multi-tenant authentication.
+
+The model has no shell, filesystem, browser or external messaging tools. Actor-specific local decoding schemas and server validation reject invented evidence IDs/recipients. Text can still repeat, hallucinate or confuse speakers. The objective case and final signal are authored; AI changes the conversations and disclosure path.
+
+## Verification
 
 ```sh
-npm test                      # 16 simulation/audio/quota/provider tests
-npm run build                 # type check + production frontend
-npm run demo:build            # explicit scripted exhibition
+npm test                       # 18 engine/audio/quota/provider tests
+npm run build
+npm run demo:build              # explicitly scripted static exhibition
 npx playwright install chrome
-npm run test:e2e              # desktop/mobile investigation and shell
-npm run games:build           # rebuild all credited games from third_party/
-npx tsx scripts/check-games.ts # needs local server; real game interactions
-npm run benchmark             # explicit real Ollama generations
-npm run verify:live            # explicit real society/memory verification
+npm run test:e2e                # 6 desktop/mobile investigation/shell/signal tests
+npm run games:build             # reproducible credited game adaptations
+npx tsx scripts/check-games.ts  # local server required
+npx tsx scripts/check-sound.ts
+npm run benchmark              # explicit real local inference, no CI model download
 ```
 
-[Verification](docs/VERIFICATION.md) includes the real local model digest, token/latency results, 5.1 GiB process footprint, five-minute session, privacy checks, voice measurements, browser results and honest limits. CI needs no paid key or downloaded weights. npm audit reports zero vulnerabilities at this revision.
+[Verification](docs/VERIFICATION.md) distinguishes current murder-case checks from the earlier prototype’s nine-request benchmark and five-minute session. Current live evidence: [OpenRouter](docs/evidence/case-openrouter.json), [local Gemma](docs/evidence/case-local-gemma-current.json), [voice](docs/evidence/elevenlabs-case.json). CI uses no model or provider key.
 
-## Data and release
+The full app is **single-user and loopback-only**. `.data/deadnet.sqlite` contains private messages, quotas and cached audio; exports may include what you wrote. Previous prototype worlds are archived in ignored `.data/pre-case-*.json` when this scenario replaces them. The public Pages exhibition uses browser storage and scripted responses; public hosted live inference is not deployed.
 
-The full app is **single-user and loopback-only**. `.data/deadnet.sqlite` holds world state, quotas and cached audio. Exports may contain messages you wrote. Do not expose this installation through a public tunnel. The public GitHub Pages exhibition stores its scripted world in the visitor’s browser and has no server keys or live AI. Public hosted inference is not deployed.
+Code is MIT; all borrowed code/media retain their own licenses. [Third-party modifications](docs/THIRD-PARTY.md) · [actual interface references](docs/research/VISUAL-REFERENCES.md) · [judge audit](docs/JUDGE-AUDIT.md).
 
-The repository began October 29, 2026. Code is MIT; borrowed software, fonts, imagery and sound retain their own licenses. [Third-party code](docs/THIRD-PARTY.md) · [visual references](docs/research/VISUAL-REFERENCES.md) · [judge audit](docs/JUDGE-AUDIT.md).
-
-Built and written with Codex assistance. The [DEV article](docs/SUBMISSION.md) is ready for entrant review and remains unpublished. Final publication needs the entrant’s approval because only the first entry is considered. Deadline: October 31, 2026, 23:59 PDT / November 1, 12:29 IST. No demo video is required or included.
+Started October 29, 2026, with Codex assistance. The [DEV article](docs/SUBMISSION.md) remains unpublished pending entrant approval. Deadline: October 31, 23:59 PDT / November 1, 12:29 IST. No demo video is included.

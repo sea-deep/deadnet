@@ -1,21 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
-import { act, exhibition, readState } from "./api";
+import { act, exhibition, OFFLINE_MESSAGE, readState } from "./api";
 import type { Action, AgentId, Snapshot } from "./types";
 import {
   APP_INFO,
   Archive,
   Browser,
   Games,
+  Spirit,
   Mail,
   Monitor,
   Notebook,
   People,
+  ReadMe,
   type AppId,
   type AppProps,
 } from "./Apps";
 import { PixelIcon } from "./icons";
 import { tone, setAmbient } from "./sound";
+import { GAME_LIST, GameIcon, type GameId } from "./games";
 type WindowState = {
   id: AppId;
   x: number;
@@ -27,6 +30,7 @@ type WindowState = {
   z: number;
 };
 const components = {
+  readme: ReadMe,
   browser: Browser,
   mail: Mail,
   archive: Archive,
@@ -34,8 +38,10 @@ const components = {
   monitor: Monitor,
   notebook: Notebook,
   games: Games,
+  spirit: Spirit,
 };
 const defaults: Record<AppId, { width: number; height: number }> = {
+  readme: { width: 640, height: 640 },
   browser: { width: 970, height: 740 },
   mail: { width: 790, height: 560 },
   archive: { width: 800, height: 610 },
@@ -43,6 +49,7 @@ const defaults: Record<AppId, { width: number; height: number }> = {
   monitor: { width: 790, height: 580 },
   notebook: { width: 650, height: 500 },
   games: { width: 900, height: 680 },
+  spirit: { width: 620, height: 610 },
 };
 export default function App() {
   const [data, setData] = useState<Snapshot>();
@@ -78,7 +85,7 @@ export default function App() {
   const received = useRef<Set<string> | null>(null);
   const incomingMail =
     data?.world.events.filter(
-      (e) => e.channel === "mail" && e.to === "visitor",
+      (e) => e.channel === "mail" && e.to === "visitor" && e.actor !== "nora",
     ) || [];
   const noticeMail = incomingMail.find((e) => e.id === noticeId);
   useEffect(() => {
@@ -94,7 +101,11 @@ export default function App() {
     }
     received.current = new Set(incomingMail.map((e) => e.id));
   }, [incomingMail.map((e) => e.id).join(",")]);
-  const [selectedIcon, setSelectedIcon] = useState<AppId>();
+  const [selectedIcon, setSelectedIcon] = useState<string>();
+  const [gameRequest, setGameRequest] = useState<{
+    id: GameId;
+    nonce: number;
+  }>();
   const z = useRef(10);
   const generation = useRef(false);
   const root = useRef<HTMLDivElement>(null);
@@ -110,6 +121,8 @@ export default function App() {
         const snapshot = await readState();
         if (alive) {
           setData(snapshot);
+          // Connection is back: drop a stale "can't reach the server" notice.
+          setError((old) => (old === OFFLINE_MESSAGE ? "" : old));
         }
       } catch (e) {
         if (alive) setError((e as Error).message);
@@ -162,6 +175,10 @@ export default function App() {
       ];
     });
   }, []);
+  function launchGame(id: GameId) {
+    setGameRequest({ id, nonce: Date.now() });
+    open("games");
+  }
   function composeTo(id: AgentId, attachment?: string) {
     setTarget(id);
     setMailDraft({ recipient: id, attachment, nonce: Date.now() });
@@ -198,6 +215,13 @@ export default function App() {
       data.world.mode === "live"
     )
       void perform({ type: "auto", enabled: true });
+    // First visit: explain the case before anything else.
+    let seen = false;
+    try {
+      seen = localStorage.getItem("deadnet-readme-seen") === "true";
+      localStorage.setItem("deadnet-readme-seen", "true");
+    } catch {}
+    if (!seen) open("readme");
     setTimeout(() => {
       root.current?.focus();
     }, 50);
@@ -253,6 +277,7 @@ export default function App() {
         mailDraft,
         muted,
         activeApp: focused,
+        gameRequest,
       } satisfies AppProps)
     : undefined;
   return (
@@ -288,6 +313,9 @@ export default function App() {
         inert={!connected}
         className="desktop-icons"
         aria-label="Desktop applications"
+        style={{
+          gridTemplateRows: `repeat(${Math.min(8, Math.max(2, Math.floor((size.height - (exhibition ? 138 : 80)) / 88)))}, 88px)`,
+        }}
       >
         {(Object.keys(APP_INFO) as AppId[]).map((id) => (
           <button
@@ -309,12 +337,32 @@ export default function App() {
                 <b>
                   {
                     data.world.events.filter(
-                      (e) => e.channel === "mail" && e.to === "visitor",
+                      (e) =>
+                        e.channel === "mail" &&
+                        e.to === "visitor" &&
+                        e.actor !== "nora",
                     ).length
                   }
                 </b>
               ) : null}
             </span>
+          </button>
+        ))}
+        {GAME_LIST.map((game) => (
+          <button
+            key={game.id}
+            className={`desktop-icon ${selectedIcon === game.id ? "chosen" : ""}`}
+            onClick={() => {
+              setSelectedIcon(game.id);
+              if (mobile) launchGame(game.id);
+            }}
+            onDoubleClick={() => launchGame(game.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") launchGame(game.id);
+            }}
+          >
+            <GameIcon id={game.id} />
+            <span>{game.name}</span>
           </button>
         ))}
       </nav>
@@ -403,7 +451,7 @@ export default function App() {
                       <PixelIcon name={APP_INFO[w.id].icon} size={17} />
                       <span>
                         {APP_INFO[w.id].title}
-                        {w.id === "browser" ? " — The neighborhood" : ""}
+                        {w.id === "browser" ? " — Residents’ messages" : ""}
                       </span>
                     </div>
                     <div className="window-buttons title-bar-controls">
@@ -482,7 +530,7 @@ export default function App() {
       {start && (
         <nav className="start-menu" aria-label="Start menu">
           <div className="start-spine">
-            DEADNET<span> PERSONAL NETWORK</span>
+            NORA VALE<span> PERSONAL COMPUTER</span>
           </div>
           <div className="start-items">
             {(Object.keys(APP_INFO) as AppId[]).map((id) => (
@@ -586,6 +634,11 @@ export default function App() {
           {bootStage < 0 ? (
             <div className="power-screen">
               <PixelIcon name="monitor" size={48} />
+              <p className="power-premise">
+                Nora Vale died in room 317. The police called it an accident.
+                <br />
+                Her computer is still answering. Find out who was there.
+              </p>
               <button
                 className="boot-connect"
                 disabled={!data}

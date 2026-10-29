@@ -1,0 +1,23 @@
+{
+  "measuredAt": "2026-10-29T13:47:59.100Z",
+  "provider": "ElevenLabs",
+  "model": "eleven_v3_conversational",
+  "voice": "Lily — Velvety Actress (premade library voice)",
+  "voiceId": "pFZP5JQG7iQjIQuC4Bku",
+  "transcript": "Adam? It’s Nora. Don’t come through the lobby. He’s still here. I left the tape under your keyboard. And Len—Adam, listen. Len wasn’t in the building.",
+  "characters": 150,
+  "firstPlaybackMs": 1927,
+  "cachedPlaybackMs": 0,
+  "bytes": 190632,
+  "cacheBytesMatch": true,
+  "generationRequests": 1,
+  "subscriptionCharacterCountBefore": 20830,
+  "subscriptionCharacterCountAfter": 20830,
+  "observedCreditDelta": 0,
+  "notes": [
+    "Billing counter delta is observed account-wide usage, not a dollar invoice. Concurrent use can affect it.",
+    "The second playback uses SQLite audio cache. No second generation is sent.",
+    "Generated MP3 remains in ignored .data; not redistributed as a standalone asset.",
+    "Narrative: Nora’s last call contradicts the accusation against Len. Hushed/rushed delivery, speed 1.14; transcript accessible without speech."
+  ]
+}

@@ -1,5 +1,5 @@
 /*
-JavaScript Snake
+Grave Snake
 First version by Patrick Gillespie - I've since merged in a good number of github pull requests
 http://patorjk.com/games/snake
 */
@@ -1019,11 +1019,11 @@ SNAKE.Board =
           window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
         let fullScreenText = "";
         if (config.fullScreen) {
-          fullScreenText = "On Windows, press F11 to play in Full Screen mode.";
+          fullScreenText = "";
         }
         welcomeTxt.innerHTML = isTouchDevice
-          ? "JavaScript Snake<p></p>Use the <strong>on-screen game pad</strong> to play the game.<p></p>"
-          : "JavaScript Snake<p></p>Use the <strong>arrow keys</strong> on your keyboard to play the game. " +
+          ? "Grave Snake<p></p>Use the <strong>on-screen game pad</strong> to play the game.<p></p>"
+          : "Grave Snake<p></p>Use the <strong>arrow keys</strong> on your keyboard to play the game. " +
             fullScreenText +
             "<p></p>";
         const welcomeStart = document.createElement("button");
@@ -1063,7 +1063,7 @@ SNAKE.Board =
         tmpElm.className = elmClassName + " tui-window tui-border-double";
 
         const gameEndTxt = document.createElement("div");
-        gameEndTxt.innerHTML = "JavaScript Snake<p></p>" + message + "<p></p>";
+        gameEndTxt.innerHTML = "Grave Snake<p></p>" + message + "<p></p>";
         const gameEndStart = document.createElement("button");
         gameEndStart.className = "tui-button";
         gameEndStart.appendChild(document.createTextNode("Play Again?"));
@@ -1098,7 +1098,7 @@ SNAKE.Board =
 
       function createTryAgainElement() {
         return createGameEndElement(
-          "You died :(",
+          "The bones stopped moving.",
           "sbTryAgain",
           "snake-try-again-dialog",
         );

@@ -71,8 +71,21 @@ select {
   border: 0;
   border-radius: 0;
   box-shadow: var(--inset);
-  background: #fffef6;
+  background-color: #fffef6;
   padding: 7px 8px;
+}
+input,
+textarea {
+  background-image: none;
+}
+/* 98.css fixes selects at 21px; keep them tall enough for the text and keep its arrow. */
+select {
+  height: auto;
+  min-height: 30px;
+  padding: 4px 30px 4px 8px;
+  line-height: 1.25;
+  background-position: right 4px center;
+  cursor: pointer;
 }
 input::placeholder,
 textarea::placeholder {
@@ -760,6 +773,7 @@ a {
 .mail-body form > label {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 6px;
   margin: 15px 0 7px;
   font-size: 10px;
@@ -3622,4 +3636,404 @@ body:has(.reduced-motion) {
   margin: 8px 12px;
   font-size: 15px;
   line-height: 1.4;
+}
+
+/* Game shortcuts occupy the next native desktop column. */
+.desktop-icons {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100px;
+  width: max-content;
+  max-width: calc(100% - 30px);
+  gap: 0 10px;
+  overflow: auto;
+}
+.desktop-icon {
+  width: 100px;
+  height: 88px;
+  min-height: 0;
+  line-height: 1.15;
+}
+.desktop-icon .game-sprite-icon {
+  margin: 0;
+  text-shadow: none;
+}
+.game-sprite-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  image-rendering: pixelated;
+}
+.game-sprite-icon > span {
+  display: block;
+  flex: none;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+}
+@media (max-width: 739px) {
+  .desktop-icons {
+    grid-auto-columns: 88px;
+    gap: 0 7px;
+  }
+  .desktop-icon {
+    width: 88px;
+  }
+  .desktop-icon span {
+    font-size: 15px;
+  }
+}
+.spirit-app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #c0c0c0;
+  color: #17131e;
+}
+.spirit-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #777;
+  font-size: 18px;
+}
+.spirit-toolbar > span {
+  margin-left: auto;
+  font-size: 15px;
+}
+.spirit-log {
+  flex: 1;
+  min-height: 100px;
+  overflow: auto;
+  margin: 8px;
+  background: #19151e;
+  color: #dfd3bd;
+  padding: 15px 18px;
+  box-shadow:
+    inset 1px 1px #111,
+    inset -1px -1px #eee;
+  line-height: 1.5;
+  font-size: 18px;
+}
+.signal-system {
+  color: #ac9bb4;
+  font-size: 15px;
+  margin: 0 0 22px;
+}
+.signal-message {
+  margin: 0 0 24px;
+  max-width: 95%;
+}
+.signal-message strong {
+  color: #c4abdc;
+  font-weight: 400;
+}
+.signal-message p {
+  white-space: pre-wrap;
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+}
+.signal-message.from-visitor strong {
+  color: #a8c0b0;
+}
+.spirit-compose {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 9px 9px;
+}
+.spirit-compose label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.spirit-compose select {
+  flex: 1;
+  min-width: 0;
+}
+.spirit-compose textarea {
+  height: 90px;
+  resize: none;
+  font: 18px W95FA;
+  line-height: 1.4;
+}
+.spirit-compose > div {
+  display: flex;
+  justify-content: space-between;
+}
+.spirit-compose button {
+  min-width: 100px;
+}
+.games-app {
+  background: #211b29;
+  color: #e5dbca;
+}
+.game-shell-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px;
+  background: #302735;
+  border-bottom: 1px solid #6b5c73;
+  flex-wrap: wrap;
+}
+.game-program-name {
+  font-size: 16px;
+  margin-right: auto;
+}
+.game-shell-toolbar button,
+.game-keyboard button {
+  background: #493e50 !important;
+  color: #fff2dc !important;
+  box-shadow:
+    inset 1px 1px #92839d,
+    inset -1px -1px #120e19 !important;
+  min-width: 60px;
+  min-height: 30px;
+  font: 16px W95FA;
+}
+.game-shell-toolbar button[aria-pressed="true"] {
+  background: #1a1520 !important;
+}
+.game-folder {
+  background: #211b29 !important;
+}
+.game-folder > button {
+  color: #eee3ce !important;
+}
+.game-folder > button:hover,
+.game-folder > button:focus-visible {
+  background: #493653 !important;
+}
+.game-credits {
+  background: #302735 !important;
+  border-top: 1px solid #65566d;
+  color: #d0bfa4 !important;
+}
+.game-credits a {
+  color: #e2c69f !important;
+  font-size: 14px !important;
+}
+.game-keyboard {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  background: #211b29;
+  border-top: 1px solid #68596f;
+}
+.game-keyboard button {
+  touch-action: none;
+  min-width: 42px;
+}
+.game-keyboard > span {
+  align-self: center;
+  margin-left: 8px;
+  color: #d6b8bd;
+}
+.games-app iframe {
+  background: #15101d;
+}
+.game-shell-toolbar .game-program-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 739px) {
+  .game-shell-toolbar {
+    gap: 4px;
+    padding: 5px;
+  }
+  .game-program-name {
+    width: 100%;
+    order: -1;
+  }
+  .game-shell-toolbar button {
+    font-size: 15px;
+    min-width: 54px;
+  }
+  .game-keyboard {
+    gap: 4px;
+    padding: 5px;
+  }
+  .game-keyboard button {
+    min-width: 36px;
+    font-size: 15px;
+  }
+  .game-credits a {
+    font-size: 13px !important;
+  }
+}
+.spirit-app label,
+.spirit-app button,
+.spirit-app select,
+.spirit-app .window-status {
+  font-family: W95FA, sans-serif;
+  font-size: 16px;
+}
+.spirit-app .window-status span {
+  font-size: 15px;
+}
+.voice-transport {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px;
+  margin-top: 14px;
+  background: #302735;
+  color: #ecdfca;
+  border: 1px solid #6d5b77;
+  flex-wrap: wrap;
+}
+.voice-transport button {
+  font: 16px W95FA !important;
+  background: #4a3d52 !important;
+  color: #f5e7d0 !important;
+  box-shadow:
+    inset 1px 1px #93829f,
+    inset -1px -1px #15101c;
+  min-height: 31px;
+}
+.voice-transport input[type="range"] {
+  appearance: none;
+  flex: 1;
+  min-width: 80px;
+  height: 8px;
+  border: 1px solid #86738f;
+  background: #17121e;
+  padding: 0;
+}
+.voice-transport input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 18px;
+  border: 1px solid #d1bad7;
+  background: #826d90;
+  border-radius: 0;
+}
+.voice-transport input[type="range"]::-moz-range-thumb {
+  width: 10px;
+  height: 18px;
+  border: 1px solid #d1bad7;
+  background: #826d90;
+  border-radius: 0;
+}
+.voice-transport time {
+  font: 15px W95FA;
+  white-space: nowrap;
+}
+.file-policy select {
+  font:
+    16px W95FA,
+    sans-serif;
+}
+.spirit-compose select,
+.file-policy select {
+  min-height: 30px;
+  padding: 3px 30px 3px 8px;
+  line-height: 1.25;
+}
+body .desktop .game-sprite-icon {
+  vertical-align: middle;
+}
+
+/* First-run guidance: power-on premise, Read Me window, offline notice. */
+.power-screen {
+  width: min(460px, calc(100vw - 32px));
+}
+.power-premise {
+  margin: 0;
+  color: #bdbdbd;
+  text-align: center;
+  font:
+    17px/1.5 W95FA,
+    sans-serif;
+}
+.readme-app {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+}
+.readme-app > article {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  margin: 3px 0 0;
+  padding: 16px 22px;
+  background: #fff;
+  color: #000;
+  box-shadow: var(--inset);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.readme-app h1 {
+  font:
+    28px/1.15 W95FA,
+    sans-serif;
+  margin: 0 0 10px;
+}
+.readme-app h2 {
+  font:
+    19px W95FA,
+    sans-serif;
+  margin: 18px 0 6px;
+}
+.readme-app p {
+  margin: 0 0 8px;
+}
+.readme-app ol {
+  margin: 0;
+  padding-left: 22px;
+}
+.readme-app li {
+  margin-bottom: 6px;
+}
+.readme-goal {
+  padding: 8px 10px;
+  background: #fff8d8;
+  border: 1px solid #c9b66a;
+}
+.readme-app button.link,
+.desktop .readme-app button.link {
+  display: inline;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  color: #1d4f8a;
+  text-decoration: underline;
+  font: inherit;
+  cursor: pointer;
+}
+.offline-notice {
+  margin: 8px 9px;
+  padding: 9px 11px;
+  background: #fff4d6;
+  color: #3a2a00;
+  border: 1px solid #b8963c;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.mail-body .offline-notice,
+.readme-app .offline-notice {
+  margin: 10px 0;
+}
+.offline-notice p {
+  margin: 0 0 8px;
+}
+.offline-notice > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+/* Keep file text clear of the 98.css inset border. */
+.file-reader pre {
+  padding: 8px 12px;
 }

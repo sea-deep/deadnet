@@ -26,8 +26,12 @@ export class AudioService {
     const text = event.audioTranscript!.slice(0, 900);
     const voice = process.env.ELEVENLABS_VOICE_ID!;
     const model = process.env.ELEVENLABS_MODEL || "eleven_flash_v2_5";
+    const settings = { stability: 0.5, similarity_boost: 0.75, speed: 1.14 };
+    const performanceText = /eleven_v[34]/.test(model)
+      ? "[whispers][rushed] " + text
+      : text;
     const key = createHash("sha256")
-      .update(JSON.stringify([text, voice, model]))
+      .update(JSON.stringify([text, voice, model, settings, "urgent-call-v2"]))
       .digest("hex");
     const cached = this.store.audio(key);
     if (cached) return cached;
@@ -53,9 +57,9 @@ export class AudioService {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            text,
+            text: performanceText,
             model_id: model,
-            voice_settings: { stability: 0.7, similarity_boost: 0.65 },
+            voice_settings: settings,
           }),
           signal: AbortSignal.timeout(25000),
         },

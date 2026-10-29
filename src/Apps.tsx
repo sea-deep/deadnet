@@ -2,14 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import type { Action, AgentId, Event, Snapshot } from "./types";
 import { PixelIcon } from "./icons";
 import { exhibition } from "./api";
+import { duckAmbient } from "./sound";
+import { GAME_LIST, GameIcon, type GameId } from "./games";
 export type AppId =
+  | "readme"
   | "browser"
   | "mail"
   | "archive"
   | "people"
   | "monitor"
   | "notebook"
-  | "games";
+  | "games"
+  | "spirit";
 export const APP_INFO: Record<
   AppId,
   {
@@ -21,10 +25,13 @@ export const APP_INFO: Record<
       | "people"
       | "monitor"
       | "notebook"
-      | "games";
+      | "games"
+      | "spirit";
   }
 > = {
-  browser: { title: "Internet", icon: "browser" },
+  readme: { title: "Read Me", icon: "notebook" },
+  browser: { title: "Chat Logs", icon: "browser" },
+  spirit: { title: "Unknown Signal", icon: "spirit" },
   mail: { title: "Inbox", icon: "mail" },
   archive: { title: "My Documents", icon: "archive" },
   people: { title: "Address Book", icon: "people" },
@@ -42,6 +49,7 @@ export interface AppProps {
   composeTo: (id: AgentId, attachment?: string) => void;
   muted?: boolean;
   activeApp?: AppId;
+  gameRequest?: { id: GameId; nonce: number };
   mailDraft?: { recipient: AgentId; attachment?: string; nonce: number };
 }
 function Stamp({ id, data }: { id: string; data: Snapshot }) {
@@ -53,6 +61,7 @@ function Stamp({ id, data }: { id: string; data: Snapshot }) {
   );
 }
 function Sender({ e, data }: { e: Event; data: Snapshot }) {
+  if (e.audioTranscript) return <>Nora Vale (recording)</>;
   return (
     <>
       {data.world.agents.find((a) => a.id === e.actor)?.name ||
@@ -80,7 +89,7 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
         <button onClick={() => open("archive")}>File</button>
         <button onClick={() => open("people")}>Directory</button>
         <button onClick={() => open("monitor")}>Connection</button>
-        <button onClick={() => open("notebook")}>Help</button>
+        <button onClick={() => open("readme")}>Help</button>
       </div>
       <div className="browser-tools">
         <button
@@ -115,7 +124,9 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
         <div className="web-date">
           <span>Sunday, October 31, 1999</span>
           <span>
-            <i className="led" /> {data.world.agents.length} accounts connected
+            <i className="led" />{" "}
+            {data.world.agents.filter((a) => a.id !== "nora").length} accounts
+            connected
           </span>
         </div>
         <header className="web-masthead">
@@ -130,13 +141,13 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
             className={tab === "feed" ? "selected" : ""}
             onClick={() => setTab("feed")}
           >
-            The neighborhood
+            Residents’ messages
           </button>
           <button
             className={tab === "directory" ? "selected" : ""}
             onClick={() => setTab("directory")}
           >
-            People & places
+            Address book
           </button>
           <button onClick={() => open("archive")}>The archive</button>
           <button onClick={() => open("notebook")}>Notepad</button>
@@ -146,7 +157,7 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
             <div className="web-columns">
               <main className="feed-column">
                 <div className="section-title">
-                  <h1>The neighborhood</h1>
+                  <h1>Residents’ messages</h1>
                   <label>
                     Show{" "}
                     <select
@@ -155,11 +166,13 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
                       onChange={(e) => setFilter(e.target.value)}
                     >
                       <option value="all">everyone</option>
-                      {data.world.agents.map((a) => (
-                        <option key={a.id} value={a.id}>
-                          {a.handle}
-                        </option>
-                      ))}
+                      {data.world.agents
+                        .filter((a) => a.id !== "nora")
+                        .map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.handle}
+                          </option>
+                        ))}
                     </select>
                   </label>
                 </div>
@@ -181,7 +194,7 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
                           </button>
                           <time>
                             {e.tick === 0
-                              ? "this morning"
+                              ? e.archivedAt || "this morning"
                               : `network turn ${e.tick}`}
                           </time>
                         </div>
@@ -219,23 +232,25 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
               <aside className="web-sidebar">
                 <div className="online-box">
                   <h2>Online now</h2>
-                  {data.world.agents.map((a) => (
-                    <button
-                      className="online-person"
-                      key={a.id}
-                      onClick={() => {
-                        setTarget(a.id);
-                        open("people");
-                      }}
-                    >
-                      <Stamp id={a.id} data={data} />
-                      <span>
-                        <strong>{a.handle}</strong>
-                        <small>{a.role}</small>
-                      </span>
-                      <i className="led" />
-                    </button>
-                  ))}
+                  {data.world.agents
+                    .filter((a) => a.id !== "nora")
+                    .map((a) => (
+                      <button
+                        className="online-person"
+                        key={a.id}
+                        onClick={() => {
+                          setTarget(a.id);
+                          open("people");
+                        }}
+                      >
+                        <Stamp id={a.id} data={data} />
+                        <span>
+                          <strong>{a.handle}</strong>
+                          <small>{a.role}</small>
+                        </span>
+                        <i className="led" />
+                      </button>
+                    ))}
                 </div>
                 <figure className="archive-photo">
                   <img
@@ -289,27 +304,29 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
           </>
         ) : (
           <div className="directory">
-            <h1>People & places</h1>
-            {data.world.agents.map((a) => (
-              <button
-                key={a.id}
-                className="directory-person"
-                onClick={() => {
-                  setTarget(a.id);
-                  open("people");
-                }}
-              >
-                <Stamp id={a.id} data={data} />
-                <span>
-                  <strong>{a.name}</strong>
-                  <small>
-                    @{a.handle} · {a.role}
-                  </small>
-                  <span>{a.bio}</span>
-                </span>
-                <span>View profile →</span>
-              </button>
-            ))}
+            <h1>Address book</h1>
+            {data.world.agents
+              .filter((a) => a.id !== "nora")
+              .map((a) => (
+                <button
+                  key={a.id}
+                  className="directory-person"
+                  onClick={() => {
+                    setTarget(a.id);
+                    open("people");
+                  }}
+                >
+                  <Stamp id={a.id} data={data} />
+                  <span>
+                    <strong>{a.name}</strong>
+                    <small>
+                      @{a.handle} · {a.role}
+                    </small>
+                    <span>{a.bio}</span>
+                  </span>
+                  <span>View profile →</span>
+                </button>
+              ))}
           </div>
         )}
         <footer className="web-footer">
@@ -342,6 +359,8 @@ export function Mail({
   setTarget,
   mailDraft,
   muted,
+  activeApp,
+  open,
 }: AppProps) {
   const [compose, setCompose] = useState(false);
   const [folder, setFolder] = useState<"inbox" | "sent">("inbox");
@@ -358,11 +377,22 @@ export function Mail({
   const [voiceError, setVoiceError] = useState("");
   const [voiceLoading, setVoiceLoading] = useState(false);
   const [audio, setAudio] = useState("");
+  const audioElement = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [position, setPosition] = useState(0);
+  const [duration, setDuration] = useState(0);
+  useEffect(() => {
+    if (activeApp !== "mail") audioElement.current?.pause();
+  }, [activeApp]);
+  useEffect(() => () => duckAmbient(false), []);
   const requestId = useRef(0);
   const messages = data.world.events
     .filter(
       (e) =>
-        e.channel === "mail" && (e.to === "visitor" || e.actor === "visitor"),
+        e.channel === "mail" &&
+        e.actor !== "nora" &&
+        e.to !== "nora" &&
+        (e.to === "visitor" || e.actor === "visitor"),
     )
     .slice()
     .reverse();
@@ -380,9 +410,17 @@ export function Mail({
     setAudio("");
     setVoiceError("");
     setVoiceLoading(false);
+    setPosition(0);
+    setDuration(0);
+    setPlaying(false);
   }, [selected]);
   async function play() {
     if (!message) return;
+    if (audio && audioElement.current) {
+      audioElement.current.currentTime = 0;
+      void audioElement.current.play();
+      return;
+    }
     const current = ++requestId.current;
     setVoiceLoading(true);
     setVoiceError("");
@@ -478,6 +516,12 @@ export function Mail({
                 }}
               >
                 <h1>New message</h1>
+                <OfflineNotice
+                  data={data}
+                  perform={perform}
+                  busy={busy}
+                  open={open}
+                />
                 <label>
                   To{" "}
                   <select
@@ -485,11 +529,13 @@ export function Mail({
                     value={target}
                     onChange={(e) => setTarget(e.target.value as AgentId)}
                   >
-                    {data.world.agents.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name} (@{a.handle})
-                      </option>
-                    ))}
+                    {data.world.agents
+                      .filter((a) => a.id !== "nora")
+                      .map((a) => (
+                        <option key={a.id} value={a.id}>
+                          {a.name} (@{a.handle})
+                        </option>
+                      ))}
                   </select>
                 </label>
                 <label>
@@ -512,6 +558,7 @@ export function Mail({
                 <label htmlFor="message">Message</label>
                 <textarea
                   id="message"
+                  disabled={busy}
                   value={text}
                   maxLength={1000}
                   onChange={(e) => setText(e.target.value)}
@@ -524,7 +571,10 @@ export function Mail({
                   <button
                     className="primary"
                     disabled={
-                      busy || !text.trim() || !data.world.remainingTurns
+                      busy ||
+                      isOffline(data) ||
+                      !text.trim() ||
+                      !data.world.remainingTurns
                     }
                   >
                     {busy ? "Waiting for a reply…" : "Send privately"}
@@ -543,7 +593,9 @@ export function Mail({
                   <p>
                     To:{" "}
                     {message.to === "visitor"
-                      ? "You"
+                      ? message.id === "seed-mail"
+                        ? "Nora Vale"
+                        : "You"
                       : data.world.agents.find((a) => a.id === message.to)
                           ?.name}
                   </p>
@@ -588,27 +640,88 @@ export function Mail({
                       }
                     >
                       {voiceLoading
-                        ? "Rendering voicemail…"
+                        ? "Loading recording…"
                         : audio
-                          ? "Replay voicemail"
-                          : "Listen as voicemail"}
+                          ? "Replay recording"
+                          : "Play recording"}
                     </button>
                   )}
                 </div>
                 {audio && (
-                  <audio
-                    aria-label="Voicemail playback"
-                    src={audio}
-                    controls
-                    muted={muted}
-                    autoPlay
-                  />
+                  <>
+                    <audio
+                      ref={audioElement}
+                      aria-label="Voicemail playback"
+                      src={audio}
+                      hidden
+                      muted={muted}
+                      autoPlay
+                      onPlay={() => {
+                        setPlaying(true);
+                        duckAmbient(true);
+                      }}
+                      onPause={() => {
+                        setPlaying(false);
+                        duckAmbient(false);
+                      }}
+                      onEnded={() => {
+                        setPlaying(false);
+                        duckAmbient(false);
+                      }}
+                      onLoadedMetadata={(e) =>
+                        setDuration(e.currentTarget.duration)
+                      }
+                      onTimeUpdate={(e) =>
+                        setPosition(e.currentTarget.currentTime)
+                      }
+                    />
+                    <div
+                      className="voice-transport"
+                      role="group"
+                      aria-label="Recording controls"
+                    >
+                      <button
+                        onClick={() => {
+                          if (playing) audioElement.current?.pause();
+                          else void audioElement.current?.play();
+                        }}
+                      >
+                        {playing ? "Pause recording" : "Resume recording"}
+                      </button>
+                      <button
+                        onClick={() => {
+                          audioElement.current?.pause();
+                          if (audioElement.current)
+                            audioElement.current.currentTime = 0;
+                        }}
+                      >
+                        Stop
+                      </button>
+                      <input
+                        type="range"
+                        aria-label="Recording position"
+                        min={0}
+                        max={duration || 1}
+                        step={0.1}
+                        value={Math.min(position, duration || 1)}
+                        onChange={(e) => {
+                          if (audioElement.current)
+                            audioElement.current.currentTime = Number(
+                              e.target.value,
+                            );
+                        }}
+                      />
+                      <time>
+                        {Math.floor(position)} / {Math.ceil(duration)} s
+                      </time>
+                    </div>
+                  </>
                 )}
                 {(!data.status.voice || exhibition) &&
-                  message.to === "visitor" && (
+                  message.to === "visitor" &&
+                  message.audioTranscript && (
                     <p className="fine-print">
-                      Optional ElevenLabs voice is not configured. The full
-                      message is shown above.
+                      Audio is unavailable in this edition. Read the transcript.
                     </p>
                   )}
                 {voiceError && (
@@ -634,7 +747,8 @@ export function Archive({ data, perform, busy, composeTo }: AppProps) {
   const [search, setSearch] = useState(""),
     [selected, setSelected] = useState("carrier"),
     [sendMenu, setSendMenu] = useState(false),
-    [policy, setPolicy] = useState<"sealed" | "exposed">("sealed");
+    [policy, setPolicy] = useState<"sealed" | "exposed">("sealed"),
+    [suspect, setSuspect] = useState<"" | "mara" | "len" | "sysop">("");
   const records = data.archive.filter((e) =>
     `${e.filename} ${e.folder}`.toLowerCase().includes(search.toLowerCase()),
   );
@@ -715,22 +829,24 @@ export function Archive({ data, perform, busy, composeTo }: AppProps) {
           <pre>
             {readable
               ? record.body
-              : "Cannot read CONTINUITY.INI.\n\nData error (cyclic redundancy check)."}
+              : "Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data. Open the other files in this folder to repair it."}
           </pre>
           {sendMenu && (
             <div className="file-send-menu" aria-label="Send file to">
-              {data.world.agents.map((a) => (
-                <button
-                  key={a.id}
-                  disabled={busy}
-                  onClick={() => {
-                    composeTo(a.id, record.id);
-                    setSendMenu(false);
-                  }}
-                >
-                  {a.name}
-                </button>
-              ))}
+              {data.world.agents
+                .filter((a) => a.id !== "nora")
+                .map((a) => (
+                  <button
+                    key={a.id}
+                    disabled={busy}
+                    onClick={() => {
+                      composeTo(a.id, record.id);
+                      setSendMenu(false);
+                    }}
+                  >
+                    {a.name}
+                  </button>
+                ))}
               <button
                 disabled={busy || data.world.ending === "sealed"}
                 onClick={() => {
@@ -744,9 +860,13 @@ export function Archive({ data, perform, busy, composeTo }: AppProps) {
           )}
           {record.id === "manifest" && readable && (
             <fieldset className="file-policy">
-              <legend>Sharing</legend>
+              <legend>Case file</legend>
               {data.world.ending === "open" ? (
                 <>
+                  <p className="fine-print">
+                    Who opened room 317 at 03:17? Publish the evidence and name
+                    them, or keep the case private.
+                  </p>
                   <label>
                     <input
                       type="radio"
@@ -755,7 +875,7 @@ export function Archive({ data, perform, busy, composeTo }: AppProps) {
                       disabled={data.world.published.length > 0}
                       onChange={() => setPolicy("sealed")}
                     />{" "}
-                    Private
+                    Keep private
                   </label>
                   <label>
                     <input
@@ -764,21 +884,48 @@ export function Archive({ data, perform, busy, composeTo }: AppProps) {
                       checked={policy === "exposed"}
                       onChange={() => setPolicy("exposed")}
                     />{" "}
-                    Everyone on the network
+                    Publish case evidence
                   </label>
+                  {policy === "exposed" && (
+                    <label>
+                      Suspect{" "}
+                      <select
+                        aria-label="Report suspect"
+                        value={suspect}
+                        onChange={(e) =>
+                          setSuspect(e.target.value as typeof suspect)
+                        }
+                      >
+                        <option value="">Choose a name</option>
+                        {data.world.agents
+                          .filter((a) => a.id !== "nora")
+                          .map((a) => (
+                            <option value={a.id} key={a.id}>
+                              {a.name}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  )}
                   <button
-                    disabled={busy}
+                    disabled={busy || (policy === "exposed" && !suspect)}
                     onClick={() =>
-                      void perform({ type: "resolve", choice: policy })
+                      void perform({
+                        type: "resolve",
+                        choice: policy,
+                        suspect: suspect || undefined,
+                      })
                     }
                   >
-                    Apply
+                    {policy === "exposed" ? "File report" : "Keep case private"}
                   </button>
+                  <p className="fine-print">This choice is final.</p>
                 </>
               ) : (
                 <p>
-                  Permissions saved:{" "}
-                  {data.world.ending === "exposed" ? "public" : "private"}.
+                  {data.world.ending === "exposed"
+                    ? `Report filed. You named ${data.world.agents.find((a) => a.id === data.world.accused)?.name ?? "a suspect"}. Check Unknown Signal and Inbox for what happened next.`
+                    : "Case kept private. Check Unknown Signal and Inbox for what happened next."}
                 </p>
               )}
             </fieldset>
@@ -797,19 +944,21 @@ export function People({ data, target, setTarget, open, composeTo }: AppProps) {
   return (
     <div className="people-app">
       <aside className="people-list">
-        {data.world.agents.map((p) => (
-          <button
-            key={p.id}
-            className={p.id === target ? "active" : ""}
-            onClick={() => setTarget(p.id)}
-          >
-            <Stamp id={p.id} data={data} />
-            <span>
-              {p.name}
-              <small>@{p.handle}</small>
-            </span>
-          </button>
-        ))}
+        {data.world.agents
+          .filter((p) => p.id !== "nora")
+          .map((p) => (
+            <button
+              key={p.id}
+              className={p.id === target ? "active" : ""}
+              onClick={() => setTarget(p.id)}
+            >
+              <Stamp id={p.id} data={data} />
+              <span>
+                {p.name}
+                <small>@{p.handle}</small>
+              </span>
+            </button>
+          ))}
       </aside>
       <main className="profile">
         <div className="profile-heading">
@@ -845,12 +994,146 @@ export function People({ data, target, setTarget, open, composeTo }: AppProps) {
     </div>
   );
 }
+/** True when live replies are selected but no model can answer them. */
+export function isOffline(data: Snapshot) {
+  return (
+    !exhibition &&
+    data.world.mode === "live" &&
+    (!data.status.available || quotaSpent(data))
+  );
+}
+/** Today's free AI allowance is used up for this visitor or for everyone. */
+function quotaSpent(data: Snapshot) {
+  const q = data.status.quota;
+  return Boolean(
+    q && (q.visitorUsed >= q.visitorLimit || q.globalUsed >= q.globalLimit),
+  );
+}
+export function OfflineNotice({
+  data,
+  perform,
+  busy,
+  open,
+  inReadMe,
+}: Pick<AppProps, "data" | "perform" | "busy" | "open"> & {
+  inReadMe?: boolean;
+}) {
+  if (!isOffline(data)) return null;
+  return (
+    <div className="offline-notice" role="status">
+      <p>
+        <strong>
+          {data.status.available
+            ? "Today’s free AI replies are used up,"
+            : "No AI model is connected,"}
+        </strong>{" "}
+        so nobody can reply live right now. Switch to scripted replies to keep
+        playing
+        {data.status.available
+          ? ", or come back tomorrow."
+          : inReadMe
+            ? ", or connect a model (see Replies below)."
+            : ", or connect a model (see Read Me)."}
+      </p>
+      <div>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void perform({ type: "mode", mode: "baseline" })}
+        >
+          Use scripted replies
+        </button>
+        {!inReadMe && (
+          <button type="button" onClick={() => open("readme")}>
+            Read Me
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+export function ReadMe(props: AppProps) {
+  const { data, open } = props;
+  const engine = exhibition
+    ? "This public edition uses scripted replies. Run it locally for live AI replies (see the GitHub README)."
+    : data.world.mode === "baseline"
+      ? "Replies are scripted (no AI). You can switch to a live model in System Monitor."
+      : data.status.available
+        ? `Replies are written live by an AI model (${data.status.model}). They can take a few seconds.`
+        : "No AI model is connected yet. Press Use scripted replies to play now, or add OPENROUTER_API_KEY to .env (or start Ollama) and restart the server. See README.md.";
+  return (
+    <div className="readme-app">
+      <article>
+        <h1>Room 317</h1>
+        <p>
+          Nora Vale was found dead in room 317 of Westhaven House at 03:17 on 31
+          October 1999. The police called it an accident. This is her computer,
+          and something on it is still answering.
+        </p>
+        <p className="readme-goal">
+          <strong>Your goal:</strong> work out who was in the room with Nora,
+          then file the case report.
+        </p>
+        <OfflineNotice {...props} inReadMe />
+        <h2>How to play</h2>
+        <ol>
+          <li>
+            <strong>Read.</strong> Check{" "}
+            <button className="link" onClick={() => open("mail")}>
+              Inbox
+            </button>{" "}
+            and{" "}
+            <button className="link" onClick={() => open("browser")}>
+              Chat Logs
+            </button>
+            . Mara is Nora’s neighbour, Len is the night porter, Owen is the
+            building manager.
+          </li>
+          <li>
+            <strong>Recover.</strong> Open{" "}
+            <button className="link" onClick={() => open("archive")}>
+              My Documents
+            </button>{" "}
+            and read the files. Once you have opened two, the damaged{" "}
+            <b>CASE_14.BAK</b> repairs itself.
+          </li>
+          <li>
+            <strong>Ask.</strong>{" "}
+            <button className="link" onClick={() => open("spirit")}>
+              Unknown Signal
+            </button>{" "}
+            is Nora. Attach a file you have opened and ask what she remembers.
+            You can also write to the residents from Inbox or Address Book. Each
+            message uses one of 18 turns.
+          </li>
+          <li>
+            <strong>Decide.</strong> In CASE_14.BAK, choose{" "}
+            <i>Publish case evidence</i>, name a suspect and press{" "}
+            <i>File report</i>, or keep the case private. This can’t be undone.
+          </li>
+        </ol>
+        <h2>Controls</h2>
+        <p>
+          Double-click an icon to open it (one tap on a phone). Drag, resize,
+          minimise and maximise windows. The speaker in the tray mutes sound.
+          The six games are extras and aren’t part of the case.
+        </p>
+        <h2>Replies</h2>
+        <p>{engine}</p>
+      </article>
+      <div className="window-status">
+        <span>READ ME.TXT</span>
+        <span>Open again from the desktop or Start</span>
+      </div>
+    </div>
+  );
+}
 export function Notebook() {
   const initial =
-    "milk\nbatteries\n\nlen's birthday again. forgot a card.\n\nthe same photograph was in the folder yesterday.\ni think.\n\n03:17 —";
+    "rent\nbatteries\nblue scarf at mara’s\n\nL. last bus, 02:58\ngreen lamp still on downstairs\n\nhe knocked twice. i thought it was her.\n\n03:17 —";
   const [text, setText] = useState(() => {
     try {
-      return localStorage.getItem("deadnet-notes-v2") ?? initial;
+      return localStorage.getItem("deadnet-case-notes-v3") ?? initial;
     } catch {
       return initial;
     }
@@ -858,7 +1141,7 @@ export function Notebook() {
   function edit(value: string) {
     setText(value);
     try {
-      localStorage.setItem("deadnet-notes-v2", value);
+      localStorage.setItem("deadnet-case-notes-v3", value);
     } catch {
       /* Session-only fallback. */
     }
@@ -897,66 +1180,100 @@ export function Notebook() {
     </div>
   );
 }
-const GAME_LIST = [
-  {
-    id: "snake",
-    name: "Snake",
-    keys: "Arrow keys",
-    author: "Patrick Gillespie",
-    repo: "patorjk/JavaScript-Snake",
-  },
-  {
-    id: "flappy",
-    name: "Flappy Bird",
-    keys: "Space or click",
-    author: "pyforgedev",
-    repo: "pyforgedev/flappy-bird",
-  },
-  {
-    id: "tetris",
-    name: "Tetris",
-    keys: "Space · Arrow keys",
-    author: "Jake Gordon",
-    repo: "jakesgordon/javascript-tetris",
-  },
-  {
-    id: "2048",
-    name: "2048",
-    keys: "Arrow keys",
-    author: "Gabriele Cirulli",
-    repo: "gabrielecirulli/2048",
-  },
-  {
-    id: "phantomicus",
-    name: "Phantomicus",
-    keys: "Enter · Arrows · Space",
-    author: "Cody Ebberson",
-    repo: "codyebberson/js13k-phantomicus",
-  },
-  {
-    id: "hocus",
-    name: "Hocus :focus",
-    keys: "Tab · Enter",
-    author: "HTeuMeuLeu",
-    repo: "hteumeuleu/hocus-focus",
-  },
-];
-export function Games({ muted, activeApp }: AppProps) {
+export function Games({ muted, activeApp, gameRequest }: AppProps) {
   const [game, setGame] = useState<string | null>(null),
     [run, setRun] = useState(0),
+    [paused, setPaused] = useState(false),
+    [soundOff, setSoundOff] = useState(false),
     frame = useRef<HTMLIFrameElement>(null);
+  useEffect(() => {
+    if (gameRequest) setGame(gameRequest.id);
+  }, [gameRequest?.nonce]);
   const current = GAME_LIST.find((g) => g.id === game);
-  const syncSound = () =>
-    frame.current?.contentWindow?.postMessage(
-      { type: "deadnet-audio", muted: Boolean(muted || activeApp !== "games") },
+  const syncSound = () => {
+    const child = frame.current?.contentWindow;
+    child?.postMessage(
+      {
+        type: "deadnet-audio",
+        muted: Boolean(muted || soundOff || paused || activeApp !== "games"),
+      },
       location.origin,
     );
-  useEffect(syncSound, [muted, activeApp, game, run]);
+    child?.postMessage(
+      { type: "deadnet-pause", paused: paused || activeApp !== "games" },
+      location.origin,
+    );
+  };
+  useEffect(syncSound, [muted, activeApp, game, run, paused, soundOff]);
+  function key(key: string, down: boolean) {
+    const codes: Record<string, number> = {
+      ArrowLeft: 37,
+      ArrowUp: 38,
+      ArrowRight: 39,
+      ArrowDown: 40,
+      " ": 32,
+      Enter: 13,
+      Tab: 9,
+    };
+    frame.current?.contentWindow?.postMessage(
+      {
+        type: "deadnet-key",
+        key,
+        code: key === " " ? "Space" : key,
+        keyCode: codes[key],
+        down,
+      },
+      location.origin,
+    );
+  }
+  const keys =
+    game === "flappy"
+      ? [" "]
+      : game === "hocus"
+        ? ["Tab", "Enter"]
+        : game === "phantomicus"
+          ? ["ArrowLeft", "ArrowUp", "ArrowDown", "ArrowRight", " ", "Enter"]
+          : [
+              "ArrowLeft",
+              "ArrowUp",
+              "ArrowDown",
+              "ArrowRight",
+              ...(game === "tetris" || game === "snake" ? [" "] : []),
+            ];
   return (
     <div className="games-app">
-      <div className="menubar">
-        <button onClick={() => setGame(null)}>Games</button>
-        {current && <button onClick={() => setRun(run + 1)}>Restart</button>}
+      <div className="game-shell-toolbar">
+        <button
+          onClick={() => {
+            setGame(null);
+            setPaused(false);
+          }}
+        >
+          Games
+        </button>
+        {current && (
+          <>
+            <span className="game-program-name">{current.name}.exe</span>
+            <button
+              onClick={() => {
+                setRun(run + 1);
+                setPaused(false);
+              }}
+            >
+              New game
+            </button>
+            <button aria-pressed={paused} onClick={() => setPaused(!paused)}>
+              {paused ? "Resume" : "Pause"}
+            </button>
+            <button
+              aria-pressed={soundOff || muted}
+              disabled={muted}
+              onClick={() => setSoundOff(!soundOff)}
+            >
+              {muted ? "Muted" : soundOff ? "Sound off" : "Sound on"}
+            </button>
+          </>
+        )}
       </div>
       {current ? (
         <iframe
@@ -972,11 +1289,49 @@ export function Games({ muted, activeApp }: AppProps) {
         <div className="game-folder">
           {GAME_LIST.map((g) => (
             <button key={g.id} onClick={() => setGame(g.id)}>
-              <PixelIcon name="games" size={32} />
+              <GameIcon id={g.id} />
               <strong>{g.name}</strong>
               <span>{g.keys}</span>
             </button>
           ))}
+        </div>
+      )}
+      {current && (
+        <div className="game-keyboard" aria-label="Game controls">
+          {keys.map((k) => (
+            <button
+              key={k}
+              type="button"
+              aria-label={k === " " ? "Space" : k}
+              disabled={paused}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                key(k, true);
+              }}
+              onPointerUp={() => key(k, false)}
+              onPointerLeave={() => key(k, false)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  key(k, true);
+                }
+              }}
+              onKeyUp={(e) => {
+                if (e.key === "Enter") key(k, false);
+              }}
+            >
+              {(
+                {
+                  ArrowLeft: "←",
+                  ArrowUp: "↑",
+                  ArrowDown: "↓",
+                  ArrowRight: "→",
+                  " ": "Space",
+                } as Record<string, string>
+              )[k] || k}
+            </button>
+          ))}
+          {paused && <span>Paused</span>}
         </div>
       )}
       <footer className="game-credits">
@@ -1017,7 +1372,7 @@ export function Monitor({ data, perform, busy }: AppProps) {
       </div>
       <div className="monitor-screen">
         <div className="console-heading">
-          <span>DEADNET / CONTINUITY SERVICE</span>
+          <span>DEADNET / RECOVERY SERVICE</span>
           <span>v0.1</span>
         </div>
         <div className="console-lines">
@@ -1196,6 +1551,135 @@ export function Monitor({ data, perform, busy }: AppProps) {
           <button onClick={() => setReset(false)}>Cancel</button>
         </div>
       )}
+    </div>
+  );
+}
+
+export function Spirit({ data, perform, busy, open }: AppProps) {
+  const released =
+    data.world.ending === "exposed" && data.world.accused === "sysop";
+  const [text, setText] = useState(""),
+    [attachment, setAttachment] = useState("");
+  const log = useRef<HTMLDivElement>(null);
+  const messages = data.world.events.filter(
+    (e) =>
+      e.channel === "mail" &&
+      ((e.actor === "nora" && e.to === "visitor") ||
+        (e.actor === "visitor" && e.to === "nora")),
+  );
+  useEffect(() => {
+    log.current?.scrollTo(0, log.current.scrollHeight);
+  }, [messages.length, busy]);
+  return (
+    <div className="spirit-app">
+      <div className="spirit-toolbar">
+        <PixelIcon name="spirit" size={24} />
+        <strong>nora_v</strong>
+        <span>{released ? "Connection closed" : "Unverified connection"}</span>
+      </div>
+      <div
+        className="spirit-log"
+        ref={log}
+        role="log"
+        aria-label="Nora conversation"
+        aria-live="polite"
+      >
+        <p className="signal-system">
+          Connection opened. Last seen: 31 October 1999.
+        </p>
+        {!messages.length && (
+          <div className="signal-message">
+            <strong>unknown:</strong>
+            <p>i can hear the keys. is somebody there?</p>
+          </div>
+        )}
+        {messages.map((e) => (
+          <div
+            key={e.id}
+            className={`signal-message ${e.actor === "visitor" ? "from-visitor" : ""}`}
+          >
+            <strong>{e.actor === "visitor" ? "You" : "nora_v"}:</strong>
+            <p>{e.text}</p>
+            {e.origin === "baseline" && <small>Scripted baseline</small>}
+          </div>
+        ))}
+        {busy && <p className="signal-system">Receiving…</p>}
+        {data.world.traces.at(-1)?.actor === "nora" &&
+          data.world.traces.at(-1)?.status === "error" && (
+            <p className="signal-system" role="status">
+              Line interrupted. Your message was saved; try sending again.
+            </p>
+          )}
+      </div>
+      <OfflineNotice data={data} perform={perform} busy={busy} open={open} />
+      <form
+        className="spirit-compose"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          if (
+            await perform({
+              type: "message",
+              target: "nora",
+              text,
+              evidenceId: attachment || undefined,
+            })
+          ) {
+            setText("");
+            setAttachment("");
+          }
+        }}
+      >
+        <label>
+          Attachment{" "}
+          <select
+            aria-label="Show Nora a file"
+            value={attachment}
+            onChange={(e) => setAttachment(e.target.value)}
+          >
+            <option value="">None</option>
+            {data.archive
+              .filter((e) => data.world.collected.includes(e.id))
+              .map((e) => (
+                <option key={e.id} value={e.id}>
+                  {e.filename}
+                </option>
+              ))}
+          </select>
+        </label>
+        <textarea
+          aria-label="Message Nora"
+          disabled={busy || released}
+          value={text}
+          maxLength={1000}
+          onChange={(e) => setText(e.target.value)}
+          required
+        />
+        <div>
+          <button type="button" onClick={() => open("archive")}>
+            My Documents
+          </button>
+          <button
+            type="submit"
+            disabled={
+              busy ||
+              released ||
+              isOffline(data) ||
+              !text.trim() ||
+              !data.world.remainingTurns
+            }
+          >
+            Send
+          </button>
+        </div>
+      </form>
+      <div className="window-status">
+        <span>
+          {data.world.mode === "baseline"
+            ? "Scripted baseline"
+            : "Connection open"}
+        </span>
+        <span>{data.world.remainingTurns} turns remain</span>
+      </div>
     </div>
   );
 }

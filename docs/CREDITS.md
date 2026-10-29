@@ -30,3 +30,9 @@ Actual Yahoo 1998 and Netscape mailbox reference screenshots were inspected for 
 [Ambient horror](https://opengameart.org/content/ambient-horror) by techiew, December 28, 2022, CC0. The original OGG is self-hosted at public/assets/audio/ambient-horror.ogg. Boot/mail/disk/line cues are original Web Audio synthesis. Game effects retain their upstream licenses.
 
 The desktop adapts jdan’s MIT **98.css**. Six games are vendored under their respective MIT licenses. Creator links are visible in the Games window. Full pinned revisions, modifications, and source locations are in [THIRD-PARTY.md](THIRD-PARTY.md). Their code, art and gameplay are not claimed as new DEADNET work.
+
+## Room 317 revision
+
+The murder case, Nora’s private signal, chats, note fragments and revised call are new fictional DEADNET writing. Nora and all suspects are fictional. The current call uses ElevenLabs’ premade Lily library voice, not a real victim’s likeness or a cloned private voice. The original Daniel recording remains historical evidence of the earlier prototype and is no longer the game’s call.
+
+New game raster sources and exact reskin/input changes are documented in THIRD-PARTY.md and public/assets/horror/CREDITS.txt. All six games remain independently credited. OpenRouter’s verified current reply used the open-weight Dots3-Note Preview model; the underlying model is recorded per turn. Local Gemma remains a separately verified option. Runtime provider/model licenses are separate from the application’s MIT license.

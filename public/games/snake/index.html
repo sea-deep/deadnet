@@ -4,7 +4,7 @@
 <head><script src="deadnet-host.js"></script>
   <!--
 
-  JavaScript Snake
+  Grave Snake
   https://patorjk.com/games/snake
 
   Source code is available here: https://github.com/patorjk/JavaScript-Snake
@@ -13,7 +13,7 @@
   -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>JavaScript Snake</title>
+  <title>Grave Snake</title>
   <link
     rel="preload"
     href="css/tuicss/fonts/perfect-dos-vga-437.woff2"
@@ -118,8 +118,8 @@
   
   
   -->
-</head>
-  <body>
+<link rel="stylesheet" href="theme.css"></head>
+  <body data-game="snake">
     <!-- SNAKE.Board puts this into whichever dialog is shown.
          It is passed to the board via the dialogControls config option. -->
     <div class="snake-dialog-controls" id="snake-dialog-controls">
@@ -187,6 +187,6 @@
 
     document.getElementById('go_full_screen').addEventListener('click', go_full_screen);
   </script>
-</body>
+<script src="game-fit.js"></script></body>
 
 </html>

@@ -69,3 +69,43 @@ export class Store {
     this.db.close();
   }
 }
+
+/** One private world per browser when the app is hosted publicly. */
+export class VisitorStore {
+  constructor(
+    private store: Store,
+    private visitor: string,
+  ) {
+    store.db.exec(
+      "CREATE TABLE IF NOT EXISTS visitor_world(visitor TEXT PRIMARY KEY, snapshot TEXT NOT NULL, updated_at INTEGER NOT NULL)",
+    );
+    if (!this.row()) this.save(seedWorld(), "create");
+  }
+  private row() {
+    return this.store.db
+      .prepare("SELECT snapshot FROM visitor_world WHERE visitor=?")
+      .get(this.visitor) as { snapshot: string } | undefined;
+  }
+  load(): World {
+    return JSON.parse(this.row()!.snapshot);
+  }
+  save(world: World, _action: string) {
+    this.store.db
+      .prepare(
+        "INSERT INTO visitor_world VALUES(?,?,?) ON CONFLICT(visitor) DO UPDATE SET snapshot=excluded.snapshot, updated_at=excluded.updated_at",
+      )
+      .run(this.visitor, JSON.stringify(world), Date.now());
+  }
+  reset(world: World) {
+    this.save(world, "reset");
+  }
+  /** Forget worlds nobody has touched for a week. */
+  static prune(store: Store, maxAgeMs = 7 * 86400000) {
+    store.db.exec(
+      "CREATE TABLE IF NOT EXISTS visitor_world(visitor TEXT PRIMARY KEY, snapshot TEXT NOT NULL, updated_at INTEGER NOT NULL)",
+    );
+    store.db
+      .prepare("DELETE FROM visitor_world WHERE updated_at < ?")
+      .run(Date.now() - maxAgeMs);
+  }
+}

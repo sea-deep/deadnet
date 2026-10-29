@@ -19,7 +19,7 @@ async function app(name: string) {
     .click();
 }
 for (const [name, file] of [
-  ["Internet", "desktop"],
+  ["Chat Logs", "desktop"],
   ["Inbox", "mail"],
   ["Notepad", "notepad"],
   ["Games", "games"],
@@ -30,7 +30,7 @@ for (const [name, file] of [
   await page.screenshot({ path: "docs/evidence/" + file + ".png" });
 }
 await page.setViewportSize({ width: 390, height: 844 });
-await app("Internet");
+await app("Chat Logs");
 await page.screenshot({ path: "docs/evidence/mobile.png" });
 await app("My Documents");
 await page.screenshot({ path: "docs/evidence/mobile-archive.png" });

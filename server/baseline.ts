@@ -8,17 +8,21 @@ export class BaselineModel implements ModelAdapter {
   async generate({ agent, source }: ModelInput): Promise<Generation> {
     const evidence = source.factIds.length > 0;
     const text =
-      agent.id === "len"
+      agent.id === "nora"
         ? evidence
-          ? "A log can be wrong. I remember the phone ringing. Why would I remember that?"
-          : "Still here. Coffee is cold again. Anyone else awake?"
-        : agent.id === "mara"
+          ? "i remember the scrape of the key now. it wasn’t len’s. i couldn’t see his face from the floor."
+          : "there were two knocks. i thought it was mara. but the coat was wet, and she never went out that night."
+        : agent.id === "len"
           ? evidence
-            ? "i saved a copy. the dates disagree with what we remember. len should see this."
-            : "the archive has the same sky in every photograph. i’m checking the timestamps."
-          : evidence
-            ? "The continuity service preserves what remains. Please consider the effect of these records before sharing them."
-            : "Routine maintenance complete. Please disregard calendar discrepancies.";
+            ? "That is my clock-out time. I told you I had gone home. Why is my name still in his statement?"
+            : "I keep looking for that bus ticket. It was raining. The ink had already run."
+          : agent.id === "mara"
+            ? evidence
+              ? "i saved a copy. that isn’t what owen told the police. len should see this."
+              : "her scarf is still on my chair. i don’t know what to do with it."
+            : evidence
+              ? "That is an incomplete copy of a maintenance record. Send it to me before you circulate another accusation."
+              : "Management has already provided a statement. Nora’s family deserves privacy.";
     return {
       decision: {
         text,

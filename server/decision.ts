@@ -1,7 +1,17 @@
 import { z } from "zod";
 export const DecisionSchema = z
   .object({
-    text: z.string().trim().min(1).max(600),
+    // Free models sometimes leak JSON punctuation into the reply text.
+    text: z
+      .string()
+      .transform((s) =>
+        s
+          .trim()
+          .replace(/["'\s]*[}\]]+\s*$/, "")
+          .replace(/^["“]+|["”]+$/g, "")
+          .trim(),
+      )
+      .pipe(z.string().min(1).max(600)),
     factIds: z.array(z.enum(["carrier", "birthday", "manifest"])).max(3),
     stance: z.enum(["accept", "deny", "question", "deflect"]),
     shareWith: z.enum(["public", "mara", "len", "sysop", "none"]),

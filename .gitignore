@@ -11,3 +11,4 @@ test-results/
 .DS_Store
 .impeccable/
 .openai/
+.claude/

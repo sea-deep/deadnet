@@ -1,5 +1,5 @@
 ---
-title: "DEADNET: Three Accounts Are Still Waiting for Someone to Come Back"
+title: "DEADNET: The Victim’s Computer Is Still Answering"
 published: false
 tags: devchallenge, hf26challenge
 ---
@@ -8,110 +8,111 @@ tags: devchallenge, hf26challenge
 
 ## What I Built
 
-Len says his mother called this morning. It is his twenty-ninth birthday. He has coffee, a night shift, and friends to talk to.
+Mara keeps emailing her dead neighbour.
 
-The network log says the last outside connection ended fifty years ago.
+“i keep writing this as if you’ll read it. your scarf is still on my chair.”
 
-**DEADNET is a fictional abandoned computer with three persistent AI characters.** Mara keeps an archive. Len keeps an ordinary routine. The operator keeps both of them connected. You can read their correspondence, recover old records, and decide whom to tell. Each character can interpret what you send, doubt it, remember it, or pass it to somebody else.
+On Nora Vale’s recovered computer, those messages are still waiting in Inbox. The police called her death an accident. A door log disagrees with a witness statement. Her last call ends before she can finish explaining. Then an unknown contact starts answering you.
 
-That last part is the project’s center. Sending a file privately changes who can know it. What happens after that depends partly on the recipient. Your careful disclosure can become somebody else’s rumor.
+**DEADNET — Room 317 is a fictional murder investigation inside an old desktop.** Read the residents’ messages, inspect recovered records, question three accounts, and talk privately to the soul trapped in the computer. Show Nora what you find. Her memory arrives in fragments; your job is to decide what those fragments actually establish.
 
-I interpreted the theme through a network that preserved conversations after losing the people who made them. All characters are fictional. This project does not imitate a real deceased person or claim to recreate a consciousness.
+The AI does not invent the solution. The objective case is authored. Open-weight models supply the uncertain conversations around it: what somebody believes, what they remember, whether they trust you, and whether they pass a private discovery to someone else.
+
+All people and events are fictional. This is not a recreation of a real deceased person.
 
 ## Demo
 
 [Open the interactive exhibition](https://sea-deep.github.io/deadnet/).
 
-**The public exhibition is explicitly labeled as scripted.** It uses the same state engine with deterministic responses, so anyone can explore the computer without installing weights or spending API credit. It is not evidence of live inference.
+**The public exhibition is explicitly scripted.** It shares the state engine and lets anyone explore without a key or model installation. It cannot prove live inference. The [full Node application](https://github.com/sea-deep/deadnet#run) runs the actual model calls; reproducible transcripts and measurements are linked below.
 
-The [full local application](https://github.com/sea-deep/deadnet#run) runs real Gemma through Ollama and also supports server-side OpenRouter. The repository contains actual model transcripts, timing results and request evidence. The free OpenRouter pool was throttled during the final check, so I am not presenting it as a reliable public live-AI deployment.
+![Nora’s computer, with individual game shortcuts and an unknown signal](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/evidence/desktop-new.png)
 
-![The abandoned desktop, with the forest photograph and ordinary shortcuts](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/evidence/desktop-new.png)
+Power on. Read Inbox. Open Unknown Signal and ask what she remembers. My Documents contains a key log, a saved chat and Adam Moore’s earlier case backup. You can attach opened files to private conversations. The final report records the suspect you choose; the closing signal changes with that choice.
 
-Power on, open Inbox, and read Mara’s message. My Documents has an ordinary Send To menu. Try sending CARRIER.LOG privately before deciding whether to share anything publicly. Notepad contains someone’s unfinished scraps; it also saves whatever you write.
+![The private messenger window](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/evidence/spirit.png)
 
-![The mailbox uses an ordinary folder list, message table and reading pane](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/evidence/mail.png)
-
-The desktop has a BIOS startup, a clock stuck at 03:17, a sourced forest wallpaper, quiet horror ambience, and six credited games. The computer should feel usable before it starts feeling wrong. There is no demo video; the interactive build, screenshots and reproducible evidence are the demonstration.
+The BIOS sequence, clock stuck at 03:17, unfinished Notepad, forest wallpaper and quiet horror audio make the machine a place to investigate. Six credited games are ordinary distractions on its desktop. Each opens directly, with shared pause, restart, sound and keyboard controls. There is no demo video: the working exhibition, local installation and actual evidence are the demonstration.
 
 ## Code
 
-[sea-deep/deadnet on GitHub](https://github.com/sea-deep/deadnet) — new repository started October 29, 2026. Application code is MIT. Third-party code and media retain their own licenses.
+[sea-deep/deadnet on GitHub](https://github.com/sea-deep/deadnet). New project and repository begun October 29, 2026. Application code is MIT.
 
-The interface adapts [98.css](https://github.com/jdan/98.css). The games are existing MIT projects, separately credited in the game window and [pinned-source inventory](https://github.com/sea-deep/deadnet/blob/main/docs/THIRD-PARTY.md). I did not build Snake, Tetris, 2048, Flappy Bird, Phantomicus or Hocus :focus from scratch. They are the distractions on this computer, not the AI contribution.
+The shell adapts [98.css](https://github.com/jdan/98.css). Actual Yahoo 1998 and Netscape mailbox screenshots informed navigation and density. Fonts, Fugue PNG icons, Sebastian Unrau’s forest photograph, Vander96’s animated bat and techiew’s CC0 ambience are [credited](https://github.com/sea-deep/deadnet/blob/main/docs/CREDITS.md).
 
-Visual references included actual Yahoo 1998 and Netscape Communicator mailbox screenshots. W95FA/VT323, Fugue PNG icons, Sebastian Unrau’s forest photograph and techiew’s CC0 horror ambience are all [credited](https://github.com/sea-deep/deadnet/blob/main/docs/CREDITS.md). No generated illustration stands in for the wallpaper.
+Grave Snake, Flappy Bat, Crypt Blocks and 2048: Séance adapt existing MIT games; Phantomicus and Hocus :focus retain their original titles. Their creators remain visible in the game window. [Pinned sources and modifications](https://github.com/sea-deep/deadnet/blob/main/docs/THIRD-PARTY.md) separate borrowed gameplay from new work. I did not build those games from scratch.
 
-Hypnospace Outlaw, 98.js, Generative Agents and AI Town are precedents. DEADNET does not claim to invent haunted desktops or persistent agent societies. Its particular question is smaller: **what happens when you decide who gets to know that their own memory is false?**
+Hypnospace Outlaw, 98.js, Generative Agents and AI Town are precedents. The specific hook here is evidence moving through a small society while a private ghost tries to reconstruct a memory.
 
 ## How I Built It
 
-React and Vite render the computer. A Node service owns a SQLite world. Three character records share one model, while keeping separate memories, relationships and knowledge.
+React/Vite renders the desktop. A Node backend owns a SQLite world and keeps provider keys off the client. One model serves three resident accounts and Nora’s separate private state.
 
-A turn has a deliberately narrow shape:
+A turn follows a narrow contract:
 
-1. The engine selects an account and a message that account can actually read.
-2. A bounded prompt supplies its memories, relationships and witnessed records.
-3. Gemma proposes a reply, stance, trust change, subjective memory, disclosed record IDs and destination.
-4. The engine validates the proposal and commits the resulting events atomically.
-5. A later recipient can read that event and respond in its own turn.
+1. Select an account and an event it can actually read.
+2. Build context from its scoped memories, relationships and witnessed records.
+3. Request a short message, stance, bounded trust change, subjective memory, disclosed record IDs and recipient.
+4. Validate the proposal, then commit the resulting world atomically.
+5. Let a later account read the resulting post or addressed message.
 
-The model does not write SQL, browse the real internet, run commands, or rewrite the objective history. Those boundaries keep the investigation coherent. The archived catastrophe and final choice are authored; the interpretations and disclosure path can vary.
+A file you open does not inform everyone. Mara can choose to tell Len. Len can doubt her. Subjective beliefs stay separate from objective records. The model has no shell, filesystem, browser or external messaging tools.
 
-### The bug that made the mystery too easy
+### Keeping the ghost uncertain
 
-The operator initially knew protected administrative facts and volunteered a secret before the visitor had found the relevant file. A valid JSON response had still ruined the story.
+A first prompt gave Nora four sensory details. She listed all four at once. It sounded like an explanation of a puzzle.
 
-I changed the prompt boundary. Protected records are withheld until witnessed evidence introduces them. Local constrained decoding limits available record IDs for each account; server validation rejects anything outside that account’s actual knowledge. The earlier failed transcript remains alongside the corrected run.
+I narrowed the grounding: one fragment enters each turn, alongside only records she has actually seen. The current live reply was:
 
-This distinction matters: schema validity is not narrative validity. The model can still misunderstand a sentence or reverse who said something. Tests cover the state boundaries rather than claiming to eliminate every hallucination.
+> Yes, I hear you. Two knocks... I thought it was Mara. But I'm not sure anymore. Who found me? What time is it?
 
-### Memory with a limit
+That is an actual OpenRouter response, not the exhibition’s scripted opening. It does not identify the murderer. Her next reply can react to the visitor’s question or an attached record, while the server controls which facts are available.
 
-Each account stores twelve recent subjective memories. Eight enter the prompt, alongside three exact recent visitor disclosures for recall. Objective known facts and relationships persist separately. The whole conversation does not grow into an unlimited prompt.
+Nora cannot broadcast or message another resident, and unattended scheduling excludes her. Correctly reporting the responsible suspect produces an authored final signal and closes her connection. Further requests to that released signal are rejected before inference.
 
-A [developer’s account of bounded SQLite agent memory](https://dev.to/jnocode/i-built-a-memory-system-for-ai-agents-that-actually-forgets-2i20) was a useful community reference. My application measurements below are my own; I am not adopting that article’s results as a benchmark.
+### The secret that escaped too early
 
-In the real society check, a private silver-apricot disclosure appeared in Len’s prompt and stayed out of the others’. Len recalled the item, although he sometimes reversed the speaker. A deterministic engine test separately forces a Mara-to-Len rumor path and verifies that the consequence survives reopening the database. That repeatable test and an unconstrained live model run answer different questions.
+In the earlier prototype, the operator volunteered protected information before the visitor found it. Valid JSON had still spoiled the story.
 
-### What it actually cost to run
+I changed the information boundary. Protected administrative facts stay out of normal prompts until witnessed evidence introduces them. Actor-specific local decoding schemas limit record IDs and recipients; server validation remains authoritative for every provider. Tests exercise the rumor path, private-memory isolation, failures, persistence and invalid proposals.
 
-Measured on an Apple M5 with 16 GiB unified memory, using `gemma4:e2b-it-q4_K_M` through Ollama:
+This does not make every sentence true. A small model can still repeat itself, infer too much or confuse who said something. The engine validates state changes, not the truth of every sentence.
 
-| Measurement | Observed result |
-| --- | --- |
-| Initial nine generations | 9 successful; first request 7.370 s |
-| Warm nine generations | 9 successful; median 1.635 s, maximum 2.280 s |
-| Warm token totals | 7,155 input / 677 output |
-| Model process physical footprint | About 5.1 GiB, measured with macOS vmmap |
-| Actual five-minute session | 11 model turns, 12,712 input / 865 output, zero failed turns |
-| Paid LLM requests in that local session | Zero |
+### Real models, real limits
 
-The runner’s allocation metadata underreported the process footprint; the OS measurement is the useful number. The five-minute check blocked external fetches in its process. It was not a system-wide Wi-Fi-off experiment. Electricity and hardware costs were not measured.
+The default hosted route is `openrouter/free`. OpenRouter selects a compatible free model and the trace records its actual identity. A credential-backed request through the current Node API used **dots-studio/dots-3-note-preview:free**, took **13.820 seconds**, used **1,027 input / 697 output tokens**, succeeded in one attempt and reported **$0**. [Current-case evidence](https://github.com/sea-deep/deadnet/blob/main/docs/evidence/case-openrouter.json).
 
-Hosted inference has a different boundary. An earlier three-turn paid Gemma 4 31B smoke test reported **$0.00043855** in usage fields. After restricting the adapter to free routes, Gemma’s shared upstream pool returned HTTP 429. That is not a successful free inference result. The service now persists a cooldown, caps attempts per minute/day and rejects paid model IDs. Resetting the fictional world cannot reset those limits.
+Fixed free Gemma endpoints were returning upstream capacity errors. Some thinking models also exhausted a small token budget before producing their JSON. The hosted adapter now budgets reasoning separately within a finite output allowance, validates the eventual response and never selects a paid fallback. Free inference can still be slow or unavailable.
 
-The [verification record](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION.md) links the actual JSON evidence, digest and memory report. Sixteen Node tests and four desktop/mobile browser scenarios pass. A separate browser pass starts all six games and checks Hocus reaching level two, with no page errors. That last check caught a surprisingly ordinary horror: a game iframe had been falling through the app server’s routing and opening another copy of the desktop. Explicit game entrypoints fixed it.
+For local execution, Gemma 4 E2B Q4_K_M runs through Ollama. Two actual current-case Nora turns validated at **6.089 s and 1.788 s**. Earlier prototype measurements on this Apple M5 / 16 GiB Mac provide the broader hardware baseline: nine warm generations, median **1.635 s**; about **5.1 GiB** model-process physical footprint measured with macOS vmmap; and an actual five-minute session with eleven successful model turns. Those earlier measurements are labeled as prototype results, not a final murder-case session.
 
-### A voice that changes the record
+One generation runs at a time. Eighteen story turns need explicit renewal. Hosted requests additionally have persistent minute/day caps and a cooldown after provider 429s. Resetting the mystery cannot reset the API allowance. Twelve memories are stored per account, eight enter context, and three exact recent visitor disclosures support recall.
 
-The operator’s written attachment is a routine status report. The ElevenLabs recording admits that no one has called Len in fifty years, and that the operator keeps the line open because Len still asks whether someone is there.
+A [developer’s bounded SQLite memory write-up](https://dev.to/jnocode/i-built-a-memory-system-for-ai-agents-that-actually-forgets-2i20) was a useful community reference. My timings are my own measurements, not that article’s results.
 
-This is a specific authored voicemail rendered with the premade Daniel voice, not improvised voice chat. Its full transcript remains readable. One real 192-character render took **1.062 seconds**; replay returned identical cached bytes without another generation request. The immediate billing counter was unchanged, which does not establish a zero invoice charge. Cache keys include text, voice and model; concurrent duplicates share one request.
+The [verification record](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION.md) distinguishes each experiment. Eighteen Node tests and six desktop/mobile browser scenarios cover the current revision. Separate browser checks exercise all six games and the audio controls. No independent audience study or broad cross-platform benchmark is claimed.
+
+### A call, rather than a narrator
+
+The original voice sounded like a broadcaster explaining the premise. I replaced its script and delivery.
+
+Nora’s outgoing call is short: someone is still in the building; a tape is under Adam’s keyboard; Len was not there. It supplies an alibi clue without naming the killer. It uses ElevenLabs’ premade Lily voice with hushed/rushed delivery at 1.14× speed, rather than impersonating a real person.
+
+One real **150-character** render using `eleven_v3_conversational` took **1.927 seconds**. The clip is **11.84 seconds** long. Replay returned identical cached bytes with no additional generation. The immediate billing counter did not change; that does not prove a zero invoice charge. The transcript remains accessible, and cache keys include the delivery settings. [Voice evidence](https://github.com/sea-deep/deadnet/blob/main/docs/evidence/elevenlabs-case.json).
 
 ## Why Does Open Innovation Matter?
 
-The project is about a service that outlived the people who depended on it. Requiring an irreplaceable remote model to keep its inhabitants alive would be an awkward foundation.
+This is a story about a computer continuing to answer after its owner is gone. Open weights let its behaviour remain reproducible without one irreplaceable model service.
 
-With open weights, the measured version runs on the laptop after setup. Its private conversations and memories can remain there. The model, prompt, validation rules and memory policy can be inspected or changed independently. The optional hosted transport is a convenience for a different deployment, while the local route remains reproducible when a shared free provider is busy.
+The local route can keep the player’s private conversations and character memories on their machine after setup. The hosted route makes another deployment possible without requiring a GPU in the browser. Prompts, memory policy, validation rules and the selected model are inspectable. If a shared free endpoint is unavailable, the measured local option still exists.
 
-This does not mean all inference is free, that the model is flawless, or that an offline laptop makes a character a person. It means the project can preserve its behavior without being entirely dependent on one remote service’s continued availability.
+The archive and final outcome are authored. The model changes the conversations and information path, not the objective murderer. That boundary is deliberate: an investigation needs facts that stay put while people disagree about them.
 
-There has not been an independent audience study. I cannot claim that the project moved someone or gave them chills. What I can show is the working mechanism, its failures, and the small ordinary routines it protects: a birthday, a photograph, a line someone keeps answering.
+I cannot claim an audience felt frightened or moved; there has not been a human study. What I can show is the working mechanism and its limits: a friend emailing an empty room, a witness defending a small ordinary detail, and an uncertain voice asking who found her computer.
 
 ## Prize Categories
 
-- **Best Use of Gemma:** actual local Gemma generations drive the characters’ interpretations, memories, stance and disclosure decisions. Installed-model and behavioral evidence is in the repository.
-- **Best Use of ElevenLabs:** a verified, cached fictional voicemail gives the operator’s account a voice and supplies a contrasting archival record. Text access and failure handling remain available.
+- **Best Use of Gemma:** actual local Gemma generations drive scoped characters and Nora’s private responses; current-case and hardware evidence are in the repository.
+- **Best Use of ElevenLabs:** a verified, cached final call supplies an important contrasting record, with text access and bounded generation.
 
 Implementation, debugging and this article were assisted by OpenAI Codex. No other partner integration is claimed.

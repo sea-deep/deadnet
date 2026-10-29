@@ -13,3 +13,7 @@ Windows genuinely drag, resize, minimize, maximize and close using react-rnd. Ti
 One authored entrance: power button → BIOS POST → loading bar → desktop, with skip and reduced-motion support. Sound begins only after the gesture. A quiet sourced CC0 horror loop, original boot/mail/disk/line cues and a frozen 03:17 clock provide atmosphere. No flashing overlays. Muting persists; hidden tabs pause ambience; focused games replace the ambient soundscape and receive the host’s mute state. The sourced games remain visibly credited and are supporting distractions, not claimed AI work.
 
 Sources and exact modifications are in docs/CREDITS.md, docs/THIRD-PARTY.md and docs/research/VISUAL-REFERENCES.md.
+
+## Room 317
+
+Nora’s murder-case PC is the accepted narrative. Unknown Signal uses an ordinary messenger frame with a dark transcript and quiet, short exchanges. Technical model identity stays in System Monitor. The games share a dark plum/ash/old-bone palette, square controls, source credits and the same raster forest world. Each has its own desktop shortcut and individual licensed raster icon; no generic joystick is required to discover them. Flappy’s rounded menus and bright bird/pipes are replaced. Pause/background controls suspend game animation and audio. Nora’s call is a short, hushed outgoing message, not a narrated explanation.

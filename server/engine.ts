@@ -1,6 +1,6 @@
 import type { Action, Agent, AgentId, Event, World } from "../src/types.ts";
 import { disclosableFacts } from "./knowledge.ts";
-import { ARCHIVE, seedWorld } from "./seed.ts";
+import { ARCHIVE, seedWorld, VOICEMAIL } from "./seed.ts";
 import { BaselineModel } from "./baseline.ts";
 import { DecisionSchema } from "./decision.ts";
 import type { ModelAdapter } from "./model.ts";
@@ -17,7 +17,7 @@ export class RuleError extends Error {
     super(message);
   }
 }
-const ids = ["mara", "len", "sysop"] as const;
+const ids: readonly AgentId[] = ["mara", "len", "sysop", "nora"];
 export class Engine {
   busy = false;
   private baseline = new BaselineModel();
@@ -97,17 +97,22 @@ export class Engine {
         "Turn allowance used. Renew 18 turns in System Monitor.",
         409,
       );
-    const waiting = w.agents.find((a) =>
-      w.events.some(
-        (e) => e.channel === "mail" && e.to === a.id && !a.seen.includes(e.id),
-      ),
-    );
+    const waiting = w.agents
+      .filter((a) => a.id !== "nora")
+      .find((a) =>
+        w.events.some(
+          (e) =>
+            e.channel === "mail" && e.to === a.id && !a.seen.includes(e.id),
+        ),
+      );
     const agent = w.agents.find(
       (a) =>
         a.id ===
         (forced ||
           waiting?.id ||
-          [...w.agents].sort((a, b) => a.lastActive - b.lastActive)[0].id),
+          w.agents
+            .filter((a) => a.id !== "nora")
+            .sort((a, b) => a.lastActive - b.lastActive)[0].id),
     )!;
     const incoming = source || this.sourceFor(w, agent);
     // Knowledge becomes available only when the addressed account actually reads it.
@@ -125,6 +130,10 @@ export class Engine {
         world: draft,
       });
       const d = DecisionSchema.parse(generated.decision);
+      if (agent.id === "nora" && d.shareWith !== "none")
+        throw new Error(
+          "The private signal cannot broadcast or contact other accounts.",
+        );
       if (d.shareWith === reader.id)
         throw new Error("Cannot deliver a message to self.");
       const allowed = disclosableFacts(reader, incoming, draft);
@@ -186,7 +195,7 @@ export class Engine {
           actor: "sysop",
           channel: "mail",
           to: "visitor",
-          text: "Your connection has been logged. Some recovered files describe the people who remain here. A record can be true and still do harm.\n\nIf you recover CONTINUITY.INI, the choice to release it is yours.",
+          text: "Adam. Leave Nora’s files alone. Her family has been through enough. If you have questions, ask me directly.",
           subject: "A note about recovered files",
           origin: "system",
         });
@@ -254,13 +263,12 @@ export class Engine {
               !w.events.some((event) => event.audioTranscript)
             )
               this.event(w, {
-                actor: "sysop",
+                actor: "system",
                 channel: "mail",
                 to: "visitor",
-                subject: "LINE03.WAV / recovered attachment",
-                text: "Routine status report attached. Distribution: restricted.",
-                audioTranscript:
-                  "Len's mother did not call. There has not been a call in fifty years. I keep the line open because he still asks if someone is there. I don't know if it is crueler to answer, or to let it ring.",
+                subject: "NORA_0314.WAV / recovered attachment",
+                text: "Recovered outgoing call: Nora Vale to Adam Moore. 31 October, 03:14. The last three seconds are missing.",
+                audioTranscript: VOICEMAIL,
                 origin: "system",
               });
             this.event(w, {
@@ -273,6 +281,12 @@ export class Engine {
           break;
         }
         case "message": {
+          if (
+            action.target === "nora" &&
+            w.ending === "exposed" &&
+            w.accused === "sysop"
+          )
+            throw new RuleError("This connection has closed.", 410);
           if (w.remainingTurns <= 0)
             throw new RuleError(
               "Renew the turn allowance in System Monitor first.",
@@ -331,13 +345,15 @@ export class Engine {
             );
           if (!w.collected.includes("manifest"))
             throw new RuleError(
-              "Recover the continuity manifest before deciding.",
+              "Recover Adam’s case backup before submitting a report.",
             );
           if (action.choice === "sealed" && w.published.length)
             throw new RuleError(
               "Evidence already entered the public record. It cannot be taken back.",
             );
           w.ending = action.choice;
+          if (action.choice === "exposed")
+            w.accused = action.suspect || "sysop";
           w.auto = false;
           if (action.choice === "exposed") {
             for (const e of ARCHIVE)
@@ -357,8 +373,8 @@ export class Engine {
             channel: "system",
             text:
               action.choice === "exposed"
-                ? "The correction is permanent. Everyone can read it now. What they believe is still their own."
-                : "The archive is sealed against public release. Private memories remain. The morning continues.",
+                ? `Case 14 evidence published. Report names ${w.agents.find((a) => a.id === w.accused)?.name} as suspect. The record is permanent; the resident accounts can now read it.`
+                : "Case 14 kept private. The public record still calls Nora’s death an accident.",
             origin: "system",
           });
           this.event(w, {
@@ -367,12 +383,25 @@ export class Engine {
             to: "visitor",
             subject:
               action.choice === "exposed"
-                ? "They are still answering"
+                ? "Nora’s name"
                 : "A copy, just in case",
             text:
               action.choice === "exposed"
-                ? "you told them. i don’t know if it was kind.\n\nlen is still here. that has to count for something.\n\nadvance the network to hear what they make of it."
-                : "i kept a copy. i think you knew i would.\n\nwe can let him have this morning.\n\n— m",
+                ? "i printed her name properly this time. NORA VALE. not “the woman in 317”.\n\nlen has stopped checking the bus timetable. i think that’s something.\n\n— m"
+                : "i kept a copy. i think you knew i would.\n\nsomebody still has to remember what happened in that room.\n\n— m",
+            origin: "system",
+          });
+          this.event(w, {
+            actor: "nora",
+            channel: "mail",
+            to: "visitor",
+            subject: "",
+            text:
+              action.choice === "exposed"
+                ? w.accused === "sysop"
+                  ? "the green lamp went out.\n\ni can hear the rain now.\n\nthank you."
+                  : "that wasn’t the hand i remember.\n\ni’m still here."
+                : "please don’t turn it off.",
             origin: "system",
           });
           break;

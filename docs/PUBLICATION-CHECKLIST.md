@@ -15,4 +15,6 @@ Deadline: October 31, 2026, 23:59 PDT / November 1, 12:29 IST. [Official rules](
 - [ ] Sign in to DEV and publish the approved article before the deadline. No authenticated DEV draft connector is available in this session, so this file has not been staged externally.
 - [ ] Verify final published article, required tags, repository and demo links, and retain its URL.
 
-Remaining product limitation: public hosted live inference is not deployed. The free Gemma upstream pool was throttled. The Pages exhibition is scripted; local Gemma inference and optional ElevenLabs are independently verified. No video is needed; the user explicitly removed it from scope.
+Remaining product limitation: public hosted live inference is not deployed. The local Node API has a verified free OpenRouter/Dots response, alongside local Gemma and ElevenLabs. The Pages exhibition is scripted. No video is needed; the user explicitly removed it from scope.
+
+Room 317 update: the local Node app now has a verified free OpenRouter response and a revised Lily recording. The public exhibition remains scripted. Review the revised murder-case article, new game/media credits, current-case evidence and remaining free-provider latency before publishing. No contest entry has been submitted.

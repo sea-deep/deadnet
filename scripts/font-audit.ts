@@ -6,7 +6,8 @@ await p.getByRole("button", { name: "Power on", exact: true }).click();
 await p.getByRole("button", { name: "Skip startup" }).click();
 const results: unknown[] = [];
 for (const name of [
-  "Internet",
+  "Chat Logs",
+  "Unknown Signal",
   "Inbox",
   "My Documents",
   "Address Book",
