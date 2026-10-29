@@ -11,16 +11,20 @@ _This is a submission for the [Hacktoberfest Open-Source AI Challenge Week 4: Gh
 A note is taped to the computer:
 
 > Adam,
+>
 > I couldn't keep her computer in my room anymore.
+>
 > They say she fell. You heard the message she left. Please look before they come to collect it.
+>
 > Her messages are still there.
+>
 > — Mara
 
 You are Adam. Nora Vale was your friend. She died in room 317 of Westhaven House on Halloween night, 1999, and the police called it an accident. You plug in your recovery USB, press the power button, and open her Messenger. The last conversation on the screen is with you:
 
-> **03:14 nora_v:** don't come through the lobby
-> **03:14 adam_m:** Nora?
-> **03:23 adam_m:** I'm coming up.
+> **03:14 nora_v:** don't come through the lobby<br>
+> **03:14 adam_m:** Nora?<br>
+> **03:23 adam_m:** I'm coming up.<br>
 > _No reply._
 
 A minute later her account signs back in.
@@ -33,7 +37,7 @@ A minute later her account signs back in.
 
 **DEADNET is a short murder mystery played entirely inside a dead woman's computer.** A late-90s desktop with a BIOS screen, a clock stuck at 03:17, a forest wallpaper and a Start button. Everything you need is in software she used every day:
 
-- **Messenger:** months of dated conversations. Jokes about soup, a running argument about Mara's heater, plans for dinner. And the last night.
+- **Messenger:** her dated conversations with friends. Jokes about soup, a running argument about Mara's heater, plans for dinner. And the last night.
 - **Mail:** an email from Len, the night porter, sent at 03:07 from home. A statement from Owen, the building manager, saying Len was upstairs at 03:17. Mara, still writing to her friend. And Nora's last voice message.
 - **Photos:** a real photo album with Nora's captions. One of them matters more than the picture.
 - **Calendar:** a meeting at 03:15 about some fire-inspection forms. And _20:00, dinner at Mara's. Bring bread. Stay for once._ She never got there.
@@ -147,7 +151,7 @@ There's one recording in the game: Nora's last call, in Mail. _"Adam? It's Nora.
 
 **Where a closed model would win:** prose. A frontier model would write a creepier Nora on the first try. It would still need the same boundary, because a confident model allowed to change the evidence will happily solve the murder for you.
 
-Día de los Muertos is about remembering people by name, and about the small things they leave behind: a recipe, a joke, a photograph with a caption only they would write. DEADNET is a computer full of those things. The mystery is just the reason to look.
+Día de los Muertos is about remembering people by name, and about the small things they leave behind: a joke about soup, a dinner plan, a photograph with a caption only they would write. DEADNET is a computer full of those things. The mystery is just the reason to look.
 
 ## Prize Categories
 
