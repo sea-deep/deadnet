@@ -30,7 +30,7 @@ Three people are still connected to the building's network:
 
 And there's a window called **Unknown Signal**. It's Nora.
 
-You read their messages, open the files in My Documents (a door log, a saved chat, a damaged case backup), and write to them. Each of them is played by an open-weight model, with their own memories, goals and opinions of you. Then you file a report naming who opened room 317 at 03:17. Name the right person and Nora's last message changes. Name the wrong one and she knows.
+You read their messages, open the files in My Documents (a door log, a saved chat, a damaged case backup), play Nora's old games to recover what her disk lost, and write to them. Each of them is played by an open-weight model, with their own memories, goals and opinions of you. Then you file a report naming who opened room 317 at 03:17. Name the right person and Nora's last message changes. Name the wrong one and she knows.
 
 The rule that makes it work:
 
@@ -48,15 +48,16 @@ A first visit opens a **Read Me** that tells you the goal and the four steps: re
 
 Things to try:
 
-1. Open **My Documents**. Read `DOOR_0317.LOG` and `OCT31_CHAT.TXT`. Opening both repairs `CASE_14.BAK`.
-2. Open **Unknown Signal**, attach the door log and ask Nora what she remembers.
-3. In **Inbox**, send the door log to Len. Then ask Mara about it later and see whether he passed it on.
-4. Play Nora's last voicemail, `NORA_0314.WAV`.
-5. File your report in `CASE_14.BAK`.
+1. Open **My Documents**. Read `DOOR_0317.LOG` and `OCT31_CHAT.TXT`.
+2. `CASE_14.BAK` is still damaged: its sectors are shared with Nora's game saves. Play any two of her games for 20 seconds each to recover them.
+3. Open **Unknown Signal**, attach the door log and ask Nora what she remembers.
+4. In **Inbox**, send the door log to Len. Then ask Mara about it later and see whether he passed it on.
+5. Play Nora's last voicemail, `NORA_0314.WAV`.
+6. File your report in `CASE_14.BAK`.
 
 ![The Unknown Signal window: talking to Nora](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/evidence/spirit.png)
 
-The desktop also has six small games: Grave Snake, Flappy Bat, Crypt Blocks, 2048: Séance, Phantomicus and Hocus :focus. They're re-themed MIT-licensed projects with their authors credited in the game window. They're there because a real 1999 computer would have them, and because the person who used it was a person.
+Nora's desktop also has six games: Grave Snake, Flappy Bat, Crypt Blocks, 2048: Séance, Phantomicus and Hocus :focus. They aren't decoration. The first thing the ghost tells you is _"i used to play my games when i couldn't sleep. maybe they kept something."_ Her game saves sit on the same damaged sectors as the case file, so you can't read who held the master key until you've spent a little time playing what she played. They're re-themed MIT-licensed projects with their authors credited in the game window.
 
 ## Code
 

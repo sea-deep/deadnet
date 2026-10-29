@@ -4,6 +4,7 @@ import { PixelIcon } from "./icons";
 import { exhibition } from "./api";
 import { duckAmbient } from "./sound";
 import { GAME_LIST, GameIcon, type GameId } from "./games";
+import { caseProgress, GAMES_TO_RECOVER } from "./rules";
 export type AppId =
   | "readme"
   | "browser"
@@ -743,7 +744,7 @@ export function Mail({
     </div>
   );
 }
-export function Archive({ data, perform, busy, composeTo }: AppProps) {
+export function Archive({ data, perform, busy, composeTo, open }: AppProps) {
   const [search, setSearch] = useState(""),
     [selected, setSelected] = useState("carrier"),
     [sendMenu, setSendMenu] = useState(false),
@@ -753,9 +754,8 @@ export function Archive({ data, perform, busy, composeTo }: AppProps) {
     `${e.filename} ${e.folder}`.toLowerCase().includes(search.toLowerCase()),
   );
   const record = data.archive.find((e) => e.id === selected)!;
-  const readable =
-    !record.locked ||
-    data.world.collected.filter((id) => id !== "manifest").length >= 2;
+  const progress = caseProgress(data.world);
+  const readable = !record.locked || progress.unlocked;
   useEffect(() => {
     if (readable && !data.world.collected.includes(selected) && !busy)
       void perform({ type: "collect", evidenceId: selected });
@@ -829,8 +829,11 @@ export function Archive({ data, perform, busy, composeTo }: AppProps) {
           <pre>
             {readable
               ? record.body
-              : "Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data. Open the other files in this folder to repair it."}
+              : `Cannot read CASE_14.BAK.\n\nData error (cyclic redundancy check).\n\nRecovery needs more of Nora’s data:\n  ${progress.files >= 2 ? "[x]" : "[ ]"} Open the other files in this folder (${progress.files}/2)\n  ${progress.games >= GAMES_TO_RECOVER ? "[x]" : "[ ]"} Play ${GAMES_TO_RECOVER} of Nora’s games to recover their saves (${progress.games}/${GAMES_TO_RECOVER})`}
           </pre>
+          {!readable && progress.games < GAMES_TO_RECOVER && (
+            <button onClick={() => open("games")}>Open Nora’s games</button>
+          )}
           {sendMenu && (
             <div className="file-send-menu" aria-label="Send file to">
               {data.world.agents
@@ -1094,8 +1097,12 @@ export function ReadMe(props: AppProps) {
             <button className="link" onClick={() => open("archive")}>
               My Documents
             </button>{" "}
-            and read the files. Once you have opened two, the damaged{" "}
-            <b>CASE_14.BAK</b> repairs itself.
+            and read the files. The damaged <b>CASE_14.BAK</b> shares its disk
+            with Nora’s game saves: also play any two of her{" "}
+            <button className="link" onClick={() => open("games")}>
+              Games
+            </button>{" "}
+            for 20 seconds each, and the file repairs itself.
           </li>
           <li>
             <strong>Ask.</strong>{" "}
@@ -1116,7 +1123,8 @@ export function ReadMe(props: AppProps) {
         <p>
           Double-click an icon to open it (one tap on a phone). Drag, resize,
           minimise and maximise windows. The speaker in the tray mutes sound.
-          The six games are extras and aren’t part of the case.
+          Nora’s six games are part of the case: their saves help repair her
+          files.
         </p>
         <h2>Replies</h2>
         <p>{engine}</p>
@@ -1180,7 +1188,15 @@ export function Notebook() {
     </div>
   );
 }
-export function Games({ muted, activeApp, gameRequest }: AppProps) {
+/** Seconds of play that recover one of Nora's game saves. */
+const PLAY_TO_RECOVER = 20;
+export function Games({
+  data,
+  perform,
+  muted,
+  activeApp,
+  gameRequest,
+}: AppProps) {
   const [game, setGame] = useState<string | null>(null),
     [run, setRun] = useState(0),
     [paused, setPaused] = useState(false),
@@ -1190,6 +1206,26 @@ export function Games({ muted, activeApp, gameRequest }: AppProps) {
     if (gameRequest) setGame(gameRequest.id);
   }, [gameRequest?.nonce]);
   const current = GAME_LIST.find((g) => g.id === game);
+  const played = data.world.played || [];
+  const recovered = Boolean(game && played.includes(game));
+  const [seconds, setSeconds] = useState(0);
+  // Playing a game for a while recovers its save, which CASE_14.BAK needs.
+  useEffect(() => {
+    setSeconds(0);
+  }, [game]);
+  useEffect(() => {
+    if (!game || recovered || paused || activeApp !== "games") return;
+    const t = setInterval(() => {
+      if (document.hidden) return;
+      setSeconds((n) => {
+        if (n + 1 === PLAY_TO_RECOVER)
+          void perform({ type: "played", game: game as GameId });
+        return n + 1;
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, [game, recovered, paused, activeApp]);
+  const progress = caseProgress(data.world);
   const syncSound = () => {
     const child = frame.current?.contentWindow;
     child?.postMessage(
@@ -1286,14 +1322,24 @@ export function Games({ muted, activeApp, gameRequest }: AppProps) {
           allow="autoplay; gamepad"
         />
       ) : (
-        <div className="game-folder">
-          {GAME_LIST.map((g) => (
-            <button key={g.id} onClick={() => setGame(g.id)}>
-              <GameIcon id={g.id} />
-              <strong>{g.name}</strong>
-              <span>{g.keys}</span>
-            </button>
-          ))}
+        <div className="game-folder-wrap">
+          <p className="game-recovery-note">
+            Nora’s game saves sit on the same damaged sectors as CASE_14.BAK.
+            Play any {GAMES_TO_RECOVER} of her games for {PLAY_TO_RECOVER}{" "}
+            seconds each to recover them ({progress.games}/{GAMES_TO_RECOVER}).
+          </p>
+          <div className="game-folder">
+            {GAME_LIST.map((g) => (
+              <button key={g.id} onClick={() => setGame(g.id)}>
+                <GameIcon id={g.id} />
+                <strong>
+                  {g.name}
+                  {played.includes(g.id) ? " ✓" : ""}
+                </strong>
+                <span>{g.keys}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
       {current && (
@@ -1345,6 +1391,13 @@ export function Games({ muted, activeApp, gameRequest }: AppProps) {
           </a>
         ) : (
           <span>6 objects</span>
+        )}
+        {current && (
+          <span className="game-recovery" role="status">
+            {recovered
+              ? "Nora’s save recovered ✓"
+              : `Recovering Nora’s save… ${Math.min(seconds, PLAY_TO_RECOVER)}/${PLAY_TO_RECOVER}s`}
+          </span>
         )}
       </footer>
     </div>
@@ -1591,6 +1644,10 @@ export function Spirit({ data, perform, busy, open }: AppProps) {
           <div className="signal-message">
             <strong>unknown:</strong>
             <p>i can hear the keys. is somebody there?</p>
+            <p>
+              i can’t remember that night. i used to play my games when i
+              couldn’t sleep. maybe they kept something.
+            </p>
           </div>
         )}
         {messages.map((e) => (

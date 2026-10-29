@@ -79,6 +79,8 @@ export interface World {
   agents: Agent[];
   events: Event[];
   collected: string[];
+  /** Nora's games the visitor has played; their saves repair CASE_14.BAK. */
+  played?: string[];
   published: string[];
   ending: "open" | "exposed" | "sealed";
   accused?: Exclude<AgentId, "nora">;
@@ -117,6 +119,7 @@ export type Action =
       suspect?: Exclude<AgentId, "nora">;
     }
   | { type: "mode"; mode: Mode }
+  | { type: "played"; game: string }
   | { type: "auto"; enabled: boolean }
   | { type: "renew" }
   | { type: "reset" };

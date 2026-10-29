@@ -3,6 +3,7 @@ import { disclosableFacts } from "./knowledge.ts";
 import { ARCHIVE, seedWorld, VOICEMAIL } from "./seed.ts";
 import { BaselineModel } from "./baseline.ts";
 import { DecisionSchema } from "./decision.ts";
+import { caseProgress, GAME_NAMES } from "../src/rules.ts";
 import type { ModelAdapter } from "./model.ts";
 export interface Persistence {
   load(): World;
@@ -63,9 +64,9 @@ export class Engine {
   private evidence(w: World, id: string) {
     const e = ARCHIVE.find((e) => e.id === id);
     if (!e) throw new RuleError("Unknown archive record.");
-    if (e.locked && w.collected.filter((id) => id !== "manifest").length < 2)
+    if (e.locked && !caseProgress(w).unlocked)
       throw new RuleError(
-        "Recover the two earlier records to reconstruct this file.",
+        "Open the two earlier records and play two of Nora’s games to reconstruct this file.",
       );
     return e;
   }
@@ -404,6 +405,19 @@ export class Engine {
                 : "please don’t turn it off.",
             origin: "system",
           });
+          break;
+        }
+        case "played": {
+          const played = (w.played ||= []);
+          if (!played.includes(action.game)) {
+            played.push(action.game);
+            this.event(w, {
+              actor: "system",
+              channel: "system",
+              text: `Recovered Nora’s ${GAME_NAMES[action.game] ?? action.game} save from a damaged sector.`,
+              origin: "system",
+            });
+          }
           break;
         }
         case "mode":

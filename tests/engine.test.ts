@@ -84,6 +84,16 @@ test("investigation: unlock requires two records; collected facts do not telepor
   await engine.dispatch({ type: "collect", evidenceId: "carrier" });
   assert(!engine.world().agents[0].knownFacts.length);
   await engine.dispatch({ type: "collect", evidenceId: "birthday" });
+  // Files alone are not enough: two of Nora's game saves must be recovered too.
+  await assert.rejects(
+    engine.dispatch({ type: "collect", evidenceId: "manifest" }),
+  );
+  await engine.dispatch({ type: "played", game: "flappy" });
+  await engine.dispatch({ type: "played", game: "flappy" });
+  await assert.rejects(
+    engine.dispatch({ type: "collect", evidenceId: "manifest" }),
+  );
+  await engine.dispatch({ type: "played", game: "snake" });
   await engine.dispatch({ type: "collect", evidenceId: "manifest" });
   await engine.dispatch({ type: "resolve", choice: "sealed" });
   assert.equal(engine.world().ending, "sealed");
@@ -95,6 +105,8 @@ test("investigation: unlock requires two records; collected facts do not telepor
 });
 test("public evidence is learned only after an account reads it; publishing prevents sealing", async () => {
   const { engine, store } = setup();
+  await engine.dispatch({ type: "played", game: "snake" });
+  await engine.dispatch({ type: "played", game: "tetris" });
   for (const evidenceId of ["carrier", "birthday", "manifest"])
     await engine.dispatch({ type: "collect", evidenceId });
   await engine.dispatch({ type: "publish", evidenceId: "carrier" });
@@ -194,6 +206,8 @@ test("operator secrets are withheld from routine prompts and become available wh
   );
   assert(!hidden.includes("My master key opened Nora"));
   assert(!hidden.includes("Adam’s case backup identifies MASTER-01"));
+  await engine.dispatch({ type: "played", game: "snake" });
+  await engine.dispatch({ type: "played", game: "tetris" });
   for (const evidenceId of ["carrier", "birthday", "manifest"])
     await engine.dispatch({ type: "collect", evidenceId });
   const source = {
@@ -274,6 +288,8 @@ test("Nora is a private signal, knows only shown files, and is excluded from una
 });
 test("a named case report persists and releases the private signal without another generation", async () => {
   const { engine, store } = setup();
+  await engine.dispatch({ type: "played", game: "snake" });
+  await engine.dispatch({ type: "played", game: "tetris" });
   for (const evidenceId of ["carrier", "birthday", "manifest"])
     await engine.dispatch({ type: "collect", evidenceId });
   await engine.dispatch({

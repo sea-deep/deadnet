@@ -69,6 +69,12 @@ test("a file shared privately changes another account and persists across a relo
   await files
     .getByRole("button", { name: "CASE_14.BAK", exact: false })
     .click();
+  // Still locked until two of Nora's game saves are recovered.
+  await expect(
+    files.getByText("Play 2 of Nora’s games", { exact: false }),
+  ).toBeVisible();
+  for (const game of ["snake", "flappy"])
+    await request.post("/api/action", { data: { type: "played", game } });
   await expect(
     files.getByText("MASTER-01 = OWEN KEENE", { exact: false }),
   ).toBeVisible();

@@ -11,6 +11,7 @@ import { OpenRouterModel } from "./openrouter.ts";
 import { Engine, RuleError } from "./engine.ts";
 import { AudioService } from "./audio.ts";
 import { ARCHIVE, STORY_ID, seedWorld } from "./seed.ts";
+import { caseProgress } from "../src/rules.ts";
 const port = Number(process.env.PORT) || 3000;
 /** Public hosting: every browser gets its own private world; no autonomous turns. */
 const hosted = process.env.DEADNET_PUBLIC === "1";
@@ -139,10 +140,10 @@ async function snapshot(engine: Engine, visitor: string) {
   return {
     world,
     archive: ARCHIVE.map((e) =>
-      e.locked && world.collected.filter((id) => id !== "manifest").length < 2
+      e.locked && !caseProgress(world).unlocked
         ? {
             ...e,
-            body: "Read the original door log and saved conversation to reconstruct the backup.",
+            body: "Open the door log and saved conversation, and play two of Nora’s games, to reconstruct the backup.",
             fact: "",
             excerpt: "File fragments incomplete. Two earlier records required.",
           }
@@ -174,6 +175,10 @@ const actionSchema = z.discriminatedUnion("type", [
     suspect: z.enum(["mara", "len", "sysop"]).optional(),
   }),
   z.object({ type: z.literal("mode"), mode: z.enum(["live", "baseline"]) }),
+  z.object({
+    type: z.literal("played"),
+    game: z.enum(["snake", "flappy", "tetris", "2048", "phantomicus", "hocus"]),
+  }),
   z.object({ type: z.literal("auto"), enabled: z.boolean() }),
   z.object({ type: z.literal("renew") }),
   z.object({ type: z.literal("reset") }),
