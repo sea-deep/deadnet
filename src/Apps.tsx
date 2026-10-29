@@ -140,6 +140,7 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
             </p>
           </div>
         </header>
+        <OfflineNotice data={data} perform={perform} busy={busy} open={open} />
         <nav className="web-nav" aria-label="DeadBrowser">
           <button
             className={tab === "feed" ? "selected" : ""}
@@ -293,7 +294,9 @@ export function Browser({ data, open, perform, busy, setTarget }: AppProps) {
                 </div>
                 <button
                   className="network-step"
-                  disabled={busy || data.world.remainingTurns === 0}
+                  disabled={
+                    busy || data.world.remainingTurns === 0 || isOffline(data)
+                  }
                   onClick={() => void perform({ type: "tick" })}
                 >
                   {busy ? "Someone is typing…" : "Listen to the network →"}

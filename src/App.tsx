@@ -243,11 +243,19 @@ export default function App() {
     }
     void refresh();
     const id = setInterval(() => {
+      if (document.hidden) return;
       if (!generation.current) void refresh();
     }, 3000);
+    // Returning to the tab refreshes immediately instead of waiting for the
+    // next poll; hidden tabs stop asking the server for state.
+    const onVisible = () => {
+      if (!document.hidden && !generation.current) void refresh();
+    };
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       alive = false;
       clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
   const refreshDesktop = useCallback(async () => {
