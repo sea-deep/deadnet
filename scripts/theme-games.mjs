@@ -35,7 +35,7 @@ export function themeGames(out) {
   );
   flappy = flappy.replace(
     "ctx.drawImage(bird, -bird.width / 2, -bird.height / 2);",
-    "if(batSheet.complete&&batSheet.width){ctx.filter='brightness(2.2)';ctx.drawImage(batSheet,(Math.floor(time/100)%4)*24,0,24,24,-bird.width/2,-bird.height/2,bird.width,bird.height);}",
+    "drawBat(BAT_FLAP[Math.floor(time/90)%BAT_FLAP.length],-bird.width/2,-bird.height/2,bird.width,bird.height);",
   );
   flappy = flappy
     .replaceAll("FLAPPY BIRD", "FLAPPY BAT")

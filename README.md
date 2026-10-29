@@ -6,9 +6,9 @@ Explore Nora’s recovered PC: read the residents’ messages, inspect a door lo
 
 ![Nora’s recovered computer](docs/evidence/desktop-new.png)
 
-[Public exhibition](https://sea-deep.github.io/deadnet/) · [Submission article](docs/SUBMISSION.md) · [Verification](docs/VERIFICATION.md) · [Credits](docs/CREDITS.md)
+**[▶ Play it online](https://room317.onrender.com)** (live open-weight AI, one private case per visitor) · [Scripted exhibition](https://sea-deep.github.io/deadnet/) · [Submission article](docs/SUBMISSION.md) · [Verification](docs/VERIFICATION.md) · [Credits](docs/CREDITS.md)
 
-**The public exhibition is clearly scripted.** The full Node app uses your server-side OpenRouter key for live open-weight replies, or Gemma running locally through Ollama. Failed live requests never become scripted dialogue automatically.
+**The online version on Render** runs live replies from free open-weight models through OpenRouter, gives every browser its own private world, and offers scripted replies in one click if the free pool is busy. Deploy your own with [`render.yaml`](render.yaml). **The GitHub Pages exhibition is clearly scripted.** The full Node app uses your server-side OpenRouter key for live open-weight replies, or Gemma running locally through Ollama. Failed live requests never become scripted dialogue automatically.
 
 ## Run
 
@@ -63,7 +63,7 @@ The model has no shell, filesystem, browser or external messaging tools. Actor-s
 ## Verification
 
 ```sh
-npm test                       # 18 engine/audio/quota/provider tests
+npm test                       # 20 engine/audio/quota/provider/hosting tests
 npm run build
 npm run demo:build              # explicitly scripted static exhibition
 npx playwright install chrome
@@ -76,8 +76,8 @@ npm run benchmark              # explicit real local inference, no CI model down
 
 [Verification](docs/VERIFICATION.md) distinguishes current murder-case checks from the earlier prototype’s nine-request benchmark and five-minute session. Current live evidence: [OpenRouter](docs/evidence/case-openrouter.json), [local Gemma](docs/evidence/case-local-gemma-current.json), [voice](docs/evidence/elevenlabs-case.json). CI uses no model or provider key.
 
-The full app is **single-user and loopback-only**. `.data/deadnet.sqlite` contains private messages, quotas and cached audio; exports may include what you wrote. Previous prototype worlds are archived in ignored `.data/pre-case-*.json` when this scenario replaces them. The public Pages exhibition uses browser storage and scripted responses; public hosted live inference is not deployed.
+Run locally, the app is **single-user and loopback-only**. `.data/deadnet.sqlite` contains private messages, quotas and cached audio; exports may include what you wrote. Previous prototype worlds are archived in ignored `.data/pre-case-*.json` when this scenario replaces them. The public Pages exhibition uses browser storage and scripted responses. The Render deployment (`DEADNET_PUBLIC=1`) keeps one private world per visitor cookie and pauses all unattended turns.
 
 Code is MIT; all borrowed code/media retain their own licenses. [Third-party modifications](docs/THIRD-PARTY.md) · [actual interface references](docs/research/VISUAL-REFERENCES.md) · [judge audit](docs/JUDGE-AUDIT.md).
 
-Started October 29, 2026, with Codex assistance. The [DEV article](docs/SUBMISSION.md) remains unpublished pending entrant approval. Deadline: October 31, 23:59 PDT / November 1, 12:29 IST. No demo video is included.
+Started October 29, 2026, with AI coding assistance. The [DEV article](docs/SUBMISSION.md) remains unpublished pending entrant approval. Deadline: October 31, 23:59 PDT / November 1, 12:29 IST. No demo video is included.

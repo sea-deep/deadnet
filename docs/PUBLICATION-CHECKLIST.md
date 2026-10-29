@@ -15,6 +15,6 @@ Deadline: October 31, 2026, 23:59 PDT / November 1, 12:29 IST. [Official rules](
 - [ ] Sign in to DEV and publish the approved article before the deadline. No authenticated DEV draft connector is available in this session, so this file has not been staged externally.
 - [ ] Verify final published article, required tags, repository and demo links, and retain its URL.
 
-Remaining product limitation: public hosted live inference is not deployed. The local Node API has a verified free OpenRouter/Dots response, alongside local Gemma and ElevenLabs. The Pages exhibition is scripted. No video is needed; the user explicitly removed it from scope.
+Hosted: https://room317.onrender.com runs live free open-weight replies with one private world per visitor (Render, `render.yaml`). The Pages exhibition stays scripted. No video is needed; the user explicitly removed it from scope.
 
-Room 317 update: the local Node app now has a verified free OpenRouter response and a revised Lily recording. The public exhibition remains scripted. Review the revised murder-case article, new game/media credits, current-case evidence and remaining free-provider latency before publishing. No contest entry has been submitted.
+Room 317 update: the local Node app now has a verified free OpenRouter response and a revised Lily recording. The Render deployment is live. Review the rewritten story-first article, new game/media credits, current-case evidence and remaining free-provider latency before publishing. No contest entry has been submitted.

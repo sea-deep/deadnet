@@ -61,8 +61,10 @@ export function GameIcon({ id }: { id: GameId }) {
               width: 24,
               height: 24,
               backgroundImage: `url(${import.meta.env.BASE_URL}assets/horror/bat.png)`,
-              transform: "scale(1.5)",
-              filter: "brightness(2)",
+              // The sheet faces left; mirror it and outline it so it reads on dark wallpaper.
+              transform: "scale(-1.5, 1.5)",
+              filter:
+                "drop-shadow(1px 0 0 #d9c6e8) drop-shadow(-1px 0 0 #d9c6e8) drop-shadow(0 1px 0 #d9c6e8) drop-shadow(0 -1px 0 #d9c6e8)",
             } as CSSProperties
           }
         />

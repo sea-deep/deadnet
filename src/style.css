@@ -4037,3 +4037,18 @@ body .desktop .game-sprite-icon {
 .file-reader pre {
   padding: 8px 12px;
 }
+/* Flappy Bat icon: loop the three wingbeat frames of the sprite sheet. */
+.bat-icon > span {
+  animation: bat-flap 0.42s steps(1) infinite;
+}
+@keyframes bat-flap {
+  0% {
+    background-position: 0 0;
+  }
+  33% {
+    background-position: -24px 0;
+  }
+  66% {
+    background-position: -48px 0;
+  }
+}
