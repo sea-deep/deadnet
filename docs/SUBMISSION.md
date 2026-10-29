@@ -114,7 +114,7 @@ On Render, each browser now gets a cookie and **its own private world** in SQLit
 - **Local:** Gemma 4 E2B (Q4_K_M) through Ollama on an Apple M5 with 16 GB. Two Nora turns took **6.1 s and 1.8 s**. In an earlier prototype, nine warm generations had a median of 1.6 s and the model process used about 5.1 GB. [Evidence](https://github.com/sea-deep/deadnet/blob/main/docs/evidence/case-local-gemma-current.json).
 - **Limits:** one generation at a time per world, 18 story turns, per-visitor and shared daily caps, and a cooldown when the provider says it's busy.
 
-25 Node tests and 9 desktop and mobile browser scenarios run on every push. Separate scripts check that all six games and the sound controls work. What's measured and how is in [VERIFICATION](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION.md).
+30 Node tests and 9 desktop and mobile browser scenarios run on every push. Separate scripts check that all six games and the sound controls work. What's measured and how is in [VERIFICATION](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION.md).
 
 ### A phone call, not a narrator
 

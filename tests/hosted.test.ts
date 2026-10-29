@@ -20,6 +20,25 @@ test("hosted visitors get private worlds that survive a new engine", async () =>
   store.close();
 });
 
+test("a pruned visitor world is recreated instead of crashing its cached engine", async () => {
+  const store = new Store(":memory:");
+  const engine = new Engine(
+    new VisitorStore(store, "pruned"),
+    new BaselineModel(),
+  );
+  await engine.dispatch({ type: "collect", evidenceId: "carrier" });
+  assert.equal(engine.world().collected.length, 1);
+  // Force the cutoff into the future so the just-written row is pruned.
+  VisitorStore.prune(store, -1);
+  const recreated = engine.world();
+  assert.equal(recreated.collected.length, 0);
+  assert.equal(
+    recreated.events.some((e) => e.actor === "mara"),
+    true,
+  );
+  store.close();
+});
+
 test("leaked JSON punctuation is stripped from model replies", () => {
   const d = DecisionSchema.parse({
     text: 'who are you?"}',

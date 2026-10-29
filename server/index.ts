@@ -12,6 +12,7 @@ import { Engine, RuleError } from "./engine.ts";
 import { AudioService } from "./audio.ts";
 import { ARCHIVE, STORY_ID, seedWorld } from "./seed.ts";
 import { caseProgress } from "../src/rules.ts";
+import { isSavedWorld } from "../src/saved-world.ts";
 const port = Number(process.env.PORT) || 3000;
 /** Public hosting: every browser gets its own private world; no autonomous turns. */
 const hosted = process.env.DEADNET_PUBLIC === "1";
@@ -181,14 +182,7 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("mode"), mode: z.enum(["live", "baseline"]) }),
   z.object({
     type: z.literal("played"),
-    game: z.enum([
-      "snake",
-      "flappy",
-      "tetris",
-      "2048",
-      "phantomicus",
-      "hocus",
-    ]),
+    game: z.enum(["snake", "flappy", "tetris", "2048", "phantomicus", "hocus"]),
   }),
   z.object({ type: z.literal("auto"), enabled: z.boolean() }),
   z.object({ type: z.literal("renew") }),
@@ -257,6 +251,10 @@ app.post(
       if (!parsed.success)
         throw new RuleError("That isn’t a save file for this case.");
       const { world } = parsed.data;
+      // The coarse schema bounds sizes; this proves every nested field the
+      // interface reads exists and is well-typed before we store it.
+      if (!isSavedWorld(world))
+        throw new RuleError("That save file is incomplete or damaged.");
       const current = engine.world();
       // Never resume unattended turns from a file; keep the newest revision number.
       const restored = {

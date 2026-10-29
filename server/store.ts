@@ -87,7 +87,13 @@ export class VisitorStore {
       .get(this.visitor) as { snapshot: string } | undefined;
   }
   load(): World {
-    return JSON.parse(this.row()!.snapshot);
+    const row = this.row();
+    if (row) return JSON.parse(row.snapshot);
+    // Pruning can remove a world while its engine is still cached; recreate it
+    // instead of dereferencing a missing row.
+    const world = seedWorld();
+    this.save(world, "recreate");
+    return world;
   }
   save(world: World, _action: string) {
     this.store.db
