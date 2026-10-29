@@ -1,0 +1,13 @@
+node_modules/
+dist/
+dist-demo/
+.env
+.env.*
+!.env.example
+.data/
+playwright-report/
+test-results/
+*.log
+.DS_Store
+.impeccable/
+.openai/

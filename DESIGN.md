@@ -1,0 +1,9 @@
+# DEADNET visual system
+
+The brief pins the visual world: a late-1990s computer whose ordinary routines conceal a broken history. Seven considered carriers: an ISP installation disk, a private BBS, a recovered mailbox, a library catalog, a repair technician's diagnostic screen, an early personal homepage, and an abandoned consumer desktop. The desktop is the committed carrier because the user explicitly requests it; this constraint overrides the concept seed (seed:8e86e4e0dd26d30f). Dealt coffeehouse, lowbrow gallery, data-sublime, and LED challengers lose product clarity; their discipline informs density and consistent state signaling, not decoration. No image comp required for this app screen; build directly in code.
+
+Teal (#175b56) desktop. Warm gray (#c6c6ba) shell. Navy active title bars. Off-white browser paper. Muted green activity. Amber warnings. Near-black system console. No Microsoft artwork, logos, sounds, wallpaper, or distributed system fonts. System sans for functional shell; Georgia for a fictional early-web masthead; local monospace only inside diagnostic data and archive records.
+
+Original pixel icons on a 16×16 grid, made of literal rectangles and scaled with nearest-neighbor rendering. Bevels indicate clickable controls; inset panels hold editable or recorded content. Flat title bars and square corners throughout. Browser feed has early-web editorial density, table-like navigation, small profile stamps, and blue underlined links.
+
+Windows are genuinely draggable, resizable, closable, minimizable, focusable, and maximizable using react-rnd. Taskbar owns minimized windows. Small screens use one maximized window and a scrollable taskbar; no shrunken desktop. Keyboard focus is visible, title-bar arrows move windows, Escape closes the start menu. The first authored transition is boot-to-desktop. All later motion is functional. Mute defaults on and reduced-motion disables decorative scanning and transition motion.
