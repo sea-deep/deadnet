@@ -103,12 +103,6 @@ Render serves the interface and API together. Each visitor has a private SQLite 
 
 Free requests need a budget: two per minute and eight per day per visitor, with a shared ceiling of five per minute and thirty per day. Attempts count, including retries. Provider throttling sets a persisted cooldown. Resetting a case cannot bypass it. Live failures are shown; switching to the labelled scripted mode is the player's choice.
 
-### The work behind the work: Entire
-
-I integrated Entire with Codex and linked the actual development session to the commit that fixed the evidence leak and pinned Gemma. The useful record is the sequence: inspect the prompt, find the unintended disclosure, change the boundary, then run regression tests. It explains why those lines exist.
-
-[Read the session excerpt and checkpoint record](https://github.com/sea-deep/deadnet/blob/main/docs/ENTIRE.md). Entire retains the native checkpoint locally; the public excerpt removes private setup and internal reasoning. Project hooks and settings are checked in so future work can use the same capture process.
-
 ### Verification
 
 **39 Node tests** cover knowledge isolation, all eight evidence subsets, invented IDs, invented dialogue, wrong theories, endings, failed-generation rollback, quota persistence, save validation and audio caching. **38 browser scenarios** cover desktop and phone layouts, the complete evidence-to-accusation path, wrong-theory recovery, My Computer, Trash, save errors, cursor states, voice controls and games. These checks use explicit fixtures and blank provider credentials. Both builds pass. [Verification record](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION-REVAMP.md).
@@ -120,6 +114,12 @@ Players can ask Nora a question I never wrote, without giving a model control of
 Local play also gives the player a real privacy choice. Their messages stay on their own machine. Hosted play trades that for an easy browser link; requests go through OpenRouter. Those are different modes, and the game does not pretend otherwise.
 
 I started with a much more technical file hunt. Replacing logs and damaged backups with someone's correspondence made the mystery better. Nora's missed dinner and unsent letter matter because she had a life beyond the crime. Halloween supplies the haunting; remembering that life supplies the reason to keep looking.
+
+## My Agent Session
+
+I integrated Entire with Codex and linked the actual development session to [the commit that fixed the evidence leak and pinned Gemma](https://github.com/sea-deep/deadnet/commit/b98c419a3383c6fe680520ff4237ed478425360d). The useful record is the sequence: inspect the prompt, find the unintended disclosure, change the boundary, then run regression tests. It explains why those lines exist.
+
+**[Read the recorded session excerpt](https://github.com/sea-deep/deadnet/blob/main/docs/evidence/entire-session.md)**. It includes the real edit and test output from checkpoint `01M682MCRY0YFDMAADPPK7ETN8`. Entire retains the native checkpoint locally; the public excerpt removes private setup and internal reasoning. Project hooks, settings and the export command are checked in. [Integration details](https://github.com/sea-deep/deadnet/blob/main/docs/ENTIRE.md).
 
 ## Prize Categories
 

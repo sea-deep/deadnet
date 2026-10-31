@@ -1,0 +1,27 @@
+{
+  "verifiedOn": "2026-10-31",
+  "source": "https://openrouter.ai/api/v1/models",
+  "verification": "Public catalog metadata only; no inference request or provider-capacity test.",
+  "model": {
+    "id": "google/gemma-4-31b-it:free",
+    "pricing": {
+      "prompt": "0",
+      "completion": "0"
+    },
+    "context_length": 262144,
+    "supported_parameters": [
+      "include_reasoning",
+      "max_tokens",
+      "reasoning",
+      "response_format",
+      "seed",
+      "temperature",
+      "tool_choice",
+      "tools",
+      "top_p"
+    ]
+  },
+  "applicationDefault": "google/gemma-4-31b-it:free",
+  "legacyRouterMigration": "An existing openrouter/free setting resolves to the pinned Gemma default.",
+  "paidFallback": false
+}

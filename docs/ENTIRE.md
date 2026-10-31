@@ -10,7 +10,15 @@ Entire CLI 0.12.2 is installed. `.entire/settings.json` enables checkpoint refs 
 
 This Codex Desktop conversation began before hook installation, so its real rollout is attached using Entire's supported `session attach` command. The checkpoint links prompts, tools, file changes and the resulting commit. This is not a reconstructed chat or a claim that Entire recorded the earlier commits live.
 
-The public session excerpt and exact checkpoint/commit identifiers are recorded below after capture. Raw checkpoints remain local because the long conversation also contains unrelated setup context. The excerpt omits private setup and internal reasoning; quoted dialogue and test output come from the actual session.
+**Recorded checkpoint:** `01M682MCRY0YFDMAADPPK7ETN8`
+
+**Implementation commit:** [`b98c419`](https://github.com/sea-deep/deadnet/commit/b98c419a3383c6fe680520ff4237ed478425360d) — its real `Entire-Checkpoint` trailer links this capture.
+
+**Session:** `01a1869a-fb2c-7b50-ab15-55c18d889c05` (Codex).
+
+**[Read the actual session excerpt](evidence/entire-session.md)** · [Machine-readable export](evidence/entire-session.json).
+
+The excerpt contains the user request, Codex's visible updates, the actual evidence-boundary patch, and test output preserved by Entire. A transcript digest and repeatable export command identify its source. Raw checkpoints remain local because the long conversation also contains unrelated setup context. The excerpt omits private setup and internal reasoning; it is not a replacement chat written for the article. These public files travel with the repository, so judges can read them without an Entire account or local transcript access.
 
 ## Inspect or continue
 
