@@ -6,9 +6,11 @@ export interface QuotaState {
   visitorUsed: number;
   visitorLimit: number;
 }
-const limit = (name: string, fallback: number) =>
-  Math.max(1, Number(process.env[name]) || fallback);
-/** Request caps, configurable so a hosted copy stays under the provider's free allowance. */
+export const boundedLimit = (value: string | undefined, ceiling: number) =>
+  Math.min(ceiling, Math.max(1, Math.floor(Number(value) || ceiling)));
+const limit = (name: string, ceiling: number) =>
+  boundedLimit(process.env[name], ceiling);
+/** Free-only account caps. Environment settings may lower, but never raise, these ceilings. */
 export const LIMITS = {
   globalMinute: limit("DEADNET_GLOBAL_PER_MINUTE", 5),
   globalDay: limit("DEADNET_GLOBAL_PER_DAY", 30),

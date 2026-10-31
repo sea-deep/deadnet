@@ -8,6 +8,7 @@
 - Entire CLI 0.12.2 is installed and project Codex hooks are configured. The real session is attached to its implementation commit; [session record](ENTIRE.md). Automatic uploads and telemetry are disabled. Future live hooks require Codex approval; attachment handles the already-running Desktop session.
 - Production and scripted exhibition builds pass. Provider credentials are blanked in browser tests; model and audio unit tests intercept requests. These checks spend no OpenRouter or ElevenLabs generation credits.
 - All **38 desktop/mobile browser scenarios pass** again, including evidence discovery, an attached item, a reversible wrong accusation and the correct ending. No new game mechanics were added.
+- The deployed status endpoint confirmed hosted Gemma and voice configuration without generation. Older Render overrides still specified 45 global / 10 visitor requests per day; the quota parser now caps overrides at the documented 30 / 8. Tests cover stale values, lower limits, fractional and invalid settings. Environment settings may tighten, but cannot raise, the free-account ceilings.
 
 The dated rebuild results below describe the preceding revision.
 

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { Store } from "../server/store.ts";
-import { Quota } from "../server/quota.ts";
+import { boundedLimit, Quota } from "../server/quota.ts";
 import { seedWorld } from "../server/seed.ts";
 test("free quota counts attempts, throttles bursts, survives reset, and recovers at the boundary", () => {
   const store = new Store(":memory:"),
@@ -18,6 +18,21 @@ test("free quota counts attempts, throttles bursts, survives reset, and recovers
   store.close();
 });
 test("shared ceiling prevents visitor IDs or new investigations from bypassing account protection", () => {
+  assert.equal(
+    boundedLimit("45", 30),
+    30,
+    "stale Render settings cannot raise the free account ceiling",
+  );
+  assert.equal(boundedLimit("10", 8), 8);
+  assert.equal(
+    boundedLimit("4", 8),
+    4,
+    "a deployment may choose a smaller allowance",
+  );
+  assert.equal(boundedLimit("1.9", 8), 1);
+  for (const invalid of [undefined, "", "not-a-number", "Infinity"])
+    assert.equal(boundedLimit(invalid, 8), 8);
+  assert.equal(boundedLimit("-2", 8), 1);
   const store = new Store(":memory:"),
     q = new Quota(store),
     day = 86400000 * 100;
