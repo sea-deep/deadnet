@@ -20,7 +20,7 @@ npm run dev
 
 Open http://127.0.0.1:3000. Insert the USB, then power on. The computer fills the browser; the tray also offers browser fullscreen. Windows drag, resize, minimize and maximize. On phones, a single tap opens an app and each window fills the available space.
 
-For live dialogue, add `OPENROUTER_API_KEY` to the server’s `.env`. `MODEL_PROVIDER=auto` chooses OpenRouter when configured. The default `openrouter/free` route accepts only free models; actual model identity, latency, tokens and provider-reported cost are recorded in System Monitor. No key is shipped to the browser. Free provider availability varies. Failed live requests remain errors; they never silently become scripted replies.
+For live dialogue, add `OPENROUTER_API_KEY` to the server’s `.env`. `MODEL_PROVIDER=auto` chooses OpenRouter when configured. Hosted inference defaults to **`google/gemma-4-31b-it:free`**, not a generic model router. This is Gemma running through a hosted provider; it does not run inside the browser. The same model is pinned in `render.yaml`. System Monitor records the actual returned model, latency, tokens and provider-reported cost. No key reaches the browser, and there is no paid fallback. Free-provider capacity varies; failed live requests remain errors and never silently become scripted replies.
 
 Automated tests use explicit fixtures and a separate SQLite database. A clearly labelled scripted mode remains available for offline play; the static Pages exhibition is entirely scripted. The full Render/Node edition supports live AI and isolates each hosted visitor’s case. Configure your own with `render.yaml`. The local app runs in live mode by default.
 
@@ -51,6 +51,8 @@ Sound starts after a gesture. Global mute reaches ambience, voice and games; bac
 
 The existing SQLite engine, actor knowledge boundaries, validated model decisions, hosted visitor isolation and quota guard remain in place. Three surviving residents and Nora have separate memories. The scene and physical evidence are authored; AI interprets witnessed material and responds to the player. The model has no shell, browser or external messaging tools.
 
+The server validates cited evidence IDs and owns the solution. It never promotes dialogue into a new clue. The photo supplies access; the final chat supplies motive. Tests cover every combination of Nora’s witnessed evidence, premature key-owner disclosure, invented IDs, and a model inventing a different culprit without changing the case. Free-form dialogue can still be mistaken.
+
 Persistent free-account limits: 2 requests/minute and 8/day per local visitor, 5/minute and 30/day globally, counted per HTTP attempt. Upstream 429s persist a cooldown of at least 60 seconds. Starting a case or restarting the server does not reset quota. No paid fallback. Eighteen narrative turns require explicit renewal; renewal cannot bypass the provider quota. Hosted autonomous turns are disabled.
 
 The ElevenLabs call retains the existing licensed premade Lily voice, `eleven_v3_conversational`, hushed/rushed delivery and speed 1.14. The authored call is 11.84 seconds; cached playback does not generate another clip. Provider settings, transcript and model are part of the cache key. Ten fresh renders maximum per installation, 900 characters per request. Historical live-provider measurements remain in `docs/evidence/`; they are not new-prompt benchmarks.
@@ -70,5 +72,9 @@ npx tsx scripts/check-sound.ts
 ```
 
 [Screenshot gallery](docs/screenshots/index.html) · [Verification](docs/VERIFICATION.md) · [Third-party modifications](docs/THIRD-PARTY.md).
+
+## Development history with Entire
+
+Entire captures Codex work and links session checkpoints to Git commits. Project settings and Codex hooks are included; transcripts stay local by default. The [Entire record](docs/ENTIRE.md) contains the checkpoint, an excerpt of the actual debugging session, and commands for inspecting it. [Updated DEV entry](docs/SUBMISSION.md) includes the complete investigation walkthrough and sponsor integrations.
 
 Code is MIT; borrowed code and media retain their own licenses.

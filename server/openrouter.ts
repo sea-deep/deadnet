@@ -9,19 +9,21 @@ import {
   type ModelInput,
   type Generation,
 } from "./model.ts";
+export const DEFAULT_OPENROUTER_MODEL = "google/gemma-4-31b-it:free";
 export class OpenRouterModel implements ModelAdapter {
   name = "openrouter";
   model: string;
   private key: string;
   constructor(
     key = process.env.OPENROUTER_API_KEY || "",
-    model = process.env.OPENROUTER_MODEL || "openrouter/free",
+    model = process.env.OPENROUTER_MODEL || DEFAULT_OPENROUTER_MODEL,
     private rateGate: () => void | Promise<void> = () => {},
     private onThrottle: (seconds: number) => void | Promise<void> = () => {},
   ) {
     this.key = key;
-    this.model = model;
-    if (!model.endsWith(":free") && model !== "openrouter/free")
+    // Upgrade existing Render environments that still carry the old router value.
+    this.model = model === "openrouter/free" ? DEFAULT_OPENROUTER_MODEL : model;
+    if (!this.model.endsWith(":free"))
       throw new Error("Only explicitly free OpenRouter routes are enabled.");
   }
   async available() {

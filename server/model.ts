@@ -87,7 +87,7 @@ export function promptFor({ agent, source, world }: ModelInput) {
                       "Two knocks at the door. You thought it was Mara, but you are not sure.",
                       "A wet coat in the corridor, although you cannot remember the face.",
                       "The green lamp outside the downstairs office was still on.",
-                      "A brass key scraping your desk. You did not open the door. Once shown the photo caption, you recognize the spare from Owen’s office, not Len’s red staff key.",
+                      "A key scraping your desk. You did not open the door. You cannot place its owner or connect it to a photograph you have not been shown.",
                     ][
                       Math.min(
                         3,

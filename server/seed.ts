@@ -39,7 +39,7 @@ export const ARCHIVE: Evidence[] = [
     date: "28 OCT · 18:42",
     excerpt:
       "A photograph she kept because she was always locking herself out.",
-    fact: "Nora’s October 28 photo caption says she borrowed Owen Keene’s office spare to get back into her room after locking herself out. The pictured brass key and the caption establish that the manager had a way into her room. Combined with Nora’s final conversation, this establishes Owen’s access and motive to silence her about the forged fire inspections. The image alone does not identify an owner; the ownership is in Nora’s caption.",
+    fact: "Nora’s October 28 photo caption says she borrowed Owen Keene’s office spare to get back into her room after locking herself out. The pictured brass key and the caption establish that the manager had a way into her room. The image alone does not identify an owner; the ownership is in Nora’s caption. This photograph does not establish a motive or what happened on Halloween night.",
     body: PHOTO_CAPTION,
   },
 ];

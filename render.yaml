@@ -17,7 +17,7 @@ services:
       - key: MODEL_PROVIDER
         value: openrouter
       - key: OPENROUTER_MODEL
-        value: openrouter/free
+        value: google/gemma-4-31b-it:free
       # Stay under OpenRouter's free-tier daily allowance.
       - key: DEADNET_GLOBAL_PER_DAY
         value: "30"

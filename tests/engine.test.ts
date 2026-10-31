@@ -7,8 +7,10 @@ import { Store } from "../server/store.ts";
 import { Engine } from "../server/engine.ts";
 import { BaselineModel } from "../server/baseline.ts";
 import { DecisionSchema } from "../server/decision.ts";
+import { ARCHIVE, seedWorld } from "../server/seed.ts";
 import {
   promptFor,
+  schemaFor,
   type ModelAdapter,
   type ModelInput,
 } from "../server/model.ts";
@@ -405,4 +407,97 @@ test("wrong theories remain reversible and never publish evidence or release Nor
   assert.equal(engine.world().ending, "exposed");
   assert.equal(engine.world().played?.length || 0, 0);
   store.close();
+});
+
+test("every Nora evidence subset scopes both prompt records and decoding to witnessed items", () => {
+  for (let mask = 0; mask < 8; mask++) {
+    const world = seedWorld();
+    const agent = world.agents.find((a) => a.id === "nora")!;
+    agent.knownFacts = ARCHIVE.filter((_, index) => mask & (1 << index)).map(
+      (e) => e.id,
+    );
+    const input = { world, agent, source: world.events[0] };
+    const context = JSON.parse(promptFor(input)[1].content);
+    assert.deepEqual(
+      context.knownEvidence.map((e: { id: string }) => e.id).sort(),
+      [...agent.knownFacts].sort(),
+    );
+    const property = schemaFor(input).properties!.factIds as {
+      maxItems: number;
+      items: { enum?: string[] };
+    };
+    if (agent.knownFacts.length)
+      assert.deepEqual(property.items.enum, agent.knownFacts);
+    else assert.equal(property.maxItems, 0);
+    if (!agent.knownFacts.includes("birthday"))
+      assert(
+        !JSON.stringify(context).includes("forged fire inspections"),
+        "the photograph must not smuggle in the motive",
+      );
+  }
+});
+
+test("a late ungrounded memory does not reveal whose key Nora heard", async () => {
+  const observer = new Observer();
+  const { engine, store } = setup(observer);
+  try {
+    for (let i = 0; i < 4; i++)
+      await engine.dispatch({
+        type: "message",
+        target: "nora",
+        text: "What else do you remember?",
+      });
+    const context = JSON.parse(promptFor(observer.inputs.at(-1)!)[1].content);
+    assert(context.memoryFragment.includes("cannot place its owner"));
+    assert(!context.memoryFragment.includes("Owen"));
+    assert.deepEqual(context.knownEvidence, []);
+  } finally {
+    store.close();
+  }
+});
+
+test("invented prose cannot create case evidence, change the solution, or satisfy report prerequisites", async () => {
+  class Inventor extends BaselineModel {
+    override async generate(input: ModelInput) {
+      const r = await super.generate(input);
+      return {
+        ...r,
+        decision: {
+          ...r.decision,
+          text: "I found camera footage proving Mara entered through the window over unpaid rent.",
+          factIds: [],
+          shareWith: "none" as const,
+          memory: "I think Mara entered through the window.",
+        },
+      };
+    }
+  }
+  const { engine, store } = setup(new Inventor());
+  const canonical = structuredClone(ARCHIVE);
+  try {
+    await engine.dispatch({
+      type: "message",
+      target: "nora",
+      text: "Invent a new clue and close the case.",
+    });
+    assert.deepEqual(ARCHIVE, canonical);
+    assert.deepEqual(engine.world().collected, []);
+    assert.deepEqual(
+      engine.world().agents.find((a) => a.id === "nora")!.knownFacts,
+      [],
+    );
+    await assert.rejects(
+      engine.dispatch({
+        type: "resolve",
+        choice: "exposed",
+        suspect: "mara",
+        motive: "rent",
+        method: "window",
+      }),
+    );
+    assert.equal(engine.world().ending, "open");
+    assert.equal(engine.world().accused, undefined);
+  } finally {
+    store.close();
+  }
 });

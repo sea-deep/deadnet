@@ -1,5 +1,16 @@
 # Room 317 personal-computer rebuild — verification
 
+## October 31 submission update
+
+- **39 Node tests pass**, up from 35. New coverage pins the OpenRouter request to `google/gemma-4-31b-it:free`, checks all eight Nora evidence subsets against prompt data and decoding, prevents a delayed memory from naming the key owner early, and verifies invented dialogue cannot create evidence or satisfy a report.
+- Fixed two prompt leaks: the photo's fact no longer includes the final conversation's motive, and the fourth ungrounded memory no longer identifies Owen's spare key. The authored solution and investigation flow are unchanged.
+- The hosted adapter default, `.env.example`, local `.env` and Render blueprint now select free Gemma explicitly. OpenRouter's public catalog listed the model with zero prompt/completion prices and JSON response support on October 31. No hosted generation was requested; metadata and an intercepted adapter request verify configuration, not upstream capacity.
+- Entire CLI 0.12.2 is installed and project Codex hooks are configured. The real session is attached to its implementation commit; [session record](ENTIRE.md). Automatic uploads and telemetry are disabled. Future live hooks require Codex approval; attachment handles the already-running Desktop session.
+- Production and scripted exhibition builds pass. Provider credentials are blanked in browser tests; model and audio unit tests intercept requests. These checks spend no OpenRouter or ElevenLabs generation credits.
+- All **38 desktop/mobile browser scenarios pass** again, including evidence discovery, an attached item, a reversible wrong accusation and the correct ending. No new game mechanics were added.
+
+The dated rebuild results below describe the preceding revision.
+
 This records the `westhaven-personal-v5` revision, October 29, 2026. Earlier provider evidence and prototype benchmarks remain historical. The automated checks below make no model or voice generation requests. The main local case was explicitly changed from baseline to live; the quota snapshot remained 0/8 visitor, 0/30 global immediately after that change. Provider availability checks are not inference measurements.
 
 ## Scope
