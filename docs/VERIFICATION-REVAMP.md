@@ -2,6 +2,8 @@
 
 ## October 31 submission update
 
+- Sentry follow-up: **40 Node tests pass**, including full-envelope privacy checks for input/output, raw provider errors, private paths, cookies and headers. The server initializer is separate from a browser-safe facade so the scripted exhibition still builds. [Sentry record and real Safari captures](SENTRY.md) document accepted/rejected fixture traces without model or voice generation. The existing Render service has its server-only Sentry variables configured.
+
 - **39 Node tests pass**, up from 35. New coverage pins the OpenRouter request to `google/gemma-4-31b-it:free`, checks all eight Nora evidence subsets against prompt data and decoding, prevents a delayed memory from naming the key owner early, and verifies invented dialogue cannot create evidence or satisfy a report.
 - Fixed two prompt leaks: the photo's fact no longer includes the final conversation's motive, and the fourth ungrounded memory no longer identifies Owen's spare key. The authored solution and investigation flow are unchanged.
 - The hosted adapter default, `.env.example`, local `.env` and Render blueprint now select free Gemma explicitly. OpenRouter's public catalog listed the model with zero prompt/completion prices and JSON response support on October 31. No hosted generation was requested; metadata and an intercepted adapter request verify configuration, not upstream capacity.

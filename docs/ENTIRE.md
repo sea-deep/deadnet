@@ -18,6 +18,8 @@ This Codex Desktop conversation began before hook installation, so its real roll
 
 **[Read the actual session excerpt](evidence/entire-session.md)** · [Machine-readable export](evidence/entire-session.json).
 
+The reviewed excerpt is also [DEV agent session 1326](https://dev.to/agent_sessions/deadnet-the-clue-nora-should-not-know-yet-vmwoxi), embedded directly in the submission with `{% agent_session 1326 %}`. It contains nine visible messages/tool entries with the same checkpoint and source transcript digest in its metadata.
+
 The excerpt contains the user request, Codex's visible updates, the actual evidence-boundary patch, and test output preserved by Entire. A transcript digest and repeatable export command identify its source. Raw checkpoints remain local because the long conversation also contains unrelated setup context. The excerpt omits private setup and internal reasoning; it is not a replacement chat written for the article. These public files travel with the repository, so judges can read them without an Entire account or local transcript access.
 
 ## Inspect or continue

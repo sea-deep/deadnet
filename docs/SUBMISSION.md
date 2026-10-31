@@ -18,6 +18,8 @@ Nora Vale died in her room on Halloween night, 1999. The police called it an acc
 
 The computer is a late-90s desktop with ordinary apps: Messenger, Mail, Photos, a Calendar, My Computer, a Trash Bin and a few games. There are no clue files or puzzles. You learn what happened by reading her messages, emails and photos, and noticing where people's stories don't line up.
 
+The day before she died, Nora was making fun of Mara for cooking enough soup for twelve people. “she owns two bowls adam.” Her calendar still has dinner at Mara's in it. Bring bread. Stay for once.
+
 Her last conversation in Messenger is with you. You didn't answer it in time.
 
 ![Nora's Messenger](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/screenshots/desktop/07-last-conversation.png)
@@ -35,6 +37,8 @@ When you think you've worked it out, you open the **Casebook** on your recovery 
 If you get stuck: compare the times in Mail, and look closely at the photo captions.
 
 For example, Len's email says he was already home; management puts him upstairs later that night. Save the email, then show it to Nora in Unknown Signal. Her response changes with what she's seen. The photograph's caption gives you another piece to compare with her last conversation. Those are the items you connect in the Casebook. You don't need to win a mini-game to finish.
+
+![Len's email was sent at 03:07, before management says he was upstairs](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/screenshots/desktop/09-lens-email.png)
 
 ![The Casebook after saving three personal items](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/screenshots/desktop/20-casebook.png)
 
@@ -71,7 +75,17 @@ There's also one voice clip: Nora's last voicemail, recorded with ElevenLabs' pr
 
 The 11.84-second clip is cached, so replaying it doesn't generate more audio. There's a transcript next to it. Voice, model, transcript and delivery settings identify the cache entry; concurrent playback requests share a single render. The existing [render record](https://github.com/sea-deep/deadnet/blob/main/docs/evidence/elevenlabs-case.json) took 1.927 seconds to generate.
 
-**Checking the case.** There are 39 Node tests for knowledge boundaries, invented evidence, wrong theories, the ending, saves, request limits and the audio cache. Another 38 browser scenarios cover desktop and phone layouts, including a complete investigation with a wrong accusation and recovery. They use fixtures, so these checks don't spend model or voice credits. [Verification](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION-REVAMP.md).
+**Following Nora's reply with Sentry.** After finding the premature clue, I wanted to see the boundary around a whole turn: which evidence is available, when the model runs, whether the reply passes validation, and what gets saved. Each turn now has a Sentry agent trace with those steps underneath it. Live model spans record the provider, model and token counts. Players' messages, prompts and replies stay out of the telemetry.
+
+One verification gives Nora an invalid reply that tries to contact Mara from the private signal. The validator rejects it and the root trace is marked rejected; Nora's private message never reaches another resident. Here is the actual Sentry trace, captured in Safari:
+
+![Sentry's Agent Activity view: the private reply is rejected at validate_reply, whose status is error](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/evidence/sentry/verification-rejected-detail.png)
+
+This capture uses a deterministic fixture in Sentry's verification environment. It checks the guard and the tracing, rather than measuring hosted Gemma's speed. [Trace record and screenshots](https://github.com/sea-deep/deadnet/tree/main/docs/evidence/sentry).
+
+**Checking the case.** There are 40 Node tests for knowledge boundaries, invented evidence, wrong theories, the ending, saves, request limits, the audio cache and telemetry privacy. Another 38 browser scenarios cover desktop and phone layouts, including a complete investigation with a wrong accusation and recovery. They use fixtures, so these checks don't spend model or voice credits. [Verification](https://github.com/sea-deep/deadnet/blob/main/docs/VERIFICATION-REVAMP.md).
+
+The [GitHub Actions checks](https://github.com/sea-deep/deadnet/blob/main/.github/workflows/checks.yml) run the tests, typecheck, both builds and the browser scenarios on every push. A [second workflow](https://github.com/sea-deep/deadnet/blob/main/.github/workflows/pages.yml) deploys the scripted exhibition to GitHub Pages. That makes a broken desktop or ending a failing build, rather than something a judge has to find.
 
 ## Why Does Open Innovation Matter?
 
@@ -83,11 +97,28 @@ The 11.84-second clip is cached, so replaying it doesn't generate more audio. Th
 
 A closed frontier model would probably write better dialogue. But it would still need the same limits, because the hard part was never the writing. It was stopping the model from changing the facts.
 
+## The Spirit of It
+
+Mara keeps writing to Nora after she's gone. There's a scarf on her chair, a dinner in the calendar, and a deleted letter in which Nora almost says yes to a new flat. Before you have a suspect, you have the shape of a life that was supposed to continue.
+
+Halloween is the night that life stops. On November 2, you're sitting at the computer with everything she left behind. You can put a name on what happened. You can't get back to 03:14 and answer her in time.
+
+<details>
+<summary>The ending, if you'd like to see where the investigation leads</summary>
+
+After a supported report, Mara writes: “i printed her name properly this time. NORA VALE. not ‘the woman in 317’.” Nora hears the rain again, and the line goes quiet.
+
+![The actual ending after the player submits a supported report](https://raw.githubusercontent.com/sea-deep/deadnet/main/docs/screenshots/desktop/22-ending.png)
+
+</details>
+
 ## My Agent Session
 
 I used Entire to capture the actual Codex session behind the evidence fix. The checkpoint links the conversation and tool work to [the implementation commit](https://github.com/sea-deep/deadnet/commit/b98c419a3383c6fe680520ff4237ed478425360d).
 
 [The session excerpt](https://github.com/sea-deep/deadnet/blob/main/docs/evidence/entire-session.md) includes the edit that removed the premature clue and the test results that followed. It was exported from checkpoint `01M682MCRY0YFDMAADPPK7ETN8`; private setup and internal reasoning are omitted. The native checkpoint stays local, and the public excerpt can be read without an account. [Entire setup and capture details](https://github.com/sea-deep/deadnet/blob/main/docs/ENTIRE.md).
+
+{% agent_session 1326 %}
 
 ## Prize Categories
 
@@ -95,5 +126,7 @@ I used Entire to capture the actual Codex session behind the evidence fix. The c
 - **Best Use of Gemma:** Gemma drives the characters through the pinned OpenRouter route online, or through Ollama for private local play.
 - **Best Use of ElevenLabs:** Nora's last voicemail, an important clue, is an ElevenLabs recording, cached and shown with a transcript.
 - **Best Use of Entire:** the actual Codex development session is linked to its commit, with the debugging edit and test output shared above.
+- **Best Use of Sentry Agent Tracing:** evidence scoping, model execution, reply validation and persistence are traced together; the verification capture shows a rejected private reply, and tests check that telemetry excludes conversation text and credentials.
+- **Best Use of GitHub Copilot:** entered through the challenge's GitHub Actions route. The existing workflows test and build the game, check the complete browser investigation, and deploy the scripted exhibition.
 
 All characters and events are fictional. _I used AI coding assistants while building DEADNET and while writing this post._

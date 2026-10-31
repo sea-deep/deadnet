@@ -53,6 +53,8 @@ The existing SQLite engine, actor knowledge boundaries, validated model decision
 
 The server validates cited evidence IDs and owns the solution. It never promotes dialogue into a new clue. The photo supplies access; the final chat supplies motive. Tests cover every combination of Nora’s witnessed evidence, premature key-owner disclosure, invented IDs, and a model inventing a different culprit without changing the case. Free-form dialogue can still be mistaken.
 
+Optional [Sentry Agent Tracing](docs/SENTRY.md) follows evidence scoping, model execution, reply validation and persistence. Set server-only `SENTRY_DSN`; conversation content and credentials are excluded. Real Safari dashboard captures document accepted and rejected verification runs. The static exhibition uses a no-op tracing facade.
+
 Persistent free-account limits: 2 requests/minute and 8/day per visitor, 5/minute and 30/day globally, counted per HTTP attempt. Environment settings can lower these ceilings but cannot raise them. Upstream 429s persist a cooldown of at least 60 seconds. Starting a case or restarting the server does not reset quota. No paid fallback. Eighteen narrative turns require explicit renewal; renewal cannot bypass the provider quota. Hosted autonomous turns are disabled.
 
 The ElevenLabs call retains the existing licensed premade Lily voice, `eleven_v3_conversational`, hushed/rushed delivery and speed 1.14. The authored call is 11.84 seconds; cached playback does not generate another clip. Provider settings, transcript and model are part of the cache key. Ten fresh renders maximum per installation, 900 characters per request. Historical live-provider measurements remain in `docs/evidence/`; they are not new-prompt benchmarks.
@@ -75,6 +77,6 @@ npx tsx scripts/check-sound.ts
 
 ## Development history with Entire
 
-Entire captures Codex work and links session checkpoints to Git commits. Project settings and Codex hooks are included; transcripts stay local by default. The [Entire record](docs/ENTIRE.md) contains the checkpoint, an excerpt of the actual debugging session, and commands for inspecting it. [Updated DEV entry](docs/SUBMISSION.md) includes the complete investigation walkthrough and sponsor integrations.
+Entire captures Codex work and links session checkpoints to Git commits. Project settings and Codex hooks are included; transcripts stay local by default. The [Entire record](docs/ENTIRE.md) contains the checkpoint, an excerpt of the actual debugging session, and commands for inspecting it. The reviewed excerpt is also available as a native DEV agent-session embed. [DEV entry source](docs/SUBMISSION.md) includes the investigation walkthrough and sponsor integrations, including the existing GitHub Actions checks and deployment workflows.
 
 Code is MIT; borrowed code and media retain their own licenses.

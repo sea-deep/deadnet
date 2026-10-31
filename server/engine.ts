@@ -1,3 +1,9 @@
+import {
+  span,
+  rejectActiveTrace,
+  modelAttributes,
+  safeModelName,
+} from "./telemetry.ts";
 import type { Action, Agent, AgentId, Event, World } from "../src/types.ts";
 import { disclosableFacts } from "./knowledge.ts";
 import { ARCHIVE, seedWorld, VOICEMAIL } from "./seed.ts";
@@ -123,24 +129,77 @@ export class Engine {
     w.tick++;
     w.remainingTurns--;
     try {
+      const allowed = span(
+        {
+          name: "scope_evidence",
+          op: "gen_ai.execute_tool",
+          attributes: {
+            "gen_ai.operation.name": "execute_tool",
+            "gen_ai.tool.name": "scope_evidence",
+            "gen_ai.agent.name": agent.id,
+          },
+        },
+        () => disclosableFacts(reader, incoming, draft),
+      );
       const generator = w.mode === "baseline" ? this.baseline : this.model;
-      const generated = await generator.generate({
-        agent: reader,
-        source: incoming,
-        world: draft,
-      });
-      const d = DecisionSchema.parse(generated.decision);
-      if (agent.id === "nora" && d.shareWith !== "none")
-        throw new Error(
-          "The private signal cannot broadcast or contact other accounts.",
-        );
-      if (d.shareWith === reader.id)
-        throw new Error("Cannot deliver a message to self.");
-      const allowed = disclosableFacts(reader, incoming, draft);
-      if (d.factIds.some((id) => !allowed.includes(id)))
-        throw new Error(
-          "Model tried to disclose evidence it has not witnessed.",
-        );
+      const fixture =
+        w.mode === "baseline" ||
+        !["openrouter", "ollama", "local"].includes(generator.name);
+      const generated = await span(
+        {
+          name: fixture ? "fixture_response" : "chat model",
+          op: fixture ? "gen_ai.execute_tool" : "gen_ai.chat",
+          attributes: {
+            ...modelAttributes(generator.name, generator.model, fixture),
+            "gen_ai.agent.name": agent.id,
+          },
+        },
+        async (modelSpan) => {
+          const result = await generator.generate({
+            agent: reader,
+            source: incoming,
+            world: draft,
+          });
+          modelSpan.setAttribute(
+            "gen_ai.response.model",
+            safeModelName(result.trace.model, fixture),
+          );
+          modelSpan.setAttribute(
+            "gen_ai.usage.input_tokens",
+            result.trace.inputTokens,
+          );
+          modelSpan.setAttribute(
+            "gen_ai.usage.output_tokens",
+            result.trace.outputTokens,
+          );
+          return result;
+        },
+      );
+      const d = span(
+        {
+          name: "validate_reply",
+          op: "gen_ai.execute_tool",
+          attributes: {
+            "gen_ai.operation.name": "execute_tool",
+            "gen_ai.tool.name": "validate_reply",
+            "gen_ai.agent.name": agent.id,
+          },
+        },
+        () => {
+          const decision = DecisionSchema.parse(generated.decision);
+          if (agent.id === "nora" && decision.shareWith !== "none")
+            throw new Error(
+              "The private signal cannot broadcast or contact other accounts.",
+            );
+          if (decision.shareWith === reader.id)
+            throw new Error("Cannot deliver a message to self.");
+          if (decision.factIds.some((id) => !allowed.includes(id)))
+            throw new Error(
+              "Model tried to disclose evidence it has not witnessed.",
+            );
+          return decision;
+        },
+      );
       agent.knownFacts = reader.knownFacts;
       agent.seen = reader.seen;
       agent.memories = reader.memories;
@@ -200,6 +259,7 @@ export class Engine {
           origin: "system",
         });
     } catch (error) {
+      rejectActiveTrace();
       if (error instanceof RuleError && error.status === 429) {
         const saved = this.world();
         saved.auto = false;
@@ -241,6 +301,25 @@ export class Engine {
     if (w.remainingTurns === 0) w.auto = false;
   }
   async dispatch(action: Action): Promise<World> {
+    if (action.type !== "message" && action.type !== "tick")
+      return this.dispatchInternal(action);
+    const agent =
+      action.type === "message" && ids.includes(action.target)
+        ? action.target
+        : "resident";
+    return span(
+      {
+        name: `invoke_agent ${agent}`,
+        op: "gen_ai.invoke_agent",
+        attributes: {
+          "gen_ai.operation.name": "invoke_agent",
+          "gen_ai.agent.name": agent,
+        },
+      },
+      () => this.dispatchInternal(action),
+    );
+  }
+  private async dispatchInternal(action: Action): Promise<World> {
     if (this.busy)
       throw new RuleError(
         "A local generation is already in progress. Please wait.",
@@ -479,7 +558,23 @@ export class Engine {
           return w;
       }
       w.revision++;
-      this.store.save(w, action.type);
+      if (action.type === "message" || action.type === "tick") {
+        span(
+          {
+            name: "persist",
+            op: "gen_ai.execute_tool",
+            attributes: {
+              "gen_ai.operation.name": "execute_tool",
+              "gen_ai.tool.name": "persist",
+              "gen_ai.agent.name":
+                action.type === "message" && ids.includes(action.target)
+                  ? action.target
+                  : "resident",
+            },
+          },
+          () => this.store.save(w, action.type),
+        );
+      } else this.store.save(w, action.type);
       return w;
     } finally {
       this.busy = false;

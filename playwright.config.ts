@@ -11,7 +11,7 @@ export default defineConfig({
   },
   webServer: {
     command:
-      "PORT=3100 DEADNET_DB=.data/e2e.sqlite MODEL_PROVIDER=ollama OPENROUTER_API_KEY= ELEVENLABS_API_KEY= OLLAMA_URL=http://127.0.0.1:9 npm run dev",
+      "PORT=3100 DEADNET_DB=.data/e2e.sqlite MODEL_PROVIDER=ollama OPENROUTER_API_KEY= ELEVENLABS_API_KEY= SENTRY_DSN= OLLAMA_URL=http://127.0.0.1:9 npm run dev",
     url: "http://127.0.0.1:3100/api/state",
     reuseExistingServer: false,
   },

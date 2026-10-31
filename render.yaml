@@ -31,3 +31,7 @@ services:
         sync: false
       - key: ELEVENLABS_MODEL
         value: eleven_v3_conversational
+      - key: SENTRY_DSN
+        sync: false
+      - key: SENTRY_ENVIRONMENT
+        value: production

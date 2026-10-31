@@ -1,0 +1,30 @@
+{
+  "purpose": "Real Sentry SDK traces using deterministic fixture adapter for environment verification. No live model or voice requests.",
+  "organization": "dipak-2o",
+  "project": "deadnet",
+  "environment": "verification",
+  "spans": [
+    "invoke_agent nora",
+    "scope_evidence",
+    "fixture_response",
+    "validate_reply",
+    "persist"
+  ],
+  "traces": [
+    {
+      "outcome": "accepted",
+      "trace_id": "b820c135b6e94b10ac07989fdc81105c",
+      "url": "https://dipak-2o.sentry.io/explore/traces/trace/b820c135b6e94b10ac07989fdc81105c/",
+      "root_duration_ms": 3.54,
+      "screenshot": "verification-accepted-trace.png"
+    },
+    {
+      "outcome": "rejected",
+      "trace_id": "df343ffd05fa4d2782efa65d4eaa2f51",
+      "url": "https://dipak-2o.sentry.io/explore/traces/trace/df343ffd05fa4d2782efa65d4eaa2f51/",
+      "root_duration_ms": 0.58,
+      "screenshot": "verification-rejected-trace.png",
+      "detail_screenshot": "verification-rejected-detail.png"
+    }
+  ]
+}

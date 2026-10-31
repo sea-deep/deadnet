@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { initTelemetry } from "./telemetry-node.ts";
 import { writeFileSync, mkdirSync } from "node:fs";
 import express from "express";
 import { createServer as viteServer } from "vite";
@@ -13,6 +14,7 @@ import { AudioService } from "./audio.ts";
 import { ARCHIVE, STORY_ID, seedWorld } from "./seed.ts";
 import { caseProgress } from "../src/rules.ts";
 import { isSavedWorld } from "../src/saved-world.ts";
+initTelemetry();
 const port = Number(process.env.PORT) || 3000;
 /** Public hosting: every browser gets its own private world; no autonomous turns. */
 const hosted = process.env.DEADNET_PUBLIC === "1";
